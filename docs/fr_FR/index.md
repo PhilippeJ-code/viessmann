@@ -43,7 +43,3 @@
     une actualisation manuelle.
     
 ![Resume](../images/resume.png "Resume")
-
-
-
-

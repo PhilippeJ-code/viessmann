@@ -8,7 +8,7 @@
     <div class="classFlex#uid#">
 
       <div class="classTuile#uid#">
-        <img class="classOptions#uid#" id="idOptionsChaudiere#uid#" src="plugins/viessmann/resources/options.svg">
+        <img class="classOptions#uid# cursor" id="idOptionsChaudiere#uid#" src="plugins/viessmann/resources/options.svg">
         <span id="idProgrammeActuel#uid#"></span></br>
         <span class="classOutsideTemperature#uid# history cursor" data-cmd_id="#idOutsideTemperature#"
           id="idOutsideTemperature#uid#"></span>
@@ -19,7 +19,7 @@
     <div class="classFlex#uid#">
 
       <div class="classDemiTuile#uid#">
-        <img class="classOptions#uid#" id="idOptionsRadiateurs#uid#" src="plugins/viessmann/resources/options.svg">
+        <img class="classOptions#uid# cursor" id="idOptionsRadiateurs#uid#" src="plugins/viessmann/resources/options.svg">
         <img class="classOptionsCal#uid#" id="idOptionsCalRadiateurs#uid#"
           src="plugins/viessmann/resources/calendrier.svg">
         <span id="idSupplyProgramTemperature#uid#"></span>
@@ -28,7 +28,7 @@
       </div>
 
       <div class="classDemiTuile#uid#">
-        <img class="classOptions#uid#" id="idOptionsEauChaude#uid#" src="plugins/viessmann/resources/options.svg">
+        <img class="classOptions#uid# cursor" id="idOptionsEauChaude#uid#" src="plugins/viessmann/resources/options.svg">
         <img class="classOptionsCal#uid#" id="idOptionsCalEauChaude#uid#"
           src="plugins/viessmann/resources/calendrier.svg">
         <span id="idHotWaterStorageTemperature#uid#"></span>
@@ -42,14 +42,14 @@
     <div class="classFlex#uid#">
 
       <div class="classDemiTuile#uid#">
-        <img class="classOptions#uid#" id="idOptionsGaz#uid#" src="plugins/viessmann/resources/options.svg">
+        <img class="classOptions#uid# cursor" id="idOptionsGaz#uid#" src="plugins/viessmann/resources/options.svg">
         <span id="idDhwGazConsumption#uid#"></span>
         <span id="idHeatingGazConsumption#uid#"></span>
         <span class="classLibelleTuile#uid#">Gaz</span>
       </div>
 
       <div class="classDemiTuile#uid#">
-        <img class="classOptions#uid#" id="idOptionsElectricite#uid#" src="plugins/viessmann/resources/options.svg">
+        <img class="classOptions#uid# cursor" id="idOptionsElectricite#uid#" src="plugins/viessmann/resources/options.svg">
         <span id="idHeatingPowerConsumption#uid#"></span>
         <span class="classLibelleTuile#uid#">Electricité</span>
       </div>
@@ -58,8 +58,11 @@
 
     <div class="classFlex#uid#">
       <div class="classTuile#uid#">
-        <img class="classOptions#uid#" id="idRafraichir#uid#" src="plugins/viessmann/resources/rafraichir.svg">
-        <span id="idRefreshDate#uid#"></span>
+      <span id="idRefreshDate#uid#"></span>
+        <span id="idRafraichir#uid#" class="cmd refresh pull-right cursor classOptions#uid#" data-cmd_id="#idRefresh#">
+          <i class="fas fa-sync"></i>
+        </span>
+
       </div>
     </div>
 
@@ -84,7 +87,7 @@
   <span class="classSousTitre#uid#">Parallèle</span><span class="classValeur#uid#"
     id="idShift#uid#"></span></br>
 
-  <img class="classPrecedent#uid#" src="plugins/viessmann/resources/previous.svg">
+  <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
   <span class="classTitreTuile#uid#">Chaudière</span></br>
    
   </div>
@@ -107,7 +110,7 @@
     <span class="classSousTitre#uid#">Mise hors gel</span><span class="classValeur#uid#"
       id="idFrostProtection#uid#"></span></br>
 
-    <img class="classPrecedent#uid#" src="plugins/viessmann/resources/previous.svg">
+    <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Radiateurs</span></br>
 
   </div>
@@ -145,7 +148,7 @@
       src="plugins/viessmann/resources/image.php?width=220&height=40&start=#heaSchDimSta#&end=#heaSchDimEnd#&title=Dim">
     </img>
 
-    <img class="classPrecedent#uid#" src="plugins/viessmann/resources/previous.svg">
+    <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Programmation chauffage</span></br>
 
   </div>
@@ -164,7 +167,7 @@
     <span class="classSousTitre#uid#">Actuel</span><span class="classValeur#uid#"
       id="idActuelEauChaude#uid#"></span></br>
 
-    <img class="classPrecedent#uid#" src="plugins/viessmann/resources/previous.svg">
+    <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Eau chaude</span></br>
 
   </div>
@@ -202,7 +205,7 @@
       src="plugins/viessmann/resources/image.php?width=220&height=40&start=#dhwSchDimSta#&end=#dhwSchDimEnd#&title=Dim">
     </img>
 
-    <img class="classPrecedent#uid#" src="plugins/viessmann/resources/previous.svg">
+    <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Eau chaude</span></br>
 
   </div>
@@ -230,7 +233,7 @@
     <div id="grapheGazAnnee#uid#" style="width:100%; height:200px;">
     </div>
 
-    <img class="classPrecedent#uid#" src="plugins/viessmann/resources/previous.svg">
+    <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Consommation gaz</span></br>
 
   </div>
@@ -258,7 +261,7 @@
     <div id="grapheElecAnnee#uid#" style="width:100%; height:200px;">
     </div>
 
-    <img class="classPrecedent#uid#" src="plugins/viessmann/resources/previous.svg">
+    <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Consommation électricité</span></br>
 
   </div>
@@ -437,8 +440,8 @@
 
   .classPrecedent#uid# {
     position: absolute;
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     left: 5px;
     top: 3px;
     filter: invert(56%) sepia(0%) saturate(299%) hue-rotate(144deg) brightness(89%) contrast(94%);
