@@ -73,7 +73,7 @@
 
   </div>
 
-  <div class="classContenant#uid#" id="idChaudiere#uid#">
+  <div class="classContenant#uid#" id="idChaudiere#uid#" style="display:none;">
 
     </br></br>
     <span class="classTitre#uid#">Brûleur</span></br></br>
@@ -95,7 +95,7 @@
 
   </div>
 
-  <div class="classContenant#uid#" id="idRadiateurs#uid#">
+  <div class="classContenant#uid#" id="idRadiateurs#uid#" style="display:none;">
 
     </br></br>
     <span class="classTitre#uid#">Statut</span></br></br>
@@ -103,11 +103,11 @@
       id="idStatutChauffage#uid#"></span></br>
     </br>
     <span class="classTitre#uid#">Températures</span></br></br>
-    <span class="classSousTitre#uid#">Confort</span><span id="idComfortProgramTemperature#uid#"></span><img
+    <span class="classSousTitre#uid#">Confort</span><span id="idComfortProgramTemperature#uid#" class="classValeur#uid#"></span><img
       class="classCrayon#uid# cursor" id="idModifierConfort#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
-    <span class="classSousTitre#uid#">Normale</span><span id="idNormalProgramTemperature#uid#"></span><img
+    <span class="classSousTitre#uid#">Normale</span><span id="idNormalProgramTemperature#uid#" class="classValeur#uid#"></span><img
       class="classCrayon#uid# cursor" id="idModifierNormale#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
-    <span class="classSousTitre#uid#">Réduite</span><span id="idReducedProgramTemperature#uid#"></span><img
+    <span class="classSousTitre#uid#">Réduite</span><span id="idReducedProgramTemperature#uid#" class="classValeur#uid#"></span><img
       class="classCrayon#uid# cursor" id="idModifierReduite#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
     </br>
     <span class="classTitre#uid#">Radiateurs</span></br></br>
@@ -121,7 +121,7 @@
 
   </div>
 
-  <div class="classContenant#uid#" id="idCalRadiateurs#uid#">
+  <div class="classContenant#uid#" id="idCalRadiateurs#uid#" style="display:none;">
 
     </br></br>
     <span class="classTitre#uid#">Programmation</span>
@@ -159,7 +159,7 @@
 
   </div>
 
-  <div class="classContenant#uid#" id="idEauChaude#uid#">
+  <div class="classContenant#uid#" id="idEauChaude#uid#" style="display:none;">
 
     </br></br>
     <span class="classTitre#uid#">Statut</span></br></br>
@@ -169,7 +169,8 @@
     <span class="classTitre#uid#">Températures</span>
     </br></br>
     <span class="classSousTitre#uid#">Consigne</span><span class="classValeur#uid#"
-      id="idConsigneEauChaude#uid#"></span></br>
+      id="idConsigneEauChaude#uid#"></span><img
+      class="classCrayon#uid# cursor" id="idModifierDhw#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
     <span class="classSousTitre#uid#">Actuel</span><span class="classValeur#uid#"
       id="idActuelEauChaude#uid#"></span></br>
 
@@ -178,7 +179,7 @@
 
   </div>
 
-  <div class="classContenant#uid#" id="idCalEauChaude#uid#">
+  <div class="classContenant#uid#" id="idCalEauChaude#uid#" style="display:none;">
 
     </br></br>
     <span class="classTitre#uid#">Programmation</span>
@@ -216,7 +217,7 @@
 
   </div>
 
-  <div class="classContenant#uid#" id="idGaz#uid#">
+  <div class="classContenant#uid#" id="idGaz#uid#" style="display:none;">
 
     </br></br>
     <select id="selectionGrapheGaz#uid#">
@@ -244,7 +245,7 @@
 
   </div>
 
-  <div class="classContenant#uid#" id="idElec#uid#">
+  <div class="classContenant#uid#" id="idElec#uid#" style="display:none;">
 
     </br></br>
     <select id="selectionGrapheElec#uid#">
@@ -327,6 +328,27 @@
           <img id="idReduitePlus#uid#" class="classFleches#uid#" src="plugins/viessmann/resources/plus.svg">
           <span id="idReduiteValeur#uid#" class="classValeurConsigne#uid#"></span>
           <img id="idReduiteMoins#uid#" class="classFleches#uid#" src="plugins/viessmann/resources/moins.svg">
+
+        </div>
+
+      </div>
+     </div>
+
+  </div>
+
+  <div id="idPopupDhw#uid#" class="classModal#uid#">
+
+    <div class="classModalContenu#uid#">
+      <div class="classModalEntete#uid#">
+        <img class="classModalClose#uid# cursor" src="plugins/viessmann/resources/previous.svg">
+        <span>Température réduite</span>
+      </div>
+      <div class="classModalCorps#uid#">
+        <div class="classConsigne#uid#">
+          </br>
+          <img id="idDhwPlus#uid#" class="classFleches#uid#" src="plugins/viessmann/resources/plus.svg">
+          <span id="idDhwValeur#uid#" class="classValeurConsigne#uid#"></span>
+          <img id="idDhwMoins#uid#" class="classFleches#uid#" src="plugins/viessmann/resources/moins.svg">
 
         </div>
 
@@ -548,37 +570,22 @@
   .classValeur#uid# {
     position: absolute;
     width: 100%;
-    right: 10px;
+    right: 20px;
     text-align: right;
     font-size: 14px;
     color: #808080;
   }
 
   #idComfortProgramTemperature#uid# {
-    position: absolute;
-    width: 100%;
-    right: 30px;
-    text-align: right;
-    font-size: 14px;
     color: red;
   }
 
   #idNormalProgramTemperature#uid# {
-    position: absolute;
-    width: 100%;
-    right: 30px;
-    text-align: right;
-    font-size: 14px;
     color: orange;
   }
 
   #idReducedProgramTemperature#uid# {
-    position: absolute;
-    width: 100%;
-    right: 30px;
-    text-align: right;
-    font-size: 14px;
-    color: blue;
+     color: blue;
   }
 
   .classCrayon#uid# {
@@ -833,6 +840,11 @@
     }
     jeedom.cmd.update['#idDhwTemperature#']({ display_value: '#dhwTemperature#' });
 
+    jeedom.cmd.update['#idDhwValeur#'] = function (_options) {
+      $('#idDhwValeur#uid#').html(_options.display_value + '°');
+    }
+    jeedom.cmd.update['#idDhwValeur#']({ display_value: '#dhwTemperature#' });
+
     jeedom.cmd.update['#idHotWaterStorageTemperature#'] = function (_options) {
       $('#idHotWaterStorageTemperature#uid#').html(_options.display_value + '°');
       $('#idActuelEauChaude#uid#').html(_options.display_value + '°');
@@ -1072,6 +1084,7 @@
             break;
           case "#idDhwTemperature#":
             jeedom.cmd.update['#idDhwTemperature#']({ display_value: this.value });
+            jeedom.cmd.update['#idDhwValeur#']({ display_value: this.value });
             break;
           case "#idHotWaterStorageTemperature#":
             jeedom.cmd.update['#idHotWaterStorageTemperature#']({ display_value: this.value });
@@ -1688,118 +1701,140 @@
     $('#idPopupReduite#uid#').show();
   });
 
+  $('#idModifierDhw#uid#').on('click', function () {
+    $('#idPopupDhw#uid#').show();
+  });
+
   $('.classModalClose#uid#').on('click', function () {
     $('#idPopupConfort#uid#').hide();
     $('#idPopupNormale#uid#').hide();
     $('#idPopupReduite#uid#').hide();
+    $('#idPopupDhw#uid#').hide();
   });
 
-  $('#idConfortMoins#uid#').on('click', function () {
-      var min = ('#minComfort#' == '') ? Number.MIN_VALUE : parseFloat('#minComfort#');
-      var stepConsigne = (isNaN(parseFloat('#stepComfort#'))) ? 1 : parseFloat('#stepComfort#');
-      if (parseFloat($('#idConfortValeur#uid#').html()) >= min + stepConsigne) {
-        jeedom.cmd.update['#idConfortValeur#']({ display_value: parseFloat($('#idConfortValeur#uid#').html()) - stepConsigne });
-        jeedom.cmd.execute({
-          id: '#idComfortProgramSlider#', value:
-            { slider: $('#idConfortValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
-      } else if (parseFloat($('#idConfortValeur#uid#').html()) > min) {
-        jeedom.cmd.update['#idConfortValeur#']({ display_value: min });
-        jeedom.cmd.execute({
-          id: '#idComfortProgramSlider#', value:
-            { slider: $('#idConfortValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
-      }
-    });
-
-    $('#idConfortPlus#uid#').on('click', function () {
+  $('#idConfortPlus#uid#').on('click', function () {
       var max = ('#maxComfort#' == '') ? Number.MAX_VALUE : parseFloat('#maxComfort#');
-      var stepConsigne = (isNaN(parseFloat('#stepComfort#'))) ? 0.5 : parseFloat('#stepComfort#');
-      if (parseFloat($('#idConfortValeur#uid#').html()) <= max - stepConsigne) {
-        jeedom.cmd.update['#idConfortValeur#']({ display_value: parseFloat($('#idConfortValeur#uid#').html()) + stepConsigne });
-        jeedom.cmd.execute({
-          id: '#idComfortProgramSlider#', value:
-            { slider: $('#idConfortValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
+      var step = (isNaN(parseFloat('#stepComfort#'))) ? 1 : parseFloat('#stepComfort#');
+      if (parseFloat($('#idConfortValeur#uid#').html()) <= max - step) {
+        jeedom.cmd.update['#idConfortValeur#']({ display_value: parseFloat($('#idConfortValeur#uid#').html()) + step });
+        $('#idConfortValeur#uid#').trigger('change');
       } else if (parseFloat($('#idConfortValeur#uid#').html()) < max) {
         jeedom.cmd.update['#idConfortValeur#']({ display_value: max });
-        jeedom.cmd.execute({
-          id: '#idComfortProgramSlider#', value:
-            { slider: $('#idConfortValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
+        $('#idConfortValeur#uid#').trigger('change');
       }
+    });
+    $('#idConfortMoins#uid#').on('click', function () {
+      var min = ('#minComfort#' == '') ? Number.MIN_VALUE : parseFloat('#minComfort#');
+      var step = (isNaN(parseFloat('#stepComfort#'))) ? 1 : parseFloat('#stepComfort#');
+      if (parseFloat($('#idConfortValeur#uid#').html()) >= min + step) {
+        jeedom.cmd.update['#idConfortValeur#']({ display_value: parseFloat($('#idConfortValeur#uid#').html()) - step });
+        $('#idConfortValeur#uid#').trigger('change');
+      } else if (parseFloat($('#idConfortValeur#uid#').html()) > min) {
+        jeedom.cmd.update['#idConfortValeur#']({ display_value: min });
+        $('#idConfortValeur#uid#').trigger('change');
+      }      
+    });
+    $('#idConfortValeur#uid#').on('change', function () {
+      if (typeof timerConfortValeur#uid# !== 'undefined') {
+      clearTimeout(timerConfortValeur#uid#);
+    }
+    timerConfortValeur#uid# = setTimeout(function () {
+      jeedom.cmd.execute({ id: '#idComfortProgramSlider#', value: { slider: $('#idConfortValeur#uid#').html().replace("°", "").replace(" ", "") } });
+    }, 1000)
     });
 
-    $('#idNormaleMoins#uid#').on('click', function () {
-      var min = ('#minNormal#' == '') ? Number.MIN_VALUE : parseFloat('#minNormal#');
-      var stepConsigne = (isNaN(parseFloat('#stepNormal#'))) ? 1 : parseFloat('#stepNormal#');
-      if (parseFloat($('#idNormaleValeur#uid#').html()) >= min + stepConsigne) {
-        jeedom.cmd.update['#idNormaleValeur#']({ display_value: parseFloat($('#idNormaleValeur#uid#').html()) - stepConsigne });
-        jeedom.cmd.execute({
-          id: '#idNormalProgramSlider#', value:
-            { slider: $('#idNormaleValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
-      } else if (parseFloat($('#idNormaleValeur#uid#').html()) > min) {
-        jeedom.cmd.update['#idNormaleValeur#']({ display_value: min });
-        jeedom.cmd.execute({
-          id: '#idNormalProgramSlider#', value:
-            { slider: $('#idNormaleValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
-      }
-    });
 
     $('#idNormalePlus#uid#').on('click', function () {
       var max = ('#maxNormal#' == '') ? Number.MAX_VALUE : parseFloat('#maxNormal#');
-      var stepConsigne = (isNaN(parseFloat('#stepNormal#'))) ? 0.5 : parseFloat('#stepNormal#');
-      if (parseFloat($('#idNormaleValeur#uid#').html()) <= max - stepConsigne) {
-        jeedom.cmd.update['#idNormaleValeur#']({ display_value: parseFloat($('#idNormaleValeur#uid#').html()) + stepConsigne });
-        jeedom.cmd.execute({
-          id: '#idNormalProgramSlider#', value:
-            { slider: $('#idNormaleValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
+      var step = (isNaN(parseFloat('#stepNormal#'))) ? 1 : parseFloat('#stepNormal#');
+      if (parseFloat($('#idNormaleValeur#uid#').html()) <= max - step) {
+        jeedom.cmd.update['#idNormaleValeur#']({ display_value: parseFloat($('#idNormaleValeur#uid#').html()) + step });
+        $('#idNormaleValeur#uid#').trigger('change');
       } else if (parseFloat($('#idNormaleValeur#uid#').html()) < max) {
         jeedom.cmd.update['#idNormaleValeur#']({ display_value: max });
-        jeedom.cmd.execute({
-          id: '#idNormalProgramSlider#', value:
-            { slider: $('#idNormaleValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
+        $('#idNormaleValeur#uid#').trigger('change');
       }
     });
-
-    $('#idReduiteMoins#uid#').on('click', function () {
-      var min = ('#minReduced#' == '') ? Number.MIN_VALUE : parseFloat('#minReduced#');
-      var stepConsigne = (isNaN(parseFloat('#stepReduced#'))) ? 1 : parseFloat('#stepReduced#');
-      if (parseFloat($('#idReduiteValeur#uid#').html()) >= min + stepConsigne) {
-        jeedom.cmd.update['#idReduiteValeur#']({ display_value: parseFloat($('#idReduiteValeur#uid#').html()) - stepConsigne });
-        jeedom.cmd.execute({
-          id: '#idReducedProgramSlider#', value:
-            { slider: $('#idReduiteValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
-      } else if (parseFloat($('#idReduiteValeur#uid#').html()) > min) {
-        jeedom.cmd.update['#idReduiteValeur#']({ display_value: min });
-        jeedom.cmd.execute({
-          id: '#idReducedProgramSlider#', value:
-            { slider: $('#idReduiteValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
-      }
+    $('#idNormaleMoins#uid#').on('click', function () {
+      var min = ('#minNormal#' == '') ? Number.MIN_VALUE : parseFloat('#minNormal#');
+      var step = (isNaN(parseFloat('#stepNormal#'))) ? 1 : parseFloat('#stepNormal#');
+      if (parseFloat($('#idNormaleValeur#uid#').html()) >= min + step) {
+        jeedom.cmd.update['#idNormaleValeur#']({ display_value: parseFloat($('#idNormaleValeur#uid#').html()) - step });
+        $('#idNormaleValeur#uid#').trigger('change');
+      } else if (parseFloat($('#idNormaleValeur#uid#').html()) > min) {
+        jeedom.cmd.update['#idNormaleValeur#']({ display_value: min });
+        $('#idNormaleValeur#uid#').trigger('change');
+      }      
+    });
+    $('#idNormaleValeur#uid#').on('change', function () {
+      if (typeof timerNormaleValeur#uid# !== 'undefined') {
+      clearTimeout(timerNormaleValeur#uid#);
+    }
+    timerNormaleValeur#uid# = setTimeout(function () {
+      jeedom.cmd.execute({ id: '#idNormalProgramSlider#', value: { slider: $('#idNormaleValeur#uid#').html().replace("°", "").replace(" ", "") } });
+    }, 1000)
     });
 
     $('#idReduitePlus#uid#').on('click', function () {
       var max = ('#maxReduced#' == '') ? Number.MAX_VALUE : parseFloat('#maxReduced#');
-      var stepConsigne = (isNaN(parseFloat('#stepReduced#'))) ? 0.5 : parseFloat('#stepReduced#');
-      if (parseFloat($('#idReduiteValeur#uid#').html()) <= max - stepConsigne) {
-        jeedom.cmd.update['#idReduiteValeur#']({ display_value: parseFloat($('#idReduiteValeur#uid#').html()) + stepConsigne });
-        jeedom.cmd.execute({
-          id: '#idReducedProgramSlider#', value:
-            { slider: $('#idReduiteValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
+      var step = (isNaN(parseFloat('#stepReduced#'))) ? 1 : parseFloat('#stepReduced#');
+      if (parseFloat($('#idReduiteValeur#uid#').html()) <= max - step) {
+        jeedom.cmd.update['#idReduiteValeur#']({ display_value: parseFloat($('#idReduiteValeur#uid#').html()) + step });
+        $('#idReduiteValeur#uid#').trigger('change');
       } else if (parseFloat($('#idReduiteValeur#uid#').html()) < max) {
         jeedom.cmd.update['#idReduiteValeur#']({ display_value: max });
-        jeedom.cmd.execute({
-          id: '#idReducedProgramSlider#', value:
-            { slider: $('#idReduiteValeur#uid#').html().replace("°", "").replace(" ", "") }
-        });
+        $('#idReduiteValeur#uid#').trigger('change');
       }
+    });
+    $('#idReduiteMoins#uid#').on('click', function () {
+      var min = ('#minReduced#' == '') ? Number.MIN_VALUE : parseFloat('#minReduced#');
+      var step = (isNaN(parseFloat('#stepReduced#'))) ? 1 : parseFloat('#stepReduced#');
+      if (parseFloat($('#idReduiteValeur#uid#').html()) >= min + step) {
+        jeedom.cmd.update['#idReduiteValeur#']({ display_value: parseFloat($('#idReduiteValeur#uid#').html()) - step });
+        $('#idReduiteValeur#uid#').trigger('change');
+      } else if (parseFloat($('#idReduiteValeur#uid#').html()) > min) {
+        jeedom.cmd.update['#idReduiteValeur#']({ display_value: min });
+        $('#idReduiteValeur#uid#').trigger('change');
+      }      
+    });
+    $('#idReduiteValeur#uid#').on('change', function () {
+      if (typeof timerReduiteValeur#uid# !== 'undefined') {
+      clearTimeout(timerReduiteValeur#uid#);
+    }
+    timerReduiteValeur#uid# = setTimeout(function () {
+      jeedom.cmd.execute({ id: '#idReducedProgramSlider#', value: { slider: $('#idReduiteValeur#uid#').html().replace("°", "").replace(" ", "") } });
+    }, 1000)
+    });
+
+    $('#idDhwPlus#uid#').on('click', function () {
+      var max = ('#maxDhw#' == '') ? Number.MAX_VALUE : parseFloat('#maxDhw#');
+      var step = (isNaN(parseFloat('#stepDhw#'))) ? 1 : parseFloat('#stepDhw#');
+      if (parseFloat($('#idDhwValeur#uid#').html()) <= max - step) {
+        jeedom.cmd.update['#idDhwValeur#']({ display_value: parseFloat($('#idDhwValeur#uid#').html()) + step });
+        $('#idDhwValeur#uid#').trigger('change');
+      } else if (parseFloat($('#idDhwValeur#uid#').html()) < max) {
+        jeedom.cmd.update['#idDhwValeur#']({ display_value: max });
+        $('#idDhwValeur#uid#').trigger('change');
+      }
+    });
+    $('#idDhwMoins#uid#').on('click', function () {
+      var min = ('#minDhw#' == '') ? Number.MIN_VALUE : parseFloat('#minDhw#');
+      var step = (isNaN(parseFloat('#stepDhw#'))) ? 1 : parseFloat('#stepDhw#');
+      if (parseFloat($('#idDhwValeur#uid#').html()) >= min + step) {
+        jeedom.cmd.update['#idDhwValeur#']({ display_value: parseFloat($('#idDhwValeur#uid#').html()) - step });
+        $('#idDhwValeur#uid#').trigger('change');
+      } else if (parseFloat($('#idDhwValeur#uid#').html()) > min) {
+        jeedom.cmd.update['#idDhwValeur#']({ display_value: min });
+        $('#idDhwValeur#uid#').trigger('change');
+      }      
+    });
+    $('#idDhwValeur#uid#').on('change', function () {
+      if (typeof timerDhwValeur#uid# !== 'undefined') {
+      clearTimeout(timerDhwValeur#uid#);
+    }
+    timerDhwValeur#uid# = setTimeout(function () {
+      jeedom.cmd.execute({ id: '#idDhwSlider#', value: { slider: $('#idDhwValeur#uid#').html().replace("°", "").replace(" ", "") } });
+    }, 1000)
     });
 
 </script>
