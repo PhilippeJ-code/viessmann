@@ -88,6 +88,7 @@
 
           $comfortProgramTemperature = $viessmannApi->getComfortProgramTemperature();
           $this->getCmd(null, 'comfortProgramTemperature')->event($comfortProgramTemperature);
+
           $normalProgramTemperature = $viessmannApi->getNormalProgramTemperature();
           $this->getCmd(null, 'normalProgramTemperature')->event($normalProgramTemperature);
           $reducedProgramTemperature = $viessmannApi->getReducedProgramTemperature();
@@ -1047,14 +1048,23 @@
           $obj = $this->getCmd(null, 'comfortProgramTemperature');
           $replace["#comfortProgramTemperature#"] = $obj->execCmd();
           $replace["#idComfortProgramTemperature#"] = $obj->getId();
+          $replace["#minComfort#"] = $obj->getConfiguration('minValue');
+          $replace["#maxComfort#"] = $obj->getConfiguration('maxValue');
+          $replace["#stepComfort#"] = 1;
           
           $obj = $this->getCmd(null, 'normalProgramTemperature');
           $replace["#normalProgramTemperature#"] = $obj->execCmd();
           $replace["#idNormalProgramTemperature#"] = $obj->getId();
+          $replace["#minNormal#"] = $obj->getConfiguration('minValue');
+          $replace["#maxNormal#"] = $obj->getConfiguration('maxValue');
+          $replace["#stepNormal#"] = 1;
           
           $obj = $this->getCmd(null, 'reducedProgramTemperature');
           $replace["#reducedProgramTemperature#"] = $obj->execCmd();
           $replace["#idReducedProgramTemperature#"] = $obj->getId();
+          $replace["#minReduced#"] = $obj->getConfiguration('minValue');
+          $replace["#maxReduced#"] = $obj->getConfiguration('maxValue');
+          $replace["#stepReduced#"] = 1;
           
           $obj = $this->getCmd(null, 'programTemperature');
           $replace["#programTemperature#"] = $obj->execCmd();
@@ -1384,6 +1394,13 @@
           $obj = $this->getCmd(null, 'frostProtection');
           $replace["#frostProtection#"] = $obj->execCmd();
           $replace["#idFrostProtection#"] = $obj->getId();
+
+          $obj = $this->getCmd(null, 'comfortProgramSlider');
+          $replace["#idComfortProgramSlider#"] = $obj->getId();
+          $obj = $this->getCmd(null, 'normalProgramSlider');
+          $replace["#idNormalProgramSlider#"] = $obj->getId();
+          $obj = $this->getCmd(null, 'reducedProgramSlider');
+          $replace["#idReducedProgramSlider#"] = $obj->getId();
 
           return template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann'));
       }
