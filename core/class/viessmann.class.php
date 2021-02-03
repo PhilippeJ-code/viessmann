@@ -33,6 +33,8 @@
           $password = $this->getConfiguration('password', '');
           $installationId = $this->getConfiguration('installationId', '');
           $gatewayId = $this->getConfiguration('gatewayId', '');
+          $deviceId = $this->getConfiguration('deviceId', '0');
+          $circuitId = $this->getConfiguration('circuitId', '0');
 
           if (($userName === '') || ($password === '')) {
               return;
@@ -43,8 +45,8 @@
             "pwd" => $password,
             "installationId" => $installationId,
             "gatewayId" => $gatewayId,
-            "deviceId" => "0",
-            "circuitId" => "0"
+            "deviceId" => $deviceId,
+            "circuitId" => $circuitId
           ];
 
           try {
@@ -287,7 +289,7 @@
           $this->getCmd(null, 'refreshDate')->event($date);
 
           $frostProtection = $viessmannApi->getFrostprotection();
-          $this->getCmd(null, 'frostProtection')->event($frostProtection);          
+          $this->getCmd(null, 'frostProtection')->event($frostProtection);
 
           return;
       }
@@ -300,14 +302,16 @@
           $password = $this->getConfiguration('password');
           $installationId = $this->getConfiguration('installationId', '');
           $gatewayId = $this->getConfiguration('gatewayId', '');
+          $deviceId = $this->getConfiguration('deviceId', '0');
+          $circuitId = $this->getConfiguration('circuitId', '0');
 
           $params = [
             "user" => $userName,
             "pwd" => $password,
             "installationId" => $installationId,
             "gatewayId" => $gatewayId,
-            "deviceId" => "0",
-            "circuitId" => "0"
+            "deviceId" => $deviceId,
+            "circuitId" => $circuitId
           ];
 
           try {
@@ -328,14 +332,16 @@
           $password = $this->getConfiguration('password');
           $installationId = $this->getConfiguration('installationId', '');
           $gatewayId = $this->getConfiguration('gatewayId', '');
+          $deviceId = $this->getConfiguration('deviceId', '0');
+          $circuitId = $this->getConfiguration('circuitId', '0');
 
           $params = [
             "user" => $userName,
             "pwd" => $password,
             "installationId" => $installationId,
             "gatewayId" => $gatewayId,
-            "deviceId" => "0",
-            "circuitId" => "0"
+            "deviceId" => $deviceId,
+            "circuitId" => $circuitId
           ];
 
           try {
@@ -356,14 +362,16 @@
           $password = $this->getConfiguration('password');
           $installationId = $this->getConfiguration('installationId', '');
           $gatewayId = $this->getConfiguration('gatewayId', '');
+          $deviceId = $this->getConfiguration('deviceId', '0');
+          $circuitId = $this->getConfiguration('circuitId', '0');
 
           $params = [
             "user" => $userName,
             "pwd" => $password,
             "installationId" => $installationId,
             "gatewayId" => $gatewayId,
-            "deviceId" => "0",
-            "circuitId" => "0"
+            "deviceId" => $deviceId,
+            "circuitId" => $circuitId
           ];
 
           try {
@@ -374,6 +382,36 @@
           }
           
           $viessmannApi->setReducedProgramTemperature($temperature);
+      }
+
+      // Set Dhw Temperature
+      //
+      public function setDhwTemperature($temperature)
+      {
+          $userName = $this->getConfiguration('userName');
+          $password = $this->getConfiguration('password');
+          $installationId = $this->getConfiguration('installationId', '');
+          $gatewayId = $this->getConfiguration('gatewayId', '');
+          $deviceId = $this->getConfiguration('deviceId', '0');
+          $circuitId = $this->getConfiguration('circuitId', '0');
+
+          $params = [
+            "user" => $userName,
+            "pwd" => $password,
+            "installationId" => $installationId,
+            "gatewayId" => $gatewayId,
+            "deviceId" => $deviceId,
+            "circuitId" => $circuitId
+          ];
+
+          try {
+              $viessmannApi = new ViessmannAPI($params);
+          } catch (ViessmannApiException $e) {
+              log::add('viessmann', 'error', $e->getMessage());
+              return;
+          }
+          
+          $viessmannApi->setDhwTemperature($temperature);
       }
 
       public static function cronHourly()
@@ -629,19 +667,21 @@
           $obj->setOrder(14);
           $obj->save();
           
-          $obj = $this->getCmd(null, 'dhwTemperature');
-          if (!is_object($obj)) {
-              $obj = new viessmannCmd();
-              $obj->setName(__('Consigne eau chaude', __FILE__));
-              $obj->setIsVisible(1);
-              $obj->setIsHistorized(0);
+          $objDhw = $this->getCmd(null, 'dhwTemperature');
+          if (!is_object($objDhw)) {
+              $objDhw = new viessmannCmd();
+              $objDhw->setName(__('Consigne eau chaude', __FILE__));
+              $objDhw->setIsVisible(1);
+              $objDhw->setIsHistorized(0);
           }
-          $obj->setEqLogic_id($this->getId());
-          $obj->setType('info');
-          $obj->setSubType('numeric');
-          $obj->setLogicalId('dhwTemperature');
-          $obj->setOrder(15);
-          $obj->save();
+          $objDhw->setEqLogic_id($this->getId());
+          $objDhw->setType('info');
+          $objDhw->setSubType('numeric');
+          $objDhw->setLogicalId('dhwTemperature');
+          $objDhw->setConfiguration('minValue', 10);
+          $objDhw->setConfiguration('maxValue', 60);
+          $objDhw->setOrder(15);
+          $objDhw->save();
 
           $obj = $this->getCmd(null, 'heatingBurnerHours');
           if (!is_object($obj)) {
@@ -949,6 +989,24 @@
           $obj->setOrder(36);
           $obj->save();
 
+          $obj = $this->getCmd(null, 'dhwSlider');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setUnite('°C');
+              $obj->setName(__('Slider consigne eau chaude ', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('action');
+          $obj->setSubType('slider');
+          $obj->setLogicalId('dhwSlider');
+          $obj->setValue($objDhw->getId());
+          $obj->setConfiguration('minValue', 10);
+          $obj->setConfiguration('maxValue', 60);
+          $obj->setOrder(37);
+          $obj->save();
+
           $obj = $this->getCmd(null, 'dhwSchedule');
           if (!is_object($obj)) {
               $obj = new viessmannCmd();
@@ -960,7 +1018,7 @@
           $obj->setType('info');
           $obj->setSubType('string');
           $obj->setLogicalId('dhwSchedule');
-          $obj->setOrder(37);
+          $obj->setOrder(38);
           $obj->save();
           
           $obj = $this->getCmd(null, 'heatingSchedule');
@@ -974,7 +1032,7 @@
           $obj->setType('info');
           $obj->setSubType('string');
           $obj->setLogicalId('heatingSchedule');
-          $obj->setOrder(38);
+          $obj->setOrder(39);
           $obj->save();
 
           $obj = $this->getCmd(null, 'refreshDate');
@@ -988,7 +1046,7 @@
           $obj->setType('info');
           $obj->setSubType('string');
           $obj->setLogicalId('refreshDate');
-          $obj->setOrder(39);
+          $obj->setOrder(40);
           $obj->save();
 
           $obj = $this->getCmd(null, 'frostProtection');
@@ -1002,9 +1060,9 @@
           $obj->setType('info');
           $obj->setSubType('string');
           $obj->setLogicalId('frostProtection');
-          $obj->setOrder(40);
+          $obj->setOrder(41);
           $obj->save();
-    }
+      }
 
       // Fonction exécutée automatiquement avant la suppression de l'équipement
       //
@@ -1081,6 +1139,9 @@
           $obj = $this->getCmd(null, 'dhwTemperature');
           $replace["#dhwTemperature#"] = $obj->execCmd();
           $replace["#idDhwTemperature#"] = $obj->getId();
+          $replace["#minDhw#"] = $obj->getConfiguration('minValue');
+          $replace["#maxDhw#"] = $obj->getConfiguration('maxValue');
+          $replace["#stepDhw#"] = 1;
 
           $obj = $this->getCmd(null, 'hotWaterStorageTemperature');
           $replace["#hotWaterStorageTemperature#"] = $obj->execCmd();
@@ -1290,78 +1351,74 @@
 
           $obj = $this->getCmd(null, 'dhwSchedule');
           $str = $obj->execCmd();
-          $schedules = explode(",", $str);    
+          $schedules = explode(",", $str);
           
-          if ( count($schedules) == 14 )
-          {
-            $replace["#dhwSchLunSta#"] = $schedules[0];
-            $replace["#dhwSchLunEnd#"] = $schedules[1];
-            $replace["#dhwSchMarSta#"] = $schedules[2];
-            $replace["#dhwSchMarEnd#"] = $schedules[3];
-            $replace["#dhwSchMerSta#"] = $schedules[4];
-            $replace["#dhwSchMerEnd#"] = $schedules[5];
-            $replace["#dhwSchJeuSta#"] = $schedules[6];
-            $replace["#dhwSchJeuEnd#"] = $schedules[7];
-            $replace["#dhwSchVenSta#"] = $schedules[8];
-            $replace["#dhwSchVenEnd#"] = $schedules[9];
-            $replace["#dhwSchSamSta#"] = $schedules[10];
-            $replace["#dhwSchSamEnd#"] = $schedules[11];
-            $replace["#dhwSchDimSta#"] = $schedules[12];
-            $replace["#dhwSchDimEnd#"] = $schedules[13];
-          }
-          else{
-            $replace["#dhwSchLunSta#"] = '00:00';
-            $replace["#dhwSchLunEnd#"] = '00:00';
-            $replace["#dhwSchMarSta#"] = '00:00';
-            $replace["#dhwSchMarEnd#"] = '00:00';
-            $replace["#dhwSchMerSta#"] = '00:00';
-            $replace["#dhwSchMerEnd#"] = '00:00';
-            $replace["#dhwSchJeuSta#"] = '00:00';
-            $replace["#dhwSchJeuEnd#"] = '00:00';
-            $replace["#dhwSchVenSta#"] = '00:00';
-            $replace["#dhwSchVenEnd#"] = '00:00';
-            $replace["#dhwSchSamSta#"] = '00:00';
-            $replace["#dhwSchSamEnd#"] = '00:00';
-            $replace["#dhwSchDimSta#"] = '00:00';
-            $replace["#dhwSchDimEnd#"] = '00:00';
+          if (count($schedules) == 14) {
+              $replace["#dhwSchLunSta#"] = $schedules[0];
+              $replace["#dhwSchLunEnd#"] = $schedules[1];
+              $replace["#dhwSchMarSta#"] = $schedules[2];
+              $replace["#dhwSchMarEnd#"] = $schedules[3];
+              $replace["#dhwSchMerSta#"] = $schedules[4];
+              $replace["#dhwSchMerEnd#"] = $schedules[5];
+              $replace["#dhwSchJeuSta#"] = $schedules[6];
+              $replace["#dhwSchJeuEnd#"] = $schedules[7];
+              $replace["#dhwSchVenSta#"] = $schedules[8];
+              $replace["#dhwSchVenEnd#"] = $schedules[9];
+              $replace["#dhwSchSamSta#"] = $schedules[10];
+              $replace["#dhwSchSamEnd#"] = $schedules[11];
+              $replace["#dhwSchDimSta#"] = $schedules[12];
+              $replace["#dhwSchDimEnd#"] = $schedules[13];
+          } else {
+              $replace["#dhwSchLunSta#"] = '00:00';
+              $replace["#dhwSchLunEnd#"] = '00:00';
+              $replace["#dhwSchMarSta#"] = '00:00';
+              $replace["#dhwSchMarEnd#"] = '00:00';
+              $replace["#dhwSchMerSta#"] = '00:00';
+              $replace["#dhwSchMerEnd#"] = '00:00';
+              $replace["#dhwSchJeuSta#"] = '00:00';
+              $replace["#dhwSchJeuEnd#"] = '00:00';
+              $replace["#dhwSchVenSta#"] = '00:00';
+              $replace["#dhwSchVenEnd#"] = '00:00';
+              $replace["#dhwSchSamSta#"] = '00:00';
+              $replace["#dhwSchSamEnd#"] = '00:00';
+              $replace["#dhwSchDimSta#"] = '00:00';
+              $replace["#dhwSchDimEnd#"] = '00:00';
           }
 
           $obj = $this->getCmd(null, 'heatingSchedule');
           $str = $obj->execCmd();
-          $schedules = explode(",", $str);    
+          $schedules = explode(",", $str);
           
-          if ( count($schedules) == 14 )
-          {
-            $replace["#heaSchLunSta#"] = $schedules[0];
-            $replace["#heaSchLunEnd#"] = $schedules[1];
-            $replace["#heaSchMarSta#"] = $schedules[2];
-            $replace["#heaSchMarEnd#"] = $schedules[3];
-            $replace["#heaSchMerSta#"] = $schedules[4];
-            $replace["#heaSchMerEnd#"] = $schedules[5];
-            $replace["#heaSchJeuSta#"] = $schedules[6];
-            $replace["#heaSchJeuEnd#"] = $schedules[7];
-            $replace["#heaSchVenSta#"] = $schedules[8];
-            $replace["#heaSchVenEnd#"] = $schedules[9];
-            $replace["#heaSchSamSta#"] = $schedules[10];
-            $replace["#heaSchSamEnd#"] = $schedules[11];
-            $replace["#heaSchDimSta#"] = $schedules[12];
-            $replace["#heaSchDimEnd#"] = $schedules[13];
-          }
-          else{
-            $replace["#heaSchLunSta#"] = '00:00';
-            $replace["#heaSchLunEnd#"] = '00:00';
-            $replace["#heaSchMarSta#"] = '00:00';
-            $replace["#heaSchMarEnd#"] = '00:00';
-            $replace["#heaSchMerSta#"] = '00:00';
-            $replace["#heaSchMerEnd#"] = '00:00';
-            $replace["#heaSchJeuSta#"] = '00:00';
-            $replace["#heaSchJeuEnd#"] = '00:00';
-            $replace["#heaSchVenSta#"] = '00:00';
-            $replace["#heaSchVenEnd#"] = '00:00';
-            $replace["#heaSchSamSta#"] = '00:00';
-            $replace["#heaSchSamEnd#"] = '00:00';
-            $replace["#heaSchDimSta#"] = '00:00';
-            $replace["#heaSchDimEnd#"] = '00:00';
+          if (count($schedules) == 14) {
+              $replace["#heaSchLunSta#"] = $schedules[0];
+              $replace["#heaSchLunEnd#"] = $schedules[1];
+              $replace["#heaSchMarSta#"] = $schedules[2];
+              $replace["#heaSchMarEnd#"] = $schedules[3];
+              $replace["#heaSchMerSta#"] = $schedules[4];
+              $replace["#heaSchMerEnd#"] = $schedules[5];
+              $replace["#heaSchJeuSta#"] = $schedules[6];
+              $replace["#heaSchJeuEnd#"] = $schedules[7];
+              $replace["#heaSchVenSta#"] = $schedules[8];
+              $replace["#heaSchVenEnd#"] = $schedules[9];
+              $replace["#heaSchSamSta#"] = $schedules[10];
+              $replace["#heaSchSamEnd#"] = $schedules[11];
+              $replace["#heaSchDimSta#"] = $schedules[12];
+              $replace["#heaSchDimEnd#"] = $schedules[13];
+          } else {
+              $replace["#heaSchLunSta#"] = '00:00';
+              $replace["#heaSchLunEnd#"] = '00:00';
+              $replace["#heaSchMarSta#"] = '00:00';
+              $replace["#heaSchMarEnd#"] = '00:00';
+              $replace["#heaSchMerSta#"] = '00:00';
+              $replace["#heaSchMerEnd#"] = '00:00';
+              $replace["#heaSchJeuSta#"] = '00:00';
+              $replace["#heaSchJeuEnd#"] = '00:00';
+              $replace["#heaSchVenSta#"] = '00:00';
+              $replace["#heaSchVenEnd#"] = '00:00';
+              $replace["#heaSchSamSta#"] = '00:00';
+              $replace["#heaSchSamEnd#"] = '00:00';
+              $replace["#heaSchDimSta#"] = '00:00';
+              $replace["#heaSchDimEnd#"] = '00:00';
           }
 
           $obj = $this->getCmd(null, 'refresh');
@@ -1401,10 +1458,12 @@
           $replace["#idNormalProgramSlider#"] = $obj->getId();
           $obj = $this->getCmd(null, 'reducedProgramSlider');
           $replace["#idReducedProgramSlider#"] = $obj->getId();
+          $obj = $this->getCmd(null, 'dhwSlider');
+          $replace["#idDhwSlider#"] = $obj->getId();
 
           return template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann'));
-      }
-  }
+        }
+    }
     class viessmannCmd extends cmd
     {
         // Exécution d'une commande
@@ -1432,6 +1491,12 @@
                 }
                 $eqlogic->getCmd(null, 'reducedProgramTemperature')->event($_options['slider']);
                 $eqlogic->setReducedProgramTemperature($_options['slider']);
+            } elseif ($this->getLogicalId() == 'dhwSlider') {
+                if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
+                    return;
+                }
+                $eqlogic->getCmd(null, 'dhwTemperature')->event($_options['slider']);
+                $eqlogic->setDhwTemperature($_options['slider']);
             }
         }
     }
