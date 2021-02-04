@@ -160,6 +160,14 @@
               </div>
             </div>
 
+            <div class="form-group">
+                <label class="col-sm-3 control-label">{{Utiliser le widget du plugin}}</label>
+                <div class="col-sm-3 form-check-input">
+                  <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
+                      data-l2key="isWidgetPlugin" checked /></label>
+                </div>
+              </div>
+
           </fieldset>
         </form>
       </div>

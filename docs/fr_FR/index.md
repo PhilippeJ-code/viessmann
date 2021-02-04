@@ -11,7 +11,11 @@
 
     Pour l'accès au serveur Viessmann, le nom d'utilisateur et le mot de passe doivent être spécifiés 
     dans les paramètres. Les Ids d'installation et du gateway peuvent être introduits mais ils seront de 
-    toute façon récupérés et stockés lors de la première récupération des données sur le serveur.
+    toute façon récupérés et stockés lors de la première mémorisation des données sur le serveur.
+
+    On peut introduire l'id du device et l'id du circuit, par défaut une valeur nulle est utilisée par le plugin.
+
+    On peut choisir d'utiliser le widget fourni par le plugin ou celui de jeedom.
     
 ![Configuration](../images/configuration.png "Configuration")
         

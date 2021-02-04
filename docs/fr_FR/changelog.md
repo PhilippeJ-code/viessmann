@@ -11,4 +11,8 @@
 # 03-02-2021
 
     Ajout des Ids de device et de circuit
+    Affichage de la programmation avec plusieurs plages horaires
+    Utilisation ou non du widget fourni par le plugin
+    
+
 

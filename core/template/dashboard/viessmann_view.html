@@ -11,7 +11,10 @@
       <div class="classTuile#uid#">
         <img class="classOptions#uid# cursor" id="idOptionsChaudiere#uid#"
           src="plugins/viessmann/resources/options.svg">
-        <span id="idProgrammeActuel#uid#"></span></br>
+
+          <span id="idNomObjet#uid#">#name_display#</span>
+          <span id="idProgrammeActuel#uid#"></span>
+
         <span class="classOutsideTemperature#uid# history cursor" data-cmd_id="#idOutsideTemperature#"
           id="idOutsideTemperature#uid#"></span>
       </div>
@@ -127,31 +130,31 @@
     <span class="classTitre#uid#">Programmation</span>
     </br></br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#heaSchLunSta#&end=#heaSchLunEnd#&title=Lun">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#heaSchLun#&title=Lun">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#heaSchMarSta#&end=#heaSchMarEnd#&title=Mar">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#heaSchMar#&title=Mar">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#heaSchMerSta#&end=#heaSchMerEnd#&title=Mer">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#heaSchMer#&title=Mer">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#heaSchJeuSta#&end=#heaSchJeuEnd#&title=Jeu">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#heaSchJeu#&title=Jeu">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#heaSchVenSta#&end=#heaSchVenEnd#&title=Ven">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#heaSchVen#&title=Ven">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#heaSchSamSta#&end=#heaSchSamEnd#&title=Sam">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#heaSchSam#&title=Sam">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#heaSchDimSta#&end=#heaSchDimEnd#&title=Dim">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#heaSchDim#&title=Dim">
     </img>
 
     <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
@@ -185,31 +188,31 @@
     <span class="classTitre#uid#">Programmation</span>
     </br></br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#dhwSchLunSta#&end=#dhwSchLunEnd#&title=Lun">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#dhwSchLun#&title=Lun">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#dhwSchMarSta#&end=#dhwSchMarEnd#&title=Mar">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#dhwSchMar#&title=Mar">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#dhwSchMerSta#&end=#dhwSchMerEnd#&title=Mer">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#dhwSchMer#&title=Mer">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#dhwSchJeuSta#&end=#dhwSchJeuEnd#&title=Jeu">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#dhwSchJeu#&title=Jeu">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#dhwSchVenSta#&end=#dhwSchVenEnd#&title=Ven">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#dhwSchVen#&title=Ven">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#dhwSchSamSta#&end=#dhwSchSamEnd#&title=Sam">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#dhwSchSam#&title=Sam">
     </img>
     </br>
     <img class="classProg#uid#"
-      src="plugins/viessmann/resources/image.php?width=220&height=40&start=#dhwSchDimSta#&end=#dhwSchDimEnd#&title=Dim">
+      src="plugins/viessmann/resources/image.php?width=220&height=40&prog=#dhwSchDim#&title=Dim">
     </img>
 
     <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
@@ -406,10 +409,20 @@
     color: #808080;
   }
 
+  #idNomObjet#uid# {
+    position: absolute;
+    width: 70%;
+    top: 0px;
+    left: 30px;
+    text-align: center;
+    font-size: 14px;
+    color: #808080 !important;
+  }
+
   #idProgrammeActuel#uid# {
     position: absolute;
     width: 70%;
-    top: 10px;
+    bottom: 0px;
     left: 30px;
     text-align: center;
     font-size: 14px;
@@ -1491,7 +1504,7 @@
     tooltip: {
       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y:.1f} KwH</b></td></tr>',
+        '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
       footerFormat: '</table>',
       shared: true,
       useHTML: true
@@ -1540,7 +1553,7 @@
     tooltip: {
       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y:.1f} KwH</b></td></tr>',
+        '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
       footerFormat: '</table>',
       shared: true,
       useHTML: true
@@ -1589,7 +1602,7 @@
     tooltip: {
       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y:.1f} KwH</b></td></tr>',
+        '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
       footerFormat: '</table>',
       shared: true,
       useHTML: true
@@ -1638,7 +1651,7 @@
     tooltip: {
       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-        '<td style="padding:0"><b>{point.y:.1f} KwH</b></td></tr>',
+        '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
       footerFormat: '</table>',
       shared: true,
       useHTML: true
