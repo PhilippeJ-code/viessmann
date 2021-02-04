@@ -20,6 +20,7 @@
 
   use Viessmann\API\ViessmannAPI;
   use Viessmann\API\ViessmannApiException;
+  use Viessmann\API\ViessmannFeature;
   
   include 'phar://' . __DIR__ . '/../../3rdparty/Viessmann-Api-1.3.4.phar/index.php';
   
@@ -65,36 +66,89 @@
               log::add('viessmann', 'debug', 'Récupération id gateway ' . $gatewayId);
           }
 
-          $activeMode = $viessmannApi->getActiveMode();
+          $features = $viessmannApi->getAvailableFeatures();
+
+          if (strPos($features, ViessmannAPI::ACTIVE_OPERATING_MODE) != false) {
+              $activeMode = $viessmannApi->getActiveMode();
+          } else {
+              $activeMode = '';
+          }
           $this->getCmd(null, 'activeMode')->event($activeMode);
-          $activeProgram = $viessmannApi->getActiveProgram();
+
+          if (strPos($features, ViessmannAPI::ACTIVE_PROGRAM) != false) {
+              $activeProgram = $viessmannApi->getActiveProgram();
+          } else {
+              $activeProgram = 'reduced';
+          }
           $this->getCmd(null, 'activeProgram')->event($activeProgram);
-          $isHeatingBurnerActive = $viessmannApi->isHeatingBurnerActive();
+
+          if (strPos($features, ViessmannFeature::HEATING_BURNER) != false) {
+              $isHeatingBurnerActive = $viessmannApi->isHeatingBurnerActive();
+          } else {
+              $isHeatingBurnerActive = 0;
+          }
           $this->getCmd(null, 'isHeatingBurnerActive')->event($isHeatingBurnerActive);
-          $isDhwModeActive = $viessmannApi->isDhwModeActive();
+        
+          if (strPos($features, ViessmannAPI::DHW_MODE) != false) {
+              $isDhwModeActive = $viessmannApi->isDhwModeActive();
+          } else {
+              $isDhwModeActive = 0;
+          }
           $this->getCmd(null, 'isDhwModeActive')->event($isDhwModeActive);
           
-          $outsideTemperature = $viessmannApi->getOutsideTemperature();
+          if (strPos($features, ViessmannFeature::HEATING_SENSORS_TEMPERATURE_OUTSIDE) != false) {
+              $outsideTemperature = $viessmannApi->getOutsideTemperature();
+          } else {
+              $outsideTemperature = 99;
+          }
           $this->getCmd(null, 'outsideTemperature')->event($outsideTemperature);
 
-          $supplyProgramTemperature = $viessmannApi->getSupplyProgramTemperature();
+          if (strPos($features, ViessmannAPI::SENSORS_TEMPERATURE_SUPPLY) != false) {
+              $supplyProgramTemperature = $viessmannApi->getSupplyProgramTemperature();
+          } else {
+              $supplyProgramTemperature = 99;
+          }
           $this->getCmd(null, 'supplyProgramTemperature')->event($supplyProgramTemperature);
 
-          $dhwTemperature = $viessmannApi->getDhwTemperature();
+          if (strPos($features, ViessmannFeature::HEATING_DHW_TEMPERATURE) != false) {
+              $dhwTemperature = $viessmannApi->getDhwTemperature();
+          } else {
+              $dhwTemperature = 99;
+          }
           $this->getCmd(null, 'dhwTemperature')->event($dhwTemperature);
           
-          $slope = $viessmannApi->getSlope();
+          if (strPos($features, ViessmannAPI::HEATING_CURVE) != false) {
+              $slope = $viessmannApi->getSlope();
+              $shift = $viessmannApi->getShift();
+          } else {
+              $slope = 0;
+              $shift = 0;
+          }
+            
           $this->getCmd(null, 'slope')->event($slope);
-          $shift = $viessmannApi->getShift();
           $this->getCmd(null, 'shift')->event($shift);
 
-          $comfortProgramTemperature = $viessmannApi->getComfortProgramTemperature();
+          if (strPos($features, ViessmannAPI::COMFORT_PROGRAM) != false) {
+              $comfortProgramTemperature = $viessmannApi->getComfortProgramTemperature();
+          } else {
+              $comfortProgramTemperature = 0;
+          }
           $this->getCmd(null, 'comfortProgramTemperature')->event($comfortProgramTemperature);
 
-          $normalProgramTemperature = $viessmannApi->getNormalProgramTemperature();
+          if (strPos($features, ViessmannAPI::NORMAL_PROGRAM) != false) {
+              $normalProgramTemperature = $viessmannApi->getNormalProgramTemperature();
+          } else {
+              $normalProgramTemperature = 0;
+          }
           $this->getCmd(null, 'normalProgramTemperature')->event($normalProgramTemperature);
-          $reducedProgramTemperature = $viessmannApi->getReducedProgramTemperature();
+          
+          if (strPos($features, ViessmannAPI::REDUCED_PROGRAM) != false) {
+              $reducedProgramTemperature = $viessmannApi->getReducedProgramTemperature();
+          } else {
+              $reducedProgramTemperature = 0;
+          }
           $this->getCmd(null, 'reducedProgramTemperature')->event($reducedProgramTemperature);
+          
           if ($activeProgram === 'comfort') {
               $this->getCmd(null, 'programTemperature')->event($comfortProgramTemperature);
           } elseif ($activeProgram === 'normal') {
@@ -103,192 +157,331 @@
               $this->getCmd(null, 'programTemperature')->event($reducedProgramTemperature);
           }
           
-          $hotWaterStorageTemperature = $viessmannApi->getHotWaterStorageTemperature();
+          if (strPos($features, ViessmannFeature::HEATING_DHW_SENSORS_TEMPERATURE_HOTWATERSTORAGE) != false) {
+              $hotWaterStorageTemperature = $viessmannApi->getHotWaterStorageTemperature();
+          } else {
+              $hotWaterStorageTemperature = 99;
+          }
           $this->getCmd(null, 'hotWaterStorageTemperature')->event($hotWaterStorageTemperature);
           
           // Consommation électricité
           //
-          $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("day");
-          $this->getCmd(null, 'heatingPowerConsumption')->event($heatingPowerConsumptions[0]);
-          $day = '';
-          foreach ($heatingPowerConsumptions as $heatingPowerConsumption) {
-              if ($day !== '') {
-                  $day = ',' . $day;
-              }
-              $day = $heatingPowerConsumption . $day;
-          }
-          $this->getCmd(null, 'heatingPowerConsumptionDay')->event($day);
 
-          $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("week");
-          $week = '';
-          foreach ($heatingPowerConsumptions as $heatingPowerConsumption) {
-              if ($week !== '') {
-                  $week = ',' . $week;
+          if (strPos($features, ViessmannFeature::HEATING_POWER_CONSUMPTION) != false) {
+              $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("day");
+              $this->getCmd(null, 'heatingPowerConsumption')->event($heatingPowerConsumptions[0]);
+              $day = '';
+              foreach ($heatingPowerConsumptions as $heatingPowerConsumption) {
+                  if ($day !== '') {
+                      $day = ',' . $day;
+                  }
+                  $day = $heatingPowerConsumption . $day;
               }
-              $week = $heatingPowerConsumption . $week;
-          }
-          $this->getCmd(null, 'heatingPowerConsumptionWeek')->event($week);
+              $this->getCmd(null, 'heatingPowerConsumptionDay')->event($day);
 
-          $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("month");
-          $month = '';
-          foreach ($heatingPowerConsumptions as $heatingPowerConsumption) {
-              if ($month !== '') {
-                  $month = ',' . $month;
+              $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("week");
+              $week = '';
+              foreach ($heatingPowerConsumptions as $heatingPowerConsumption) {
+                  if ($week !== '') {
+                      $week = ',' . $week;
+                  }
+                  $week = $heatingPowerConsumption . $week;
               }
-              $month = $heatingPowerConsumption . $month;
-          }
-          $this->getCmd(null, 'heatingPowerConsumptionMonth')->event($month);
+              $this->getCmd(null, 'heatingPowerConsumptionWeek')->event($week);
 
-          $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("year");
-          $year = '';
-          foreach ($heatingPowerConsumptions as $heatingPowerConsumption) {
-              if ($year !== '') {
-                  $year = ',' . $year;
+              $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("month");
+              $month = '';
+              foreach ($heatingPowerConsumptions as $heatingPowerConsumption) {
+                  if ($month !== '') {
+                      $month = ',' . $month;
+                  }
+                  $month = $heatingPowerConsumption . $month;
               }
-              $year = $heatingPowerConsumption . $year;
+              $this->getCmd(null, 'heatingPowerConsumptionMonth')->event($month);
+
+              $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("year");
+              $year = '';
+              foreach ($heatingPowerConsumptions as $heatingPowerConsumption) {
+                  if ($year !== '') {
+                      $year = ',' . $year;
+                  }
+                  $year = $heatingPowerConsumption . $year;
+              }
+              $this->getCmd(null, 'heatingPowerConsumptionYear')->event($year);
           }
-          $this->getCmd(null, 'heatingPowerConsumptionYear')->event($year);
 
           // Consommation gaz eau chaude
           //
-          $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("day");
-          $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumptions[0]);
-          $day = '';
-          foreach ($dhwGazConsumptions as $dhwGazConsumption) {
-              if ($day !== '') {
-                  $day = ',' . $day;
+          if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW) != false) {
+              $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("day");
+              $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumptions[0]);
+              $day = '';
+              foreach ($dhwGazConsumptions as $dhwGazConsumption) {
+                  if ($day !== '') {
+                      $day = ',' . $day;
+                  }
+                  $day = $dhwGazConsumption . $day;
               }
-              $day = $dhwGazConsumption . $day;
-          }
-          $this->getCmd(null, 'dhwGazConsumptionDay')->event($day);
+              $this->getCmd(null, 'dhwGazConsumptionDay')->event($day);
 
-          $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("week");
-          $week = '';
-          foreach ($dhwGazConsumptions as $dhwGazConsumption) {
-              if ($week !== '') {
-                  $week = ',' . $week;
+              $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("week");
+              $week = '';
+              foreach ($dhwGazConsumptions as $dhwGazConsumption) {
+                  if ($week !== '') {
+                      $week = ',' . $week;
+                  }
+                  $week = $dhwGazConsumption . $week;
               }
-              $week = $dhwGazConsumption . $week;
-          }
-          $this->getCmd(null, 'dhwGazConsumptionWeek')->event($week);
+              $this->getCmd(null, 'dhwGazConsumptionWeek')->event($week);
 
-          $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("month");
-          $month = '';
-          foreach ($dhwGazConsumptions as $dhwGazConsumption) {
-              if ($month !== '') {
-                  $month = ',' . $month;
+              $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("month");
+              $month = '';
+              foreach ($dhwGazConsumptions as $dhwGazConsumption) {
+                  if ($month !== '') {
+                      $month = ',' . $month;
+                  }
+                  $month = $dhwGazConsumption . $month;
               }
-              $month = $dhwGazConsumption . $month;
-          }
-          $this->getCmd(null, 'dhwGazConsumptionMonth')->event($month);
+              $this->getCmd(null, 'dhwGazConsumptionMonth')->event($month);
 
-          $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("year");
-          $year = '';
-          foreach ($dhwGazConsumptions as $dhwGazConsumption) {
-              if ($year !== '') {
-                  $year = ',' . $year;
+              $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("year");
+              $year = '';
+              foreach ($dhwGazConsumptions as $dhwGazConsumption) {
+                  if ($year !== '') {
+                      $year = ',' . $year;
+                  }
+                  $year = $dhwGazConsumption . $year;
               }
-              $year = $dhwGazConsumption . $year;
+              $this->getCmd(null, 'dhwGazConsumptionYear')->event($year);
           }
-          $this->getCmd(null, 'dhwGazConsumptionYear')->event($year);
 
           // Consommation gaz chauffage
           //
-          $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("day");
-          $this->getCmd(null, 'heatingGazConsumption')->event($heatingGazConsumptions[0]);
-          $day = '';
-          foreach ($heatingGazConsumptions as $heatingGazConsumption) {
-              if ($day !== '') {
-                  $day = ',' . $day;
+          if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_HEATING) != false) {
+              $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("day");
+              $this->getCmd(null, 'heatingGazConsumption')->event($heatingGazConsumptions[0]);
+              $day = '';
+              foreach ($heatingGazConsumptions as $heatingGazConsumption) {
+                  if ($day !== '') {
+                      $day = ',' . $day;
+                  }
+                  $day = $heatingGazConsumption . $day;
               }
-              $day = $heatingGazConsumption . $day;
-          }
-          $this->getCmd(null, 'heatingGazConsumptionDay')->event($day);
+              $this->getCmd(null, 'heatingGazConsumptionDay')->event($day);
 
-          $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("week");
-          $week = '';
-          foreach ($heatingGazConsumptions as $heatingGazConsumption) {
-              if ($week !== '') {
-                  $week = ',' . $week;
+              $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("week");
+              $week = '';
+              foreach ($heatingGazConsumptions as $heatingGazConsumption) {
+                  if ($week !== '') {
+                      $week = ',' . $week;
+                  }
+                  $week = $heatingGazConsumption . $week;
               }
-              $week = $heatingGazConsumption . $week;
-          }
-          $this->getCmd(null, 'heatingGazConsumptionWeek')->event($week);
+              $this->getCmd(null, 'heatingGazConsumptionWeek')->event($week);
 
-          $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("month");
-          $month = '';
-          foreach ($heatingGazConsumptions as $heatingGazConsumption) {
-              if ($month !== '') {
-                  $month = ',' . $month;
+              $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("month");
+              $month = '';
+              foreach ($heatingGazConsumptions as $heatingGazConsumption) {
+                  if ($month !== '') {
+                      $month = ',' . $month;
+                  }
+                  $month = $heatingGazConsumption . $month;
               }
-              $month = $heatingGazConsumption . $month;
-          }
-          $this->getCmd(null, 'heatingGazConsumptionMonth')->event($month);
+              $this->getCmd(null, 'heatingGazConsumptionMonth')->event($month);
 
-          $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("year");
-          $year = '';
-          foreach ($heatingGazConsumptions as $heatingGazConsumption) {
-              if ($year !== '') {
-                  $year = ',' . $year;
+              $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("year");
+              $year = '';
+              foreach ($heatingGazConsumptions as $heatingGazConsumption) {
+                  if ($year !== '') {
+                      $year = ',' . $year;
+                  }
+                  $year = $heatingGazConsumption . $year;
               }
-              $year = $heatingGazConsumption . $year;
+              $this->getCmd(null, 'heatingGazConsumptionYear')->event($year);
           }
-          $this->getCmd(null, 'heatingGazConsumptionYear')->event($year);
 
-          $heatingBurnerHours = $viessmannApi->getHeatingBurnerStatistics("hours");
+          if (strPos($features, ViessmannFeature::HEATING_BURNER_STATISTICS) != false) {
+              $heatingBurnerHours = $viessmannApi->getHeatingBurnerStatistics("hours");
+              $heatingBurnerStarts = $viessmannApi->getHeatingBurnerStatistics("starts");
+          } else {
+              $heatingBurnerHours = 0;
+              $heatingBurnerStarts = 0;
+          }
           $this->getCmd(null, 'heatingBurnerHours')->event($heatingBurnerHours);
-          
-          $heatingBurnerStarts = $viessmannApi->getHeatingBurnerStatistics("starts");
           $this->getCmd(null, 'heatingBurnerStarts')->event($heatingBurnerStarts);
           
-          $heatingBurnerModulation = $viessmannApi->getHeatingBurnerModulation();
+          if (strPos($features, ViessmannFeature::HEATING_BURNER_MODULATION) != false) {
+              $heatingBurnerModulation = $viessmannApi->getHeatingBurnerModulation();
+          } else {
+              $heatingBurnerModulation = 0;
+          }
           $this->getCmd(null, 'heatingBurnerModulation')->event($heatingBurnerModulation);
           
-          $dhwSchedule = $viessmannApi->getDhwSchedule();
-          $json = json_decode($dhwSchedule, true);
-          
           $dhwSchedule = '';
-          $dhwSchedule .= $json['entries']['value']['mon'][0]['start'] . ',';
-          $dhwSchedule .= $json['entries']['value']['mon'][0]['end'] . ',';
-          $dhwSchedule .= $json['entries']['value']['tue'][0]['start'] . ',';
-          $dhwSchedule .= $json['entries']['value']['tue'][0]['end'] . ',';
-          $dhwSchedule .= $json['entries']['value']['wed'][0]['start'] . ',';
-          $dhwSchedule .= $json['entries']['value']['wed'][0]['end'] . ',';
-          $dhwSchedule .= $json['entries']['value']['thu'][0]['start'] . ',';
-          $dhwSchedule .= $json['entries']['value']['thu'][0]['end'] . ',';
-          $dhwSchedule .= $json['entries']['value']['fri'][0]['start'] . ',';
-          $dhwSchedule .= $json['entries']['value']['fri'][0]['end'] . ',';
-          $dhwSchedule .= $json['entries']['value']['sat'][0]['start'] . ',';
-          $dhwSchedule .= $json['entries']['value']['sat'][0]['end'] . ',';
-          $dhwSchedule .= $json['entries']['value']['sun'][0]['start'] . ',';
-          $dhwSchedule .= $json['entries']['value']['sun'][0]['end'];
+          if (strPos($features, ViessmannFeature::HEATING_DHW_SCHEDULE) != false) {
+              $dhwSchedule = $viessmannApi->getDhwSchedule();
+              $json = json_decode($dhwSchedule, true);
+          
+              $dhwSchedule = '';
+
+              $n = count($json['entries']['value']['mon']);
+              for ($i=0; $i<$n; $i++) {
+                  $dhwSchedule .= $json['entries']['value']['mon'][$i]['start'] . ',';
+                  $dhwSchedule .= $json['entries']['value']['mon'][$i]['end'];
+                  if ($i < $n-1) {
+                      $dhwSchedule .= ',';
+                  }
+              }
+              $dhwSchedule .= ';';
+
+              $n = count($json['entries']['value']['tue']);
+              for ($i=0; $i<$n; $i++) {
+                  $dhwSchedule .= $json['entries']['value']['tue'][$i]['start'] . ',';
+                  $dhwSchedule .= $json['entries']['value']['tue'][$i]['end'];
+                  if ($i < $n-1) {
+                      $dhwSchedule .= ',';
+                  }
+              }
+              $dhwSchedule .= ';';
+
+              $n = count($json['entries']['value']['wed']);
+              for ($i=0; $i<$n; $i++) {
+                  $dhwSchedule .= $json['entries']['value']['wed'][$i]['start'] . ',';
+                  $dhwSchedule .= $json['entries']['value']['wed'][$i]['end'];
+                  if ($i < $n-1) {
+                      $dhwSchedule .= ',';
+                  }
+              }
+              $dhwSchedule .= ';';
+
+              $n = count($json['entries']['value']['thu']);
+              for ($i=0; $i<$n; $i++) {
+                  $dhwSchedule .= $json['entries']['value']['thu'][$i]['start'] . ',';
+                  $dhwSchedule .= $json['entries']['value']['thu'][$i]['end'];
+                  if ($i < $n-1) {
+                      $dhwSchedule .= ',';
+                  }
+              }
+              $dhwSchedule .= ';';
+
+              $n = count($json['entries']['value']['fri']);
+              for ($i=0; $i<$n; $i++) {
+                  $dhwSchedule .= $json['entries']['value']['fri'][$i]['start'] . ',';
+                  $dhwSchedule .= $json['entries']['value']['fri'][$i]['end'];
+                  if ($i < $n-1) {
+                      $dhwSchedule .= ',';
+                  }
+              }
+              $dhwSchedule .= ';';
+
+              $n = count($json['entries']['value']['sat']);
+              for ($i=0; $i<$n; $i++) {
+                  $dhwSchedule .= $json['entries']['value']['sat'][$i]['start'] . ',';
+                  $dhwSchedule .= $json['entries']['value']['sat'][$i]['end'];
+                  if ($i < $n-1) {
+                      $dhwSchedule .= ',';
+                  }
+              }
+              $dhwSchedule .= ';';
+
+              $n = count($json['entries']['value']['sun']);
+              for ($i=0; $i<$n; $i++) {
+                  $dhwSchedule .= $json['entries']['value']['sun'][$i]['start'] . ',';
+                  $dhwSchedule .= $json['entries']['value']['sun'][$i]['end'];
+                  if ($i < $n-1) {
+                      $dhwSchedule .= ',';
+                  }
+              }
+          }
           $this->getCmd(null, 'dhwSchedule')->event($dhwSchedule);
           
-          $heatingSchedule = $viessmannApi->getHeatingSchedule();
-          $json = json_decode($heatingSchedule, true);
-          
           $heatingSchedule = '';
-          $heatingSchedule .= $json['entries']['value']['mon'][0]['start'] . ',';
-          $heatingSchedule .= $json['entries']['value']['mon'][0]['end'] . ',';
-          $heatingSchedule .= $json['entries']['value']['tue'][0]['start'] . ',';
-          $heatingSchedule .= $json['entries']['value']['tue'][0]['end'] . ',';
-          $heatingSchedule .= $json['entries']['value']['wed'][0]['start'] . ',';
-          $heatingSchedule .= $json['entries']['value']['wed'][0]['end'] . ',';
-          $heatingSchedule .= $json['entries']['value']['thu'][0]['start'] . ',';
-          $heatingSchedule .= $json['entries']['value']['thu'][0]['end'] . ',';
-          $heatingSchedule .= $json['entries']['value']['fri'][0]['start'] . ',';
-          $heatingSchedule .= $json['entries']['value']['fri'][0]['end'] . ',';
-          $heatingSchedule .= $json['entries']['value']['sat'][0]['start'] . ',';
-          $heatingSchedule .= $json['entries']['value']['sat'][0]['end'] . ',';
-          $heatingSchedule .= $json['entries']['value']['sun'][0]['start'] . ',';
-          $heatingSchedule .= $json['entries']['value']['sun'][0]['end'];
+          if (strPos($features, ViessmannAPI::HEATING_SCHEDULE) != false) {
+              $heatingSchedule = $viessmannApi->getHeatingSchedule();
+              $json = json_decode($heatingSchedule, true);
+
+              $heatingSchedule = '';
+
+              $n = count($json['entries']['value']['mon']);
+              for ($i=0; $i<$n; $i++) {
+                  $heatingSchedule .= $json['entries']['value']['mon'][$i]['start'] . ',';
+                  $heatingSchedule .= $json['entries']['value']['mon'][$i]['end'];
+                  if ($i < $n-1) {
+                      $heatingSchedule .= ',';
+                  }
+              }
+              $heatingSchedule .= ';';
+
+              $n = count($json['entries']['value']['tue']);
+              for ($i=0; $i<$n; $i++) {
+                  $heatingSchedule .= $json['entries']['value']['tue'][$i]['start'] . ',';
+                  $heatingSchedule .= $json['entries']['value']['tue'][$i]['end'];
+                  if ($i < $n-1) {
+                      $heatingSchedule .= ',';
+                  }
+              }
+              $heatingSchedule .= ';';
+
+              $n = count($json['entries']['value']['wed']);
+              for ($i=0; $i<$n; $i++) {
+                  $heatingSchedule .= $json['entries']['value']['wed'][$i]['start'] . ',';
+                  $heatingSchedule .= $json['entries']['value']['wed'][$i]['end'];
+                  if ($i < $n-1) {
+                      $heatingSchedule .= ',';
+                  }
+              }
+              $heatingSchedule .= ';';
+
+              $n = count($json['entries']['value']['thu']);
+              for ($i=0; $i<$n; $i++) {
+                  $heatingSchedule .= $json['entries']['value']['thu'][$i]['start'] . ',';
+                  $heatingSchedule .= $json['entries']['value']['thu'][$i]['end'];
+                  if ($i < $n-1) {
+                      $heatingSchedule .= ',';
+                  }
+              }
+              $heatingSchedule .= ';';
+
+              $n = count($json['entries']['value']['fri']);
+              for ($i=0; $i<$n; $i++) {
+                  $heatingSchedule .= $json['entries']['value']['fri'][$i]['start'] . ',';
+                  $heatingSchedule .= $json['entries']['value']['fri'][$i]['end'];
+                  if ($i < $n-1) {
+                      $heatingSchedule .= ',';
+                  }
+              }
+              $heatingSchedule .= ';';
+
+              $n = count($json['entries']['value']['sat']);
+              for ($i=0; $i<$n; $i++) {
+                  $heatingSchedule .= $json['entries']['value']['sat'][$i]['start'] . ',';
+                  $heatingSchedule .= $json['entries']['value']['sat'][$i]['end'];
+                  if ($i < $n-1) {
+                      $heatingSchedule .= ',';
+                  }
+              }
+              $heatingSchedule .= ';';
+
+              $n = count($json['entries']['value']['sun']);
+              for ($i=0; $i<$n; $i++) {
+                  $heatingSchedule .= $json['entries']['value']['sun'][$i]['start'] . ',';
+                  $heatingSchedule .= $json['entries']['value']['sun'][$i]['end'];
+                  if ($i < $n-1) {
+                      $heatingSchedule .= ',';
+                  }
+              }
+          }
           $this->getCmd(null, 'heatingSchedule')->event($heatingSchedule);
           
           $date = new DateTime();
           $date = $date->format('d-m-Y H:i:s');
           $this->getCmd(null, 'refreshDate')->event($date);
 
-          $frostProtection = $viessmannApi->getFrostprotection();
+          if (strPos($features, ViessmannAPI::HEATING_FROSTPROTECTION) != false) {
+              $frostProtection = $viessmannApi->getFrostprotection();
+          } else {
+              $frostProtection = 0;
+          }
           $this->getCmd(null, 'frostProtection')->event($frostProtection);
 
           return;
@@ -1081,6 +1274,12 @@
       
       public function toHtml($_version = 'dashboard')
       {
+          $isWidgetPlugin = $this->getConfiguration('isWidgetPlugin');
+
+          if (!$isWidgetPlugin) {
+              return eqLogic::toHtml($_version);
+          }
+
           $replace = $this->preToHtml($_version);
           if (!is_array($replace)) {
               return $replace;
@@ -1351,74 +1550,46 @@
 
           $obj = $this->getCmd(null, 'dhwSchedule');
           $str = $obj->execCmd();
-          $schedules = explode(",", $str);
+          $schedules = explode(";", $str);
           
-          if (count($schedules) == 14) {
-              $replace["#dhwSchLunSta#"] = $schedules[0];
-              $replace["#dhwSchLunEnd#"] = $schedules[1];
-              $replace["#dhwSchMarSta#"] = $schedules[2];
-              $replace["#dhwSchMarEnd#"] = $schedules[3];
-              $replace["#dhwSchMerSta#"] = $schedules[4];
-              $replace["#dhwSchMerEnd#"] = $schedules[5];
-              $replace["#dhwSchJeuSta#"] = $schedules[6];
-              $replace["#dhwSchJeuEnd#"] = $schedules[7];
-              $replace["#dhwSchVenSta#"] = $schedules[8];
-              $replace["#dhwSchVenEnd#"] = $schedules[9];
-              $replace["#dhwSchSamSta#"] = $schedules[10];
-              $replace["#dhwSchSamEnd#"] = $schedules[11];
-              $replace["#dhwSchDimSta#"] = $schedules[12];
-              $replace["#dhwSchDimEnd#"] = $schedules[13];
+          if (count($schedules) == 7) {
+              $replace["#dhwSchLun#"] = $schedules[0];
+              $replace["#dhwSchMar#"] = $schedules[1];
+              $replace["#dhwSchMer#"] = $schedules[2];
+              $replace["#dhwSchJeu#"] = $schedules[3];
+              $replace["#dhwSchVen#"] = $schedules[4];
+              $replace["#dhwSchSam#"] = $schedules[5];
+              $replace["#dhwSchDim#"] = $schedules[6];
           } else {
-              $replace["#dhwSchLunSta#"] = '00:00';
-              $replace["#dhwSchLunEnd#"] = '00:00';
-              $replace["#dhwSchMarSta#"] = '00:00';
-              $replace["#dhwSchMarEnd#"] = '00:00';
-              $replace["#dhwSchMerSta#"] = '00:00';
-              $replace["#dhwSchMerEnd#"] = '00:00';
-              $replace["#dhwSchJeuSta#"] = '00:00';
-              $replace["#dhwSchJeuEnd#"] = '00:00';
-              $replace["#dhwSchVenSta#"] = '00:00';
-              $replace["#dhwSchVenEnd#"] = '00:00';
-              $replace["#dhwSchSamSta#"] = '00:00';
-              $replace["#dhwSchSamEnd#"] = '00:00';
-              $replace["#dhwSchDimSta#"] = '00:00';
-              $replace["#dhwSchDimEnd#"] = '00:00';
+              $replace["#dhwSchLun#"] = '';
+              $replace["#dhwSchMar#"] = '';
+              $replace["#dhwSchMer#"] = '';
+              $replace["#dhwSchJeu#"] = '';
+              $replace["#dhwSchVen#"] = '';
+              $replace["#dhwSchSam#"] = '';
+              $replace["#dhwSchDim#"] = '';
           }
 
           $obj = $this->getCmd(null, 'heatingSchedule');
           $str = $obj->execCmd();
-          $schedules = explode(",", $str);
+          $schedules = explode(";", $str);
           
-          if (count($schedules) == 14) {
-              $replace["#heaSchLunSta#"] = $schedules[0];
-              $replace["#heaSchLunEnd#"] = $schedules[1];
-              $replace["#heaSchMarSta#"] = $schedules[2];
-              $replace["#heaSchMarEnd#"] = $schedules[3];
-              $replace["#heaSchMerSta#"] = $schedules[4];
-              $replace["#heaSchMerEnd#"] = $schedules[5];
-              $replace["#heaSchJeuSta#"] = $schedules[6];
-              $replace["#heaSchJeuEnd#"] = $schedules[7];
-              $replace["#heaSchVenSta#"] = $schedules[8];
-              $replace["#heaSchVenEnd#"] = $schedules[9];
-              $replace["#heaSchSamSta#"] = $schedules[10];
-              $replace["#heaSchSamEnd#"] = $schedules[11];
-              $replace["#heaSchDimSta#"] = $schedules[12];
-              $replace["#heaSchDimEnd#"] = $schedules[13];
+          if (count($schedules) == 7) {
+              $replace["#heaSchLun#"] = $schedules[0];
+              $replace["#heaSchMar#"] = $schedules[1];
+              $replace["#heaSchMer#"] = $schedules[2];
+              $replace["#heaSchJeu#"] = $schedules[3];
+              $replace["#heaSchVen#"] = $schedules[4];
+              $replace["#heaSchSam#"] = $schedules[5];
+              $replace["#heaSchDim#"] = $schedules[6];
           } else {
-              $replace["#heaSchLunSta#"] = '00:00';
-              $replace["#heaSchLunEnd#"] = '00:00';
-              $replace["#heaSchMarSta#"] = '00:00';
-              $replace["#heaSchMarEnd#"] = '00:00';
-              $replace["#heaSchMerSta#"] = '00:00';
-              $replace["#heaSchMerEnd#"] = '00:00';
-              $replace["#heaSchJeuSta#"] = '00:00';
-              $replace["#heaSchJeuEnd#"] = '00:00';
-              $replace["#heaSchVenSta#"] = '00:00';
-              $replace["#heaSchVenEnd#"] = '00:00';
-              $replace["#heaSchSamSta#"] = '00:00';
-              $replace["#heaSchSamEnd#"] = '00:00';
-              $replace["#heaSchDimSta#"] = '00:00';
-              $replace["#heaSchDimEnd#"] = '00:00';
+              $replace["#heaSchLunSta#"] = '';
+              $replace["#heaSchMarSta#"] = '';
+              $replace["#heaSchMerSta#"] = '';
+              $replace["#heaSchJeuSta#"] = '';
+              $replace["#heaSchVenSta#"] = '';
+              $replace["#heaSchSamSta#"] = '';
+              $replace["#heaSchDimSta#"] = '';
           }
 
           $obj = $this->getCmd(null, 'refresh');
@@ -1462,8 +1633,8 @@
           $replace["#idDhwSlider#"] = $obj->getId();
 
           return template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann'));
-        }
-    }
+      }
+  }
     class viessmannCmd extends cmd
     {
         // Exécution d'une commande
