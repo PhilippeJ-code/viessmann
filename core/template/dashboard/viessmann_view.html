@@ -120,8 +120,12 @@
       id="idTemperaturePiece#uid#"></span></br>
     <span class="classSousTitre#uid#">Température de départ</span><span class="classValeur#uid#"
       id="idTemperatureDepart#uid#"></span></br>
+    <span class="classSousTitre#uid#">Température eau radiateur</span><span class="classValeur#uid#"
+      id="idTemperatureEauRadiateur#uid#"></span></br>
     <span class="classSousTitre#uid#">Mise hors gel</span><span class="classValeur#uid#"
       id="idFrostProtection#uid#"></span></br>
+    <span class="classSousTitre#uid#">Etat circulateur</span><span class="classValeur#uid#"
+      id="idEtatCirculateur#uid#"></span></br>
 
     <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Radiateurs</span></br>
@@ -884,6 +888,21 @@
     }
     jeedom.cmd.update['#idRoomTemperature#']({ display_value: '#roomTemperature#' });
 
+    jeedom.cmd.update['#idBoilerTemperature#'] = function (_options) {
+      if (_options.display_value == 99) {
+        $('#idTemperatureEauRadiateur#uid#').html('--');
+      }
+      else {
+        $('#idTemperatureEauRadiateur#uid#').html(_options.display_value + '°');
+      }
+    }
+    jeedom.cmd.update['#idBoilerTemperature#']({ display_value: '#boilerTemperature#' });
+
+    jeedom.cmd.update['#idPumpStatus#'] = function (_options) {
+      $('#idEtatCirculateur#uid#').html(_options.display_value);
+    }
+    jeedom.cmd.update['#idPumpStatus#']({ display_value: '#pumpStatus#' });
+
     jeedom.cmd.update['#idHeatingGazConsumption#'] = function (_options) {
       $('#idHeatingGazConsumption#uid#').html(_options.display_value);
     }
@@ -1121,6 +1140,12 @@
             break;
           case "#idRoomTemperature#":
             jeedom.cmd.update['#idRoomTemperature#']({ display_value: this.value });
+            break;
+          case "#idBoilerTemperature#":
+            jeedom.cmd.update['#idBoilerTemperature#']({ display_value: this.value });
+            break;
+          case "#idPumpStatus#":
+            jeedom.cmd.update['#idPumpStatus#']({ display_value: this.value });
             break;
           case "#idHeatingGazConsumption#":
             jeedom.cmd.update['#idHeatingGazConsumption#']({ display_value: this.value });

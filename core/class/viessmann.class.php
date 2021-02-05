@@ -66,7 +66,24 @@
               log::add('viessmann', 'debug', 'Récupération id gateway ' . $gatewayId);
           }
 
+          $jsonData = $viessmannApi->getRawJsonData(ViessmannFeature::HEATING_DHW_TEMPERATURE);
+          log::add('viessmann', 'debug', 'Json : ' . substr($jsonData, 0, 100));
+
           $features = $viessmannApi->getAvailableFeatures();
+
+          if (strPos($features, ViessmannAPI::CIRCULATION_PUMP) != false) {
+              $pumpStatus = $viessmannApi->getCirculationPumpStatus();
+          } else {
+              $pumpStatus = '?';
+          }
+          $this->getCmd(null, 'pumpStatus')->event($pumpStatus);
+
+          if (strPos($features, ViessmannFeature::HEATING_BOILER_SENSORS_TEMPERATURE_MAIN) != false) {
+              $boilerTemperature = $viessmannApi->getBoilerTemperature();
+          } else {
+              $boilerTemperature = 99;
+          }
+          $this->getCmd(null, 'boilerTemperature')->event($boilerTemperature);
 
           if (strPos($features, ViessmannAPI::ACTIVE_OPERATING_MODE) != false) {
               $activeMode = $viessmannApi->getActiveMode();
@@ -478,20 +495,20 @@
           $this->getCmd(null, 'refreshDate')->event($date);
 
           if (strPos($features, ViessmannAPI::HEATING_FROSTPROTECTION) != false) {
-            $frostProtection = $viessmannApi->getFrostprotection();
-        } else {
-            $frostProtection = 0;
-        }
-        $this->getCmd(null, 'frostProtection')->event($frostProtection);
+              $frostProtection = $viessmannApi->getFrostprotection();
+          } else {
+              $frostProtection = 0;
+          }
+          $this->getCmd(null, 'frostProtection')->event($frostProtection);
 
-        if (strPos($features, ViessmannAPI::SENSORS_TEMPERATURE_ROOM) != false) {
-            $roomTemperature = $viessmannApi->getRoomTemperature();
-        } else {
-            $roomTemperature = 99;
-        }
-        $this->getCmd(null, 'roomTemperature')->event($roomTemperature);
+          if (strPos($features, ViessmannAPI::SENSORS_TEMPERATURE_ROOM) != false) {
+              $roomTemperature = $viessmannApi->getRoomTemperature();
+          } else {
+              $roomTemperature = 99;
+          }
+          $this->getCmd(null, 'roomTemperature')->event($roomTemperature);
 
-        return;
+          return;
       }
 
       // Set Normal Program Temperature
@@ -1276,7 +1293,35 @@
           $obj->setLogicalId('roomTemperature');
           $obj->setOrder(42);
           $obj->save();
-    }
+
+          $obj = $this->getCmd(null, 'boilerTemperature');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Température eau radiateur', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('boilerTemperature');
+          $obj->setOrder(43);
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'pumpStatus');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Status circulateur', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('pumpStatus');
+          $obj->setOrder(44);
+          $obj->save();
+      }
 
       // Fonction exécutée automatiquement avant la suppression de l'équipement
       //
@@ -1647,6 +1692,14 @@
           $obj = $this->getCmd(null, 'roomTemperature');
           $replace["#roomTemperature#"] = $obj->execCmd();
           $replace["#idRoomTemperature#"] = $obj->getId();
+
+          $obj = $this->getCmd(null, 'boilerTemperature');
+          $replace["#boilerTemperature#"] = $obj->execCmd();
+          $replace["#idBoilerTemperature#"] = $obj->getId();
+
+          $obj = $this->getCmd(null, 'pumpStatus');
+          $replace["#pumpStatus#"] = $obj->execCmd();
+          $replace["#idPumpStatus#"] = $obj->getId();
 
           $obj = $this->getCmd(null, 'comfortProgramSlider');
           $replace["#idComfortProgramSlider#"] = $obj->getId();
