@@ -28,7 +28,7 @@
           src="plugins/viessmann/resources/options.svg">
         <img class="classOptionsCal#uid#" id="idOptionsCalRadiateurs#uid#"
           src="plugins/viessmann/resources/calendrier.svg">
-        <span id="idSupplyProgramTemperature#uid#"></span>
+        <span id="idRoomTemperature#uid#"></span>
         <span id="idProgramTemperature#uid#"></span>
         <span class="classLibelleTuile#uid#">Radiateurs</span>
       </div>
@@ -114,6 +114,8 @@
       class="classCrayon#uid# cursor" id="idModifierReduite#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
     </br>
     <span class="classTitre#uid#">Radiateurs</span></br></br>
+    <span class="classSousTitre#uid#">Température pièce</span><span class="classValeur#uid#"
+      id="idTemperaturePiece#uid#"></span></br>
     <span class="classSousTitre#uid#">Température de départ</span><span class="classValeur#uid#"
       id="idTemperatureDepart#uid#"></span></br>
     <span class="classSousTitre#uid#">Mise hors gel</span><span class="classValeur#uid#"
@@ -482,7 +484,7 @@
     top: 20px;
   }
 
-  #idSupplyProgramTemperature#uid# {
+  #idRoomTemperature#uid# {
     position: absolute;
     text-align: right;
     font-size: 14px;
@@ -865,10 +867,15 @@
     jeedom.cmd.update['#idHotWaterStorageTemperature#']({ display_value: '#hotWaterStorageTemperature#' });
 
     jeedom.cmd.update['#idSupplyProgramTemperature#'] = function (_options) {
-      $('#idSupplyProgramTemperature#uid#').html(_options.display_value + '°');
       $('#idTemperatureDepart#uid#').html(_options.display_value + '°');
     }
     jeedom.cmd.update['#idSupplyProgramTemperature#']({ display_value: '#supplyProgramTemperature#' });
+
+    jeedom.cmd.update['#idRoomTemperature#'] = function (_options) {
+      $('#idRoomTemperature#uid#').html(_options.display_value + '°');
+      $('#idTemperaturePiece#uid#').html(_options.display_value + '°');
+    }
+    jeedom.cmd.update['#idRoomTemperature#']({ display_value: '#roomTemperature#' });
 
     jeedom.cmd.update['#idHeatingGazConsumption#'] = function (_options) {
       $('#idHeatingGazConsumption#uid#').html(_options.display_value);
@@ -1104,6 +1111,9 @@
             break;
           case "#idSupplyProgramTemperature#":
             jeedom.cmd.update['#idSupplyProgramTemperature#']({ display_value: this.value });
+            break;
+          case "#idRoomTemperature#":
+            jeedom.cmd.update['#idRoomTemperature#']({ display_value: this.value });
             break;
           case "#idHeatingGazConsumption#":
             jeedom.cmd.update['#idHeatingGazConsumption#']({ display_value: this.value });

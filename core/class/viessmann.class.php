@@ -478,13 +478,20 @@
           $this->getCmd(null, 'refreshDate')->event($date);
 
           if (strPos($features, ViessmannAPI::HEATING_FROSTPROTECTION) != false) {
-              $frostProtection = $viessmannApi->getFrostprotection();
-          } else {
-              $frostProtection = 0;
-          }
-          $this->getCmd(null, 'frostProtection')->event($frostProtection);
+            $frostProtection = $viessmannApi->getFrostprotection();
+        } else {
+            $frostProtection = 0;
+        }
+        $this->getCmd(null, 'frostProtection')->event($frostProtection);
 
-          return;
+        if (strPos($features, ViessmannAPI::SENSORS_TEMPERATURE_ROOM) != false) {
+            $roomTemperature = $viessmannApi->getRoomTemperature();
+        } else {
+            $roomTemperature = 99;
+        }
+        $this->getCmd(null, 'roomTemperature')->event($roomTemperature);
+
+        return;
       }
 
       // Set Normal Program Temperature
@@ -1255,7 +1262,21 @@
           $obj->setLogicalId('frostProtection');
           $obj->setOrder(41);
           $obj->save();
-      }
+
+          $obj = $this->getCmd(null, 'roomTemperature');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Température pièce', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('roomTemperature');
+          $obj->setOrder(42);
+          $obj->save();
+    }
 
       // Fonction exécutée automatiquement avant la suppression de l'équipement
       //
@@ -1622,6 +1643,10 @@
           $obj = $this->getCmd(null, 'frostProtection');
           $replace["#frostProtection#"] = $obj->execCmd();
           $replace["#idFrostProtection#"] = $obj->getId();
+
+          $obj = $this->getCmd(null, 'roomTemperature');
+          $replace["#roomTemperature#"] = $obj->execCmd();
+          $replace["#idRoomTemperature#"] = $obj->getId();
 
           $obj = $this->getCmd(null, 'comfortProgramSlider');
           $replace["#idComfortProgramSlider#"] = $obj->getId();

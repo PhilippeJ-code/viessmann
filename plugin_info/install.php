@@ -28,7 +28,10 @@ function viessmann_install()
 //
 function viessmann_update() 
 {
-}
+    foreach (viessmann::byType('viessmann') as $viessmann) {
+        $viessmann->save();
+      
+    }
 
 // Fonction exécutée automatiquement après la suppression du plugin
 //
