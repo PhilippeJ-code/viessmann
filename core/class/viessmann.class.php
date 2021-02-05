@@ -66,8 +66,8 @@
               log::add('viessmann', 'debug', 'Récupération id gateway ' . $gatewayId);
           }
 
-          $jsonData = $viessmannApi->getRawJsonData(ViessmannFeature::HEATING_DHW_TEMPERATURE);
-          log::add('viessmann', 'debug', 'Json : ' . substr($jsonData, 0, 100));
+          // $jsonData = $viessmannApi->getRawJsonData(ViessmannFeature::HEATING_DHW_TEMPERATURE);
+          // log::add('viessmann', 'debug', 'Json : ' . substr($jsonData, 0, 100));
 
           $features = $viessmannApi->getAvailableFeatures();
 
