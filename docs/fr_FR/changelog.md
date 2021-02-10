@@ -13,6 +13,13 @@
     Ajout des Ids de device et de circuit
     Affichage de la programmation avec plusieurs plages horaires
     Utilisation ou non du widget fourni par le plugin
+
+# 10-02-2021
+
+    Ajout possibilité afficher ou pas tuile gaz/électricité
+    Ajout log données chaudière
+    Ajout du nom du circuit
+    Correction widget
     
 
 

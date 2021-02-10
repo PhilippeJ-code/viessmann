@@ -22,13 +22,13 @@
   use Viessmann\API\ViessmannApiException;
   use Viessmann\API\ViessmannFeature;
   
-  include 'phar://' . __DIR__ . '/../../3rdparty/Viessmann-Api-1.3.4.phar/index.php';
+  include 'phar://' . __DIR__ . '/../../3rdparty/Viessmann-Api-1.4.0.phar/index.php';
   
   class viessmann extends eqLogic
   {
-      // Rafraichir les données sur le site de Viessmann
+      // Accès au serveur Viessmann
       //
-      public function rafraichir()
+      public function getViessmann()
       {
           $userName = $this->getConfiguration('userName', '');
           $password = $this->getConfiguration('password', '');
@@ -38,25 +38,25 @@
           $circuitId = $this->getConfiguration('circuitId', '0');
 
           if (($userName === '') || ($password === '')) {
-              return;
+              return null;
           }
 
           $params = [
-            "user" => $userName,
-            "pwd" => $password,
-            "installationId" => $installationId,
-            "gatewayId" => $gatewayId,
-            "deviceId" => $deviceId,
-            "circuitId" => $circuitId
-          ];
+          "user" => $userName,
+          "pwd" => $password,
+          "installationId" => $installationId,
+          "gatewayId" => $gatewayId,
+          "deviceId" => $deviceId,
+          "circuitId" => $circuitId
+        ];
 
           try {
               $viessmannApi = new ViessmannAPI($params);
           } catch (ViessmannApiException $e) {
               log::add('viessmann', 'error', $e->getMessage());
-              return;
+              return null;
           }
-          
+                
           if ($installationId === '') {
               $installationId = $viessmannApi->getInstallationId();
               $gatewayId = $viessmannApi->getGatewayId();
@@ -66,12 +66,38 @@
               log::add('viessmann', 'debug', 'Récupération id gateway ' . $gatewayId);
           }
 
-          // $jsonData = $viessmannApi->getRawJsonData(ViessmannFeature::HEATING_DHW_TEMPERATURE);
-          // log::add('viessmann', 'debug', 'Json : ' . substr($jsonData, 0, 100));
+          return $viessmannApi;
+      }
+
+      // Rafraichir les données sur le site de Viessmann
+      //
+      public function rafraichir($viessmannApi)
+      {
+          $values = array("value", "slope", "shift", "status", "starts", "hours","active", "temperature", "day", "week", "month", "year");
+        
+          $circuitId = $this->getConfiguration('circuitId', '0');
+          $logFeatures = $this->getConfiguration('logFeatures', '');
 
           $features = $viessmannApi->getAvailableFeatures();
 
-          if (strPos($features, ViessmannAPI::CIRCULATION_PUMP) != false) {
+          if ($logFeatures === 'Oui') {
+              $listeFeatures = explode(',', $features);
+          
+              foreach ($listeFeatures as $feature) {
+                  $feature = trim($feature);
+                  foreach ($values as $value) {
+                      try {
+                          $valeur = $viessmannApi->getGenericFeaturePropertyAsJSON($feature, $value);
+                          log::add('viessmann', 'debug', $feature . '::' .$value . ' --> ' . $valeur);
+                      } catch (Exception $e) {
+                      }
+                  }
+              }
+
+              $this->setConfiguration('logFeatures', 'Non')->save();
+          }
+
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::CIRCULATION_PUMP)) != false) {
               $pumpStatus = $viessmannApi->getCirculationPumpStatus();
           } else {
               $pumpStatus = '?';
@@ -85,14 +111,14 @@
           }
           $this->getCmd(null, 'boilerTemperature')->event($boilerTemperature);
 
-          if (strPos($features, ViessmannAPI::ACTIVE_OPERATING_MODE) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ACTIVE_OPERATING_MODE)) != false) {
               $activeMode = $viessmannApi->getActiveMode();
           } else {
               $activeMode = '';
           }
           $this->getCmd(null, 'activeMode')->event($activeMode);
 
-          if (strPos($features, ViessmannAPI::ACTIVE_PROGRAM) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ACTIVE_PROGRAM)) != false) {
               $activeProgram = $viessmannApi->getActiveProgram();
           } else {
               $activeProgram = 'reduced';
@@ -106,7 +132,7 @@
           }
           $this->getCmd(null, 'isHeatingBurnerActive')->event($isHeatingBurnerActive);
         
-          if (strPos($features, ViessmannAPI::DHW_MODE) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::DHW_MODE)) != false) {
               $isDhwModeActive = $viessmannApi->isDhwModeActive();
           } else {
               $isDhwModeActive = 0;
@@ -120,8 +146,8 @@
           }
           $this->getCmd(null, 'outsideTemperature')->event($outsideTemperature);
 
-          if (strPos($features, ViessmannAPI::SENSORS_TEMPERATURE_SUPPLY) != false) {
-              $supplyProgramTemperature = $viessmannApi->getSupplyProgramTemperature();
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::SENSORS_TEMPERATURE_SUPPLY)) != false) {
+              $supplyProgramTemperature = $viessmannApi->getSupplyTemperature();
           } else {
               $supplyProgramTemperature = 99;
           }
@@ -134,7 +160,7 @@
           }
           $this->getCmd(null, 'dhwTemperature')->event($dhwTemperature);
           
-          if (strPos($features, ViessmannAPI::HEATING_CURVE) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_CURVE)) != false) {
               $slope = $viessmannApi->getSlope();
               $shift = $viessmannApi->getShift();
           } else {
@@ -145,21 +171,21 @@
           $this->getCmd(null, 'slope')->event($slope);
           $this->getCmd(null, 'shift')->event($shift);
 
-          if (strPos($features, ViessmannAPI::COMFORT_PROGRAM) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM)) != false) {
               $comfortProgramTemperature = $viessmannApi->getComfortProgramTemperature();
           } else {
               $comfortProgramTemperature = 0;
           }
           $this->getCmd(null, 'comfortProgramTemperature')->event($comfortProgramTemperature);
 
-          if (strPos($features, ViessmannAPI::NORMAL_PROGRAM) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::NORMAL_PROGRAM)) != false) {
               $normalProgramTemperature = $viessmannApi->getNormalProgramTemperature();
           } else {
               $normalProgramTemperature = 0;
           }
           $this->getCmd(null, 'normalProgramTemperature')->event($normalProgramTemperature);
           
-          if (strPos($features, ViessmannAPI::REDUCED_PROGRAM) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::REDUCED_PROGRAM)) != false) {
               $reducedProgramTemperature = $viessmannApi->getReducedProgramTemperature();
           } else {
               $reducedProgramTemperature = 0;
@@ -413,7 +439,7 @@
           $this->getCmd(null, 'dhwSchedule')->event($dhwSchedule);
           
           $heatingSchedule = '';
-          if (strPos($features, ViessmannAPI::HEATING_SCHEDULE) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_SCHEDULE)) != false) {
               $heatingSchedule = $viessmannApi->getHeatingSchedule();
               $json = json_decode($heatingSchedule, true);
 
@@ -494,14 +520,14 @@
           $date = $date->format('d-m-Y H:i:s');
           $this->getCmd(null, 'refreshDate')->event($date);
 
-          if (strPos($features, ViessmannAPI::HEATING_FROSTPROTECTION) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_FROSTPROTECTION)) != false) {
               $frostProtection = $viessmannApi->getFrostprotection();
           } else {
               $frostProtection = 0;
           }
           $this->getCmd(null, 'frostProtection')->event($frostProtection);
 
-          if (strPos($features, ViessmannAPI::SENSORS_TEMPERATURE_ROOM) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::SENSORS_TEMPERATURE_ROOM)) != false) {
               $roomTemperature = $viessmannApi->getRoomTemperature();
           } else {
               $roomTemperature = 99;
@@ -515,26 +541,8 @@
       //
       public function setNormalProgramTemperature($temperature)
       {
-          $userName = $this->getConfiguration('userName');
-          $password = $this->getConfiguration('password');
-          $installationId = $this->getConfiguration('installationId', '');
-          $gatewayId = $this->getConfiguration('gatewayId', '');
-          $deviceId = $this->getConfiguration('deviceId', '0');
-          $circuitId = $this->getConfiguration('circuitId', '0');
-
-          $params = [
-            "user" => $userName,
-            "pwd" => $password,
-            "installationId" => $installationId,
-            "gatewayId" => $gatewayId,
-            "deviceId" => $deviceId,
-            "circuitId" => $circuitId
-          ];
-
-          try {
-              $viessmannApi = new ViessmannAPI($params);
-          } catch (ViessmannApiException $e) {
-              log::add('viessmann', 'error', $e->getMessage());
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
               return;
           }
           
@@ -545,29 +553,11 @@
       //
       public function setComfortProgramTemperature($temperature)
       {
-          $userName = $this->getConfiguration('userName');
-          $password = $this->getConfiguration('password');
-          $installationId = $this->getConfiguration('installationId', '');
-          $gatewayId = $this->getConfiguration('gatewayId', '');
-          $deviceId = $this->getConfiguration('deviceId', '0');
-          $circuitId = $this->getConfiguration('circuitId', '0');
-
-          $params = [
-            "user" => $userName,
-            "pwd" => $password,
-            "installationId" => $installationId,
-            "gatewayId" => $gatewayId,
-            "deviceId" => $deviceId,
-            "circuitId" => $circuitId
-          ];
-
-          try {
-              $viessmannApi = new ViessmannAPI($params);
-          } catch (ViessmannApiException $e) {
-              log::add('viessmann', 'error', $e->getMessage());
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
               return;
           }
-          
+        
           $viessmannApi->setComfortProgramTemperature($temperature);
       }
 
@@ -575,29 +565,11 @@
       //
       public function setReducedProgramTemperature($temperature)
       {
-          $userName = $this->getConfiguration('userName');
-          $password = $this->getConfiguration('password');
-          $installationId = $this->getConfiguration('installationId', '');
-          $gatewayId = $this->getConfiguration('gatewayId', '');
-          $deviceId = $this->getConfiguration('deviceId', '0');
-          $circuitId = $this->getConfiguration('circuitId', '0');
-
-          $params = [
-            "user" => $userName,
-            "pwd" => $password,
-            "installationId" => $installationId,
-            "gatewayId" => $gatewayId,
-            "deviceId" => $deviceId,
-            "circuitId" => $circuitId
-          ];
-
-          try {
-              $viessmannApi = new ViessmannAPI($params);
-          } catch (ViessmannApiException $e) {
-              log::add('viessmann', 'error', $e->getMessage());
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
               return;
           }
-          
+        
           $viessmannApi->setReducedProgramTemperature($temperature);
       }
 
@@ -605,41 +577,29 @@
       //
       public function setDhwTemperature($temperature)
       {
-          $userName = $this->getConfiguration('userName');
-          $password = $this->getConfiguration('password');
-          $installationId = $this->getConfiguration('installationId', '');
-          $gatewayId = $this->getConfiguration('gatewayId', '');
-          $deviceId = $this->getConfiguration('deviceId', '0');
-          $circuitId = $this->getConfiguration('circuitId', '0');
-
-          $params = [
-            "user" => $userName,
-            "pwd" => $password,
-            "installationId" => $installationId,
-            "gatewayId" => $gatewayId,
-            "deviceId" => $deviceId,
-            "circuitId" => $circuitId
-          ];
-
-          try {
-              $viessmannApi = new ViessmannAPI($params);
-          } catch (ViessmannApiException $e) {
-              log::add('viessmann', 'error', $e->getMessage());
+          $viessmannApi = $this->getViessmann();
+          if ($viessmannApi == null) {
               return;
           }
-          
+        
           $viessmannApi->setDhwTemperature($temperature);
       }
 
       public static function cronHourly()
       {
+          $viessmann = null;
+          $first = true;
+
           foreach (self::byType('viessmann') as $viessmann) {
               if ($viessmann->getIsEnable() == 1) {
-                  $cmd = $viessmann->getCmd(null, 'refresh');
-                  if (!is_object($cmd)) {
-                      continue;
+                  if ($first == true) {
+                      $viessmannApi = $viessmann->getViessmann();
+                      $first = false;
                   }
-                  $cmd->execCmd();
+
+                  if ($viessmannApi != null) {
+                      $viessmann->rafraichir($viessmannApi);
+                  }
               }
           }
       }
@@ -1341,6 +1301,9 @@
       public function toHtml($_version = 'dashboard')
       {
           $isWidgetPlugin = $this->getConfiguration('isWidgetPlugin');
+          $displayGas = $this->getConfiguration('displayGas', '1');
+          $displayPower = $this->getConfiguration('displayPower', '1');
+          $circuitName = $this->getConfiguration('circuitName', 'Radiateurs');
 
           if (!$isWidgetPlugin) {
               return eqLogic::toHtml($_version);
@@ -1710,9 +1673,19 @@
           $obj = $this->getCmd(null, 'dhwSlider');
           $replace["#idDhwSlider#"] = $obj->getId();
 
+          $replace["#circuitName#"] = $circuitName;
+          $replace["#displayGas#"] = $displayGas;
+          $replace["#displayPower#"] = $displayPower;
+
           return template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann'));
       }
+
+      private function buildFeature($circuitId, $feature)
+      {
+          return "heating.circuits" . "." . $circuitId . "." . $feature;
+      }
   }
+    
     class viessmannCmd extends cmd
     {
         // Exécution d'une commande
@@ -1721,7 +1694,10 @@
         {
             $eqlogic = $this->getEqLogic();
             if ($this->getLogicalId() == 'refresh') {
-                $eqlogic->rafraichir();
+                $viessmannApi = $eqlogic->getViessmann();
+                if ($viessmannApi !== null) {
+                    $eqlogic->rafraichir($viessmannApi);
+                }
             } elseif ($this->getLogicalId() == 'comfortProgramSlider') {
                 if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
                     return;

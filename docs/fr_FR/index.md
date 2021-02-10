@@ -15,9 +15,18 @@
 
     On peut introduire l'id du device et l'id du circuit, par défaut une valeur nulle est utilisée par le plugin.
 
-    On peut choisir d'utiliser le widget fourni par le plugin ou celui de jeedom.
-    
+    Pour utiliser l'option 'Log Possibilités', vous devez indiquer la valeur Oui ( en respectant la majuscule ) dans le
+    zone texte correspondante et passer le log du plugin en mode debug, à la prochaine récupération de données
+    toutes les données remontées seront loggées.
+
 ![Configuration](../images/configuration.png "Configuration")
+
+    On peut choisir d'utiliser le widget fourni par le plugin ou celui de jeedom
+    On peut choisir le nom du circuit
+    On peut choisir d'afficher ou pas les tuiles gaz et électricité
+    
+![Conf-Widget](../images/conf-widget.png "Conf-Widget")
+
         
 ## 1. Widget
 

@@ -59,6 +59,8 @@
           data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
       <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i
             class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
+      <li role="presentation"><a href="#widgettab" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i>
+          {{Widget}}</a></li>
       <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i
             class="fa fa-list-alt"></i> {{Commandes}}</a></li>
     </ul>
@@ -161,6 +163,34 @@
             </div>
 
             <div class="form-group">
+              <label class="col-sm-3 control-label">{{Log Possibilités}}
+                <sup><i class="fas fa-question-circle tooltips"
+                    title="{{Ne pas oublier de mettre le log du plugin en debug}}"></i></sup>
+              </label>
+              <div class="col-sm-3">
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration"
+                  data-l2key="logFeatures" placeholder="Mettre Oui" />
+              </div>
+            </div>
+            
+          </fieldset>
+        </form>
+      </div>
+
+      <div role="tabpanel" class="tab-pane" id="widgettab">
+        <form class="form-horizontal">
+          <fieldset>
+            <br /><br />
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Nom du circuit}}</label>
+              <div class="col-sm-3">
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration"
+                  data-l2key="circuitName" placeholder="Nom du circuit" />
+              </div>
+            </div>
+
+            <div class="form-group">
                 <label class="col-sm-3 control-label">{{Utiliser le widget du plugin}}</label>
                 <div class="col-sm-3 form-check-input">
                   <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
@@ -168,9 +198,26 @@
                 </div>
               </div>
 
+              <div class="form-group">
+                <label class="col-sm-3 control-label">{{Afficher la tuile gaz}}</label>
+                <div class="col-sm-3 form-check-input">
+                  <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
+                      data-l2key="displayGas" checked /></label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-3 control-label">{{Afficher la tuile électricité}}</label>
+                <div class="col-sm-3 form-check-input">
+                  <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
+                      data-l2key="displayPower" checked /></label>
+                </div>
+              </div>
+
           </fieldset>
         </form>
       </div>
+
       <div role="tabpanel" class="tab-pane" id="commandtab">
         <a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;"><i
             class="fa fa-plus-circle"></i> {{Commandes}}</a><br /><br />
