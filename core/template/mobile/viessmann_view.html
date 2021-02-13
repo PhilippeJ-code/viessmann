@@ -91,7 +91,10 @@
     <span class="classTitre#uid#">Courbes</span></br></br>
     <span class="classSousTitre#uid#">Pente</span><span class="classValeur#uid#" id="idSlope#uid#"></span></br>
     <span class="classSousTitre#uid#">Parallèle</span><span class="classValeur#uid#" id="idShift#uid#"></span></br>
-
+    </br>
+    <span class="classTitre#uid#">Installation</span></br></br>
+    <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid#" id="idPressureSupply#uid#"></span></br>
+    
     <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Chaudière</span></br>
 
@@ -883,6 +886,11 @@
   }
   jeedom.cmd.update['#idShift#']({ display_value: '#shift#' });
   
+  jeedom.cmd.update['#idPressureSupply#'] = function (_options) {
+    $('#idPressureSupply#uid#').html(_options.display_value + " bar");
+  }
+  jeedom.cmd.update['#idPressureSupply#']({ display_value: '#pressureSupply#' });
+  
   // Tuile Radiateurs
   //
   jeedom.cmd.update['#idRoomTemperature#'] = function (_options) {
@@ -984,10 +992,10 @@
     var max = ('#maxComfort#' == '') ? Number.MAX_VALUE : parseFloat('#maxComfort#');
     var step = (isNaN(parseFloat('#stepComfort#'))) ? 1 : parseFloat('#stepComfort#');
     if (parseFloat($('#idConfortValeur#uid#').html()) <= max - step) {
-      jeedom.cmd.update['#idConfortValeur#']({ display_value: parseFloat($('#idConfortValeur#uid#').html()) + step });
+      jeedom.cmd.update['#idComfortProgramTemperature#']({ display_value: parseFloat($('#idConfortValeur#uid#').html()) + step });
       $('#idConfortValeur#uid#').trigger('change');
     } else if (parseFloat($('#idConfortValeur#uid#').html()) < max) {
-      jeedom.cmd.update['#idConfortValeur#']({ display_value: max });
+      jeedom.cmd.update['#idComfortProgramTemperature#']({ display_value: max });
       $('#idConfortValeur#uid#').trigger('change');
     }
   });
@@ -995,10 +1003,10 @@
     var min = ('#minComfort#' == '') ? Number.MIN_VALUE : parseFloat('#minComfort#');
     var step = (isNaN(parseFloat('#stepComfort#'))) ? 1 : parseFloat('#stepComfort#');
     if (parseFloat($('#idConfortValeur#uid#').html()) >= min + step) {
-      jeedom.cmd.update['#idConfortValeur#']({ display_value: parseFloat($('#idConfortValeur#uid#').html()) - step });
+      jeedom.cmd.update['#idComfortProgramTemperature#']({ display_value: parseFloat($('#idConfortValeur#uid#').html()) - step });
       $('#idConfortValeur#uid#').trigger('change');
     } else if (parseFloat($('#idConfortValeur#uid#').html()) > min) {
-      jeedom.cmd.update['#idConfortValeur#']({ display_value: min });
+      jeedom.cmd.update['#idComfortProgramTemperature#']({ display_value: min });
       $('#idConfortValeur#uid#').trigger('change');
     }
   });
@@ -1023,10 +1031,10 @@
     var max = ('#maxNormal#' == '') ? Number.MAX_VALUE : parseFloat('#maxNormal#');
     var step = (isNaN(parseFloat('#stepNormal#'))) ? 1 : parseFloat('#stepNormal#');
     if (parseFloat($('#idNormaleValeur#uid#').html()) <= max - step) {
-      jeedom.cmd.update['#idNormaleValeur#']({ display_value: parseFloat($('#idNormaleValeur#uid#').html()) + step });
+      jeedom.cmd.update['#idNormalProgramTemperature#']({ display_value: parseFloat($('#idNormaleValeur#uid#').html()) + step });
       $('#idNormaleValeur#uid#').trigger('change');
     } else if (parseFloat($('#idNormaleValeur#uid#').html()) < max) {
-      jeedom.cmd.update['#idNormaleValeur#']({ display_value: max });
+      jeedom.cmd.update['#idNormalProgramTemperature#']({ display_value: max });
       $('#idNormaleValeur#uid#').trigger('change');
     }
   });
@@ -1034,10 +1042,10 @@
     var min = ('#minNormal#' == '') ? Number.MIN_VALUE : parseFloat('#minNormal#');
     var step = (isNaN(parseFloat('#stepNormal#'))) ? 1 : parseFloat('#stepNormal#');
     if (parseFloat($('#idNormaleValeur#uid#').html()) >= min + step) {
-      jeedom.cmd.update['#idNormaleValeur#']({ display_value: parseFloat($('#idNormaleValeur#uid#').html()) - step });
+      jeedom.cmd.update['#idNormalProgramTemperature#']({ display_value: parseFloat($('#idNormaleValeur#uid#').html()) - step });
       $('#idNormaleValeur#uid#').trigger('change');
     } else if (parseFloat($('#idNormaleValeur#uid#').html()) > min) {
-      jeedom.cmd.update['#idNormaleValeur#']({ display_value: min });
+      jeedom.cmd.update['#idNormalProgramTemperature#']({ display_value: min });
       $('#idNormaleValeur#uid#').trigger('change');
     }
   });
@@ -1069,10 +1077,10 @@
     var max = ('#maxReduced#' == '') ? Number.MAX_VALUE : parseFloat('#maxReduced#');
     var step = (isNaN(parseFloat('#stepReduced#'))) ? 1 : parseFloat('#stepReduced#');
     if (parseFloat($('#idReduiteValeur#uid#').html()) <= max - step) {
-      jeedom.cmd.update['#idReduiteValeur#']({ display_value: parseFloat($('#idReduiteValeur#uid#').html()) + step });
+      jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: parseFloat($('#idReduiteValeur#uid#').html()) + step });
       $('#idReduiteValeur#uid#').trigger('change');
     } else if (parseFloat($('#idReduiteValeur#uid#').html()) < max) {
-      jeedom.cmd.update['#idReduiteValeur#']({ display_value: max });
+      jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: max });
       $('#idReduiteValeur#uid#').trigger('change');
     }
   });
@@ -1080,10 +1088,10 @@
     var min = ('#minReduced#' == '') ? Number.MIN_VALUE : parseFloat('#minReduced#');
     var step = (isNaN(parseFloat('#stepReduced#'))) ? 1 : parseFloat('#stepReduced#');
     if (parseFloat($('#idReduiteValeur#uid#').html()) >= min + step) {
-      jeedom.cmd.update['#idReduiteValeur#']({ display_value: parseFloat($('#idReduiteValeur#uid#').html()) - step });
+      jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: parseFloat($('#idReduiteValeur#uid#').html()) - step });
       $('#idReduiteValeur#uid#').trigger('change');
     } else if (parseFloat($('#idReduiteValeur#uid#').html()) > min) {
-      jeedom.cmd.update['#idReduiteValeur#']({ display_value: min });
+      jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: min });
       $('#idReduiteValeur#uid#').trigger('change');
     }
   });
@@ -1139,10 +1147,10 @@
     var max = ('#maxDhw#' == '') ? Number.MAX_VALUE : parseFloat('#maxDhw#');
     var step = (isNaN(parseFloat('#stepDhw#'))) ? 1 : parseFloat('#stepDhw#');
     if (parseFloat($('#idDhwValeur#uid#').html()) <= max - step) {
-      jeedom.cmd.update['#idDhwValeur#']({ display_value: parseFloat($('#idDhwValeur#uid#').html()) + step });
+      jeedom.cmd.update['#idDhwTemperature#']({ display_value: parseFloat($('#idDhwValeur#uid#').html()) + step });
       $('#idDhwValeur#uid#').trigger('change');
     } else if (parseFloat($('#idDhwValeur#uid#').html()) < max) {
-      jeedom.cmd.update['#idDhwValeur#']({ display_value: max });
+      jeedom.cmd.update['#idDhwTemperature#']({ display_value: max });
       $('#idDhwValeur#uid#').trigger('change');
     }
   });
@@ -1150,10 +1158,10 @@
     var min = ('#minDhw#' == '') ? Number.MIN_VALUE : parseFloat('#minDhw#');
     var step = (isNaN(parseFloat('#stepDhw#'))) ? 1 : parseFloat('#stepDhw#');
     if (parseFloat($('#idDhwValeur#uid#').html()) >= min + step) {
-      jeedom.cmd.update['#idDhwValeur#']({ display_value: parseFloat($('#idDhwValeur#uid#').html()) - step });
+      jeedom.cmd.update['#idDhwTemperature#']({ display_value: parseFloat($('#idDhwValeur#uid#').html()) - step });
       $('#idDhwValeur#uid#').trigger('change');
     } else if (parseFloat($('#idDhwValeur#uid#').html()) > min) {
-      jeedom.cmd.update['#idDhwValeur#']({ display_value: min });
+      jeedom.cmd.update['#idDhwTemperature#']({ display_value: min });
       $('#idDhwValeur#uid#').trigger('change');
     }
   });

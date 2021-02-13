@@ -26,16 +26,18 @@
   
   class viessmann extends eqLogic
   {
+      const PRESSURE_SUPPLY = "heating.sensors.pressure.supply";
+
       // Accès au serveur Viessmann
       //
       public function getViessmann()
       {
-          $userName = $this->getConfiguration('userName', '');
-          $password = $this->getConfiguration('password', '');
-          $installationId = $this->getConfiguration('installationId', '');
-          $gatewayId = $this->getConfiguration('gatewayId', '');
-          $deviceId = $this->getConfiguration('deviceId', '0');
-          $circuitId = $this->getConfiguration('circuitId', '0');
+          $userName = trim($this->getConfiguration('userName', ''));
+          $password = trim($this->getConfiguration('password', ''));
+          $installationId = trim($this->getConfiguration('installationId', ''));
+          $gatewayId = trim($this->getConfiguration('gatewayId', ''));
+          $deviceId = trim($this->getConfiguration('deviceId', '0'));
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
 
           if (($userName === '') || ($password === '')) {
               return null;
@@ -75,7 +77,7 @@
       {
           $values = array("value", "slope", "shift", "status", "starts", "hours","active", "temperature", "day", "week", "month", "year");
         
-          $circuitId = $this->getConfiguration('circuitId', '0');
+          $circuitId = trim($this->getConfiguration('circuitId', '0'));
           $logFeatures = $this->getConfiguration('logFeatures', '');
 
           $features = $viessmannApi->getAvailableFeatures();
@@ -534,6 +536,13 @@
           }
           $this->getCmd(null, 'roomTemperature')->event($roomTemperature);
 
+          if (strPos($features, self::PRESSURE_SUPPLY) != false) {
+              $pressureSupply = $viessmannApi->getGenericFeaturePropertyAsJSON(self::PRESSURE_SUPPLY);
+          } else {
+              $pressureSupply = 99;
+          }
+          $this->getCmd(null, 'pressureSupply')->event($pressureSupply);
+          
           return;
       }
 
@@ -587,18 +596,49 @@
 
       public static function cronHourly()
       {
-          $viessmann = null;
-          $first = true;
+          $oldUserName = '';
+          $oldPassword = '';
 
+          $first = true;
+          $tousPareils = true;
           foreach (self::byType('viessmann') as $viessmann) {
               if ($viessmann->getIsEnable() == 1) {
-                  if ($first == true) {
-                      $viessmannApi = $viessmann->getViessmann();
-                      $first = false;
+                  $userName = trim($viessmann->getConfiguration('userName', ''));
+                  $password = trim($viessmann->getConfiguration('password', ''));
+                  if ($first == false) {
+                      if (($userName != $oldUserName) || ($password != $oldPassword)) {
+                          $tousPareils = false;
+                      }
                   }
+                  $oldUserName = $userName;
+                  $oldPassword = $password;
+                  $first = false;
+              }
+          }
 
-                  if ($viessmannApi != null) {
-                      $viessmann->rafraichir($viessmannApi);
+          if ($tousPareils == true) {
+              $viessmann = null;
+              $first = true;
+              foreach (self::byType('viessmann') as $viessmann) {
+                  if ($viessmann->getIsEnable() == 1) {
+                      if ($first == true) {
+                          $viessmannApi = $viessmann->getViessmann();
+                          $first = false;
+                      }
+
+                      if ($viessmannApi != null) {
+                          $viessmann->rafraichir($viessmannApi);
+                      }
+                  }
+              }
+          } else {
+             $viessmann = null;
+              foreach (self::byType('viessmann') as $viessmann) {
+                  if ($viessmann->getIsEnable() == 1) {
+                      $viessmannApi = $viessmann->getViessmann();
+                      if ($viessmannApi != null) {
+                          $viessmann->rafraichir($viessmannApi);
+                      }
                   }
               }
           }
@@ -1281,6 +1321,20 @@
           $obj->setLogicalId('pumpStatus');
           $obj->setOrder(44);
           $obj->save();
+
+          $obj = $this->getCmd(null, 'pressureSupply');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Pression installation', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('numeric');
+          $obj->setLogicalId('pressureSupply');
+          $obj->setOrder(45);
+          $obj->save();
       }
 
       // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -1663,6 +1717,10 @@
           $obj = $this->getCmd(null, 'pumpStatus');
           $replace["#pumpStatus#"] = $obj->execCmd();
           $replace["#idPumpStatus#"] = $obj->getId();
+
+          $obj = $this->getCmd(null, 'pressureSupply');
+          $replace["#pressureSupply#"] = $obj->execCmd();
+          $replace["#idPressureSupply#"] = $obj->getId();
 
           $obj = $this->getCmd(null, 'comfortProgramSlider');
           $replace["#idComfortProgramSlider#"] = $obj->getId();
