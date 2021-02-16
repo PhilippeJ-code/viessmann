@@ -67,7 +67,7 @@
               log::add('viessmann', 'debug', 'Récupération id installation ' . $installationId);
               log::add('viessmann', 'debug', 'Récupération id gateway ' . $gatewayId);
               $features = $viessmannApi->getAvailableFeatures();
-              if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW) != false) {
+              if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW) !== false) {
                   $uniteGaz = trim($viessmannApi->getGenericFeaturePropertyAsJSON(ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW, "unit"));
                   if ($uniteGaz === '"cubicMeter"') {
                       $this->setConfiguration('uniteGaz', 'm3');
@@ -113,70 +113,70 @@
               $this->setConfiguration('logFeatures', 'Non')->save();
           }
 
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::CIRCULATION_PUMP)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::CIRCULATION_PUMP)) !== false) {
               $pumpStatus = $viessmannApi->getCirculationPumpStatus();
           } else {
               $pumpStatus = '?';
           }
           $this->getCmd(null, 'pumpStatus')->event($pumpStatus);
 
-          if (strPos($features, ViessmannFeature::HEATING_BOILER_SENSORS_TEMPERATURE_MAIN) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_BOILER_SENSORS_TEMPERATURE_MAIN) !== false) {
               $boilerTemperature = $viessmannApi->getBoilerTemperature();
           } else {
               $boilerTemperature = 99;
           }
           $this->getCmd(null, 'boilerTemperature')->event($boilerTemperature);
 
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ACTIVE_OPERATING_MODE)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ACTIVE_OPERATING_MODE)) !== false) {
               $activeMode = $viessmannApi->getActiveMode();
           } else {
               $activeMode = '';
           }
           $this->getCmd(null, 'activeMode')->event($activeMode);
 
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ACTIVE_PROGRAM)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ACTIVE_PROGRAM)) !== false) {
               $activeProgram = $viessmannApi->getActiveProgram();
           } else {
               $activeProgram = 'reduced';
           }
           $this->getCmd(null, 'activeProgram')->event($activeProgram);
 
-          if (strPos($features, ViessmannFeature::HEATING_BURNER) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_BURNER) !== false) {
               $isHeatingBurnerActive = $viessmannApi->isHeatingBurnerActive();
           } else {
               $isHeatingBurnerActive = 0;
           }
           $this->getCmd(null, 'isHeatingBurnerActive')->event($isHeatingBurnerActive);
         
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::DHW_MODE)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::DHW_MODE)) !== false) {
               $isDhwModeActive = $viessmannApi->isDhwModeActive();
           } else {
               $isDhwModeActive = 0;
           }
           $this->getCmd(null, 'isDhwModeActive')->event($isDhwModeActive);
           
-          if (strPos($features, ViessmannFeature::HEATING_SENSORS_TEMPERATURE_OUTSIDE) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_SENSORS_TEMPERATURE_OUTSIDE) !== false) {
               $outsideTemperature = $viessmannApi->getOutsideTemperature();
           } else {
               $outsideTemperature = 99;
           }
           $this->getCmd(null, 'outsideTemperature')->event($outsideTemperature);
 
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::SENSORS_TEMPERATURE_SUPPLY)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::SENSORS_TEMPERATURE_SUPPLY)) !== false) {
               $supplyProgramTemperature = $viessmannApi->getSupplyTemperature();
           } else {
               $supplyProgramTemperature = 99;
           }
           $this->getCmd(null, 'supplyProgramTemperature')->event($supplyProgramTemperature);
 
-          if (strPos($features, ViessmannFeature::HEATING_DHW_TEMPERATURE) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_DHW_TEMPERATURE) !== false) {
               $dhwTemperature = $viessmannApi->getDhwTemperature();
           } else {
               $dhwTemperature = 99;
           }
           $this->getCmd(null, 'dhwTemperature')->event($dhwTemperature);
           
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_CURVE)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_CURVE)) !== false) {
               $slope = $viessmannApi->getSlope();
               $shift = $viessmannApi->getShift();
           } else {
@@ -187,21 +187,21 @@
           $this->getCmd(null, 'slope')->event($slope);
           $this->getCmd(null, 'shift')->event($shift);
 
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM)) !== false) {
               $comfortProgramTemperature = $viessmannApi->getComfortProgramTemperature();
           } else {
               $comfortProgramTemperature = 0;
           }
           $this->getCmd(null, 'comfortProgramTemperature')->event($comfortProgramTemperature);
 
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::NORMAL_PROGRAM)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::NORMAL_PROGRAM)) !== false) {
               $normalProgramTemperature = $viessmannApi->getNormalProgramTemperature();
           } else {
               $normalProgramTemperature = 0;
           }
           $this->getCmd(null, 'normalProgramTemperature')->event($normalProgramTemperature);
           
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::REDUCED_PROGRAM)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::REDUCED_PROGRAM)) !== false) {
               $reducedProgramTemperature = $viessmannApi->getReducedProgramTemperature();
           } else {
               $reducedProgramTemperature = 0;
@@ -216,7 +216,7 @@
               $this->getCmd(null, 'programTemperature')->event($reducedProgramTemperature);
           }
           
-          if (strPos($features, ViessmannFeature::HEATING_DHW_SENSORS_TEMPERATURE_HOTWATERSTORAGE) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_DHW_SENSORS_TEMPERATURE_HOTWATERSTORAGE) !== false) {
               $hotWaterStorageTemperature = $viessmannApi->getHotWaterStorageTemperature();
           } else {
               $hotWaterStorageTemperature = 99;
@@ -226,7 +226,7 @@
           // Consommation électricité
           //
 
-          if (strPos($features, ViessmannFeature::HEATING_POWER_CONSUMPTION) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_POWER_CONSUMPTION) !== false) {
               $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("day");
               $this->getCmd(null, 'heatingPowerConsumption')->event($heatingPowerConsumptions[0]);
               $day = '';
@@ -271,7 +271,7 @@
 
           // Consommation gaz eau chaude
           //
-          if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW) !== false) {
               $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("day");
               $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumptions[0]*$facteurConversionGaz);
               $day = '';
@@ -316,7 +316,7 @@
 
           // Consommation gaz chauffage
           //
-          if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_HEATING) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_HEATING) !== false) {
               $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("day");
               $this->getCmd(null, 'heatingGazConsumption')->event($heatingGazConsumptions[0]*$facteurConversionGaz);
               $day = '';
@@ -359,7 +359,7 @@
               $this->getCmd(null, 'heatingGazConsumptionYear')->event($year);
           }
 
-          if (strPos($features, ViessmannFeature::HEATING_BURNER_STATISTICS) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_BURNER_STATISTICS) !== false) {
               $heatingBurnerHours = $viessmannApi->getHeatingBurnerStatistics("hours");
               $heatingBurnerStarts = $viessmannApi->getHeatingBurnerStatistics("starts");
           } else {
@@ -369,7 +369,7 @@
           $this->getCmd(null, 'heatingBurnerHours')->event($heatingBurnerHours);
           $this->getCmd(null, 'heatingBurnerStarts')->event($heatingBurnerStarts);
           
-          if (strPos($features, ViessmannFeature::HEATING_BURNER_MODULATION) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_BURNER_MODULATION) !== false) {
               $heatingBurnerModulation = $viessmannApi->getHeatingBurnerModulation();
           } else {
               $heatingBurnerModulation = 0;
@@ -377,7 +377,7 @@
           $this->getCmd(null, 'heatingBurnerModulation')->event($heatingBurnerModulation);
           
           $dhwSchedule = '';
-          if (strPos($features, ViessmannFeature::HEATING_DHW_SCHEDULE) != false) {
+          if (strPos($features, ViessmannFeature::HEATING_DHW_SCHEDULE) !== false) {
               $dhwSchedule = $viessmannApi->getDhwSchedule();
               $json = json_decode($dhwSchedule, true);
           
@@ -455,7 +455,7 @@
           $this->getCmd(null, 'dhwSchedule')->event($dhwSchedule);
           
           $heatingSchedule = '';
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_SCHEDULE)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_SCHEDULE)) !== false) {
               $heatingSchedule = $viessmannApi->getHeatingSchedule();
               $json = json_decode($heatingSchedule, true);
 
@@ -536,21 +536,21 @@
           $date = $date->format('d-m-Y H:i:s');
           $this->getCmd(null, 'refreshDate')->event($date);
 
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_FROSTPROTECTION)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_FROSTPROTECTION)) !== false) {
               $frostProtection = $viessmannApi->getFrostprotection();
           } else {
               $frostProtection = 0;
           }
           $this->getCmd(null, 'frostProtection')->event($frostProtection);
 
-          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::SENSORS_TEMPERATURE_ROOM)) != false) {
+          if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::SENSORS_TEMPERATURE_ROOM)) !== false) {
               $roomTemperature = $viessmannApi->getRoomTemperature();
           } else {
               $roomTemperature = 99;
           }
           $this->getCmd(null, 'roomTemperature')->event($roomTemperature);
 
-          if (strPos($features, self::PRESSURE_SUPPLY) != false) {
+          if (strPos($features, self::PRESSURE_SUPPLY) !== false) {
               $pressureSupply = $viessmannApi->getGenericFeaturePropertyAsJSON(self::PRESSURE_SUPPLY);
           } else {
               $pressureSupply = 99;
