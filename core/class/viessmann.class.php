@@ -272,6 +272,13 @@
           // Consommation gaz eau chaude
           //
           if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW) !== false) {
+
+              $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("day", true);
+              log::add('viessmann', 'debug', 'Test Unit ' . $dhwGazConsumptions);
+              $test = json_decode($dhwGazConsumptions, true);
+              log::add('viessmann', 'debug', 'Unit ' . $test['unit']);
+              log::add('viessmann', 'debug', 'Value ' . $test['value']);
+              
               $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("day");
               $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumptions[0]*$facteurConversionGaz);
               $day = '';
