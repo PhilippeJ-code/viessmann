@@ -66,6 +66,16 @@
               $this->setConfiguration('gatewayId', $gatewayId)->save();
               log::add('viessmann', 'debug', 'Récupération id installation ' . $installationId);
               log::add('viessmann', 'debug', 'Récupération id gateway ' . $gatewayId);
+              $features = $viessmannApi->getAvailableFeatures();
+              if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW) != false) {
+                  $uniteGaz = trim($viessmannApi->getGenericFeaturePropertyAsJSON(ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW, "unit"));
+                  if ($uniteGaz === '"cubicMeter"') {
+                      $this->setConfiguration('uniteGaz', 'm3');
+                  } else {
+                      $this->setConfiguration('uniteGaz', 'kWh');
+                  }
+                  $this->setConfiguration('facteurConversionGaz', 1)->save();
+              }
           }
 
           return $viessmannApi;
@@ -75,10 +85,14 @@
       //
       public function rafraichir($viessmannApi)
       {
-          $values = array("value", "slope", "shift", "status", "starts", "hours","active", "temperature", "day", "week", "month", "year");
+          $values = array("value", "slope", "shift", "status", "starts", "hours","active", "temperature", "day", "week", "month", "year", "unit");
         
           $circuitId = trim($this->getConfiguration('circuitId', '0'));
           $logFeatures = $this->getConfiguration('logFeatures', '');
+          $facteurConversionGaz = floatval($this->getConfiguration('facteurConversionGaz', 1));
+          if ($facteurConversionGaz == 0) {
+              $facteurConversionGaz = 1;
+          }
 
           $features = $viessmannApi->getAvailableFeatures();
 
@@ -259,13 +273,13 @@
           //
           if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW) != false) {
               $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("day");
-              $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumptions[0]);
+              $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumptions[0]*$facteurConversionGaz);
               $day = '';
               foreach ($dhwGazConsumptions as $dhwGazConsumption) {
                   if ($day !== '') {
                       $day = ',' . $day;
                   }
-                  $day = $dhwGazConsumption . $day;
+                  $day = $dhwGazConsumption*$facteurConversionGaz . $day;
               }
               $this->getCmd(null, 'dhwGazConsumptionDay')->event($day);
 
@@ -275,7 +289,7 @@
                   if ($week !== '') {
                       $week = ',' . $week;
                   }
-                  $week = $dhwGazConsumption . $week;
+                  $week = $dhwGazConsumption*$facteurConversionGaz . $week;
               }
               $this->getCmd(null, 'dhwGazConsumptionWeek')->event($week);
 
@@ -285,7 +299,7 @@
                   if ($month !== '') {
                       $month = ',' . $month;
                   }
-                  $month = $dhwGazConsumption . $month;
+                  $month = $dhwGazConsumption*$facteurConversionGaz . $month;
               }
               $this->getCmd(null, 'dhwGazConsumptionMonth')->event($month);
 
@@ -295,7 +309,7 @@
                   if ($year !== '') {
                       $year = ',' . $year;
                   }
-                  $year = $dhwGazConsumption . $year;
+                  $year = $dhwGazConsumption*$facteurConversionGaz . $year;
               }
               $this->getCmd(null, 'dhwGazConsumptionYear')->event($year);
           }
@@ -304,13 +318,13 @@
           //
           if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_HEATING) != false) {
               $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("day");
-              $this->getCmd(null, 'heatingGazConsumption')->event($heatingGazConsumptions[0]);
+              $this->getCmd(null, 'heatingGazConsumption')->event($heatingGazConsumptions[0]*$facteurConversionGaz);
               $day = '';
               foreach ($heatingGazConsumptions as $heatingGazConsumption) {
                   if ($day !== '') {
                       $day = ',' . $day;
                   }
-                  $day = $heatingGazConsumption . $day;
+                  $day = $heatingGazConsumption*$facteurConversionGaz . $day;
               }
               $this->getCmd(null, 'heatingGazConsumptionDay')->event($day);
 
@@ -320,7 +334,7 @@
                   if ($week !== '') {
                       $week = ',' . $week;
                   }
-                  $week = $heatingGazConsumption . $week;
+                  $week = $heatingGazConsumption*$facteurConversionGaz . $week;
               }
               $this->getCmd(null, 'heatingGazConsumptionWeek')->event($week);
 
@@ -330,7 +344,7 @@
                   if ($month !== '') {
                       $month = ',' . $month;
                   }
-                  $month = $heatingGazConsumption . $month;
+                  $month = $heatingGazConsumption*$facteurConversionGaz . $month;
               }
               $this->getCmd(null, 'heatingGazConsumptionMonth')->event($month);
 
@@ -340,7 +354,7 @@
                   if ($year !== '') {
                       $year = ',' . $year;
                   }
-                  $year = $heatingGazConsumption . $year;
+                  $year = $heatingGazConsumption*$facteurConversionGaz . $year;
               }
               $this->getCmd(null, 'heatingGazConsumptionYear')->event($year);
           }
@@ -594,7 +608,7 @@
           $viessmannApi->setDhwTemperature($temperature);
       }
 
-      public static function cronHourly()
+      public static function periodique()
       {
           $oldUserName = '';
           $oldPassword = '';
@@ -632,7 +646,7 @@
                   }
               }
           } else {
-             $viessmann = null;
+              $viessmann = null;
               foreach (self::byType('viessmann') as $viessmann) {
                   if ($viessmann->getIsEnable() == 1) {
                       $viessmannApi = $viessmann->getViessmann();
@@ -642,6 +656,31 @@
                   }
               }
           }
+      }
+
+      public static function cron5()
+      {
+          self::periodique();
+      }
+    
+      public static function cron10()
+      {
+          self::periodique();
+      }
+    
+      public static function cron15()
+      {
+          self::periodique();
+      }
+    
+      public static function cron30()
+      {
+          self::periodique();
+      }
+    
+      public static function cronHourly()
+      {
+          self::periodique();
       }
     
       // Fonction exécutée automatiquement avant la création de l'équipement
@@ -1358,6 +1397,7 @@
           $displayGas = $this->getConfiguration('displayGas', '1');
           $displayPower = $this->getConfiguration('displayPower', '1');
           $circuitName = $this->getConfiguration('circuitName', 'Radiateurs');
+          $uniteGaz = $this->getConfiguration('uniteGaz', 'm3');
 
           if (!$isWidgetPlugin) {
               return eqLogic::toHtml($_version);
@@ -1734,6 +1774,7 @@
           $replace["#circuitName#"] = $circuitName;
           $replace["#displayGas#"] = $displayGas;
           $replace["#displayPower#"] = $displayPower;
+          $replace["#uniteGaz#"] = $uniteGaz;
 
           return template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann'));
       }

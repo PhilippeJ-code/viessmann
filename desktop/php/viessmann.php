@@ -141,24 +141,24 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">{{Id du gateway}}</label>
               <div class="col-sm-3">
-                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration"
-                  data-l2key="gatewayId" placeholder="Id du gateway" />
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="gatewayId"
+                  placeholder="Id du gateway" />
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-sm-3 control-label">{{Id du device}}</label>
               <div class="col-sm-3">
-                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration"
-                  data-l2key="deviceId" placeholder="Id du device" />
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="deviceId"
+                  placeholder="Id du device" />
               </div>
             </div>
 
             <div class="form-group">
               <label class="col-sm-3 control-label">{{Id du circuit}}</label>
               <div class="col-sm-3">
-                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration"
-                  data-l2key="circuitId" placeholder="Id du circuit" />
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="circuitId"
+                  placeholder="Id du circuit" />
               </div>
             </div>
 
@@ -168,11 +168,11 @@
                     title="{{Ne pas oublier de mettre le log du plugin en debug}}"></i></sup>
               </label>
               <div class="col-sm-3">
-                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration"
-                  data-l2key="logFeatures" placeholder="Mettre Oui" />
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="logFeatures"
+                  placeholder="Mettre Oui" />
               </div>
             </div>
-            
+
           </fieldset>
         </form>
       </div>
@@ -185,34 +185,53 @@
             <div class="form-group">
               <label class="col-sm-3 control-label">{{Nom du circuit}}</label>
               <div class="col-sm-3">
-                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration"
-                  data-l2key="circuitName" placeholder="Nom du circuit" />
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="circuitName"
+                  placeholder="Nom du circuit" />
               </div>
             </div>
 
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{Utiliser le widget du plugin}}</label>
-                <div class="col-sm-3 form-check-input">
-                  <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
-                      data-l2key="isWidgetPlugin" checked /></label>
-                </div>
+              <label class="col-sm-3 control-label">{{Unité Gaz}}</label>
+              <div class="col-sm-3">
+                <select required class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="uniteGaz">
+                  <option value="" disabled selected>{{Sélectionnez l'unité}}</option>
+                  <option value="m3">m3( défaut )</option>
+                  <option value="kWh">kWh</option>
+                </select>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-sm-3 control-label">{{Afficher la tuile gaz}}</label>
-                <div class="col-sm-3 form-check-input">
-                  <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
-                      data-l2key="displayGas" checked /></label>
-                </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Facteur de conversion}}</label>
+              <div class="col-sm-3">
+                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration"
+                  data-l2key="facteurConversionGaz" placeholder="m3 -> kWh ou kWh -> m3" />
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="col-sm-3 control-label">{{Afficher la tuile électricité}}</label>
-                <div class="col-sm-3 form-check-input">
-                  <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
-                      data-l2key="displayPower" checked /></label>
-                </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Utiliser le widget du plugin}}</label>
+              <div class="col-sm-3 form-check-input">
+                <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration"
+                  data-l2key="isWidgetPlugin" checked /></label>
               </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Afficher la tuile gaz}}</label>
+              <div class="col-sm-3 form-check-input">
+                <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="displayGas"
+                  checked /></label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-3 control-label">{{Afficher la tuile électricité}}</label>
+              <div class="col-sm-3 form-check-input">
+                <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="displayPower"
+                  checked /></label>
+              </div>
+            </div>
 
           </fieldset>
         </form>

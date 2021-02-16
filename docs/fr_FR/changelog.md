@@ -21,5 +21,10 @@
     Ajout du nom du circuit
     Correction widget
     
+# 15-02-2021
+
+    Accès par le widget à l'historique des commandes
+    Choix unité m3 ou kWh pour la conso gaz
+    Ajout des crons 5, 15 et 30
 
 

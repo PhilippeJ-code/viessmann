@@ -1,7 +1,7 @@
 {
 	"id" : "viessmann",
 	"name" : "Viessmann",
-	"description" : "Ce plugin permet de récupérer les infos d'une chaudière Viessmann",
+	"description" : "Ce plugin permet de récupérer les infos d'une chaudière Viessmann equipée de VitoConnect",
 	"licence" : "AGPL",
 	"author" : "PhilippeJ",
 	"require" : "3.2",

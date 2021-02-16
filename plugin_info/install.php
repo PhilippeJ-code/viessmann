@@ -22,12 +22,37 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 //
 function viessmann_install() 
 {
+    config::save('functionality::cron5::enable', 0, 'viessmann');
+    config::save('functionality::cron10::enable', 0, 'viessmann');
+    config::save('functionality::cron15::enable', 0, 'viessmann');
+    config::save('functionality::cron30::enable', 1, 'viessmann');
+    config::save('functionality::cronHourly::enable', 0, 'viessmann');
 }
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
 //
 function viessmann_update() 
 {
+    if (config::byKey('functionality::cron5::enable', 'viessmann', -1) == -1) {
+        config::save('functionality::cron5::enable', 0, 'viessmann');
+    }
+
+    if (config::byKey('functionality::cron10::enable', 'viessmann', -1) == -1) {
+        config::save('functionality::cron10::enable', 0, 'viessmann');
+    }
+
+    if (config::byKey('functionality::cron15::enable', 'viessmann', -1) == -1) {
+        config::save('functionality::cron15::enable', 0, 'viessmann');
+    }
+
+    if (config::byKey('functionality::cron30::enable', 'viessmann', -1) == -1) {
+        config::save('functionality::cron30::enable', 1, 'viessmann');
+    }
+
+    if (config::byKey('functionality::cronHourly::enable', 'viessmann', -1) == -1) {
+        config::save('functionality::cronHourly::enable', 0, 'viessmann');
+    }
+
     foreach (viessmann::byType('viessmann') as $viessmann) {
         $viessmann->save();
     }

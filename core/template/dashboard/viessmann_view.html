@@ -37,8 +37,8 @@
           src="plugins/viessmann/resources/options.svg">
         <img class="classOptionsCal#uid#" id="idOptionsCalEauChaude#uid#"
           src="plugins/viessmann/resources/calendrier.svg">
-        <span id="idHotWaterStorageTemperature#uid#"></span>
-        <span id="idDhwTemperature#uid#"></span>
+        <span id="idHotWaterStorageTemperature#uid#" class="history cursor" data-cmd_id="#idHotWaterStorageTemperature#"></span>
+        <span id="idDhwTemperature#uid#" class="history cursor" data-cmd_id="#idDhwTemperature#"></span>
         <span class="classLibelleTuile#uid#">Eau Chaude</span>
       </div>
 
@@ -49,15 +49,15 @@
 
       <div id="idTuileGaz#uid#" class="classDemiTuile#uid#">
         <img class="classOptions#uid# cursor" id="idOptionsGaz#uid#" src="plugins/viessmann/resources/options.svg">
-        <span id="idDhwGazConsumption#uid#"></span>
-        <span id="idHeatingGazConsumption#uid#"></span>
+        <span id="idDhwGazConsumption#uid#" class="history cursor" data-cmd_id="#idDhwGazConsumption#"></span>
+        <span id="idHeatingGazConsumption#uid#" class="history cursor" data-cmd_id="#idHeatingGazConsumption#""></span>
         <span class="classLibelleTuile#uid#">Gaz</span>
       </div>
 
       <div id="idTuileElectricite#uid#" class="classDemiTuile#uid#">
         <img class="classOptions#uid# cursor" id="idOptionsElectricite#uid#"
           src="plugins/viessmann/resources/options.svg">
-        <span id="idHeatingPowerConsumption#uid#"></span>
+        <span id="idHeatingPowerConsumption#uid#" class="history cursor" data-cmd_id="#idHeatingPowerConsumption#"></span>
         <span class="classLibelleTuile#uid#">Electricité</span>
       </div>
 
@@ -81,19 +81,19 @@
     <span class="classTitre#uid#">Brûleur</span></br></br>
     <span class="classSousTitre#uid#">Etat du brûleur</span><span class="classValeur#uid#"
       id="idEtatBruleur#uid#"></span></br>
-    <span class="classSousTitre#uid#">Heures de fonctionnement</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Heures de fonctionnement</span><span class="classValeur#uid# history cursor" data-cmd_id="#idHeatingBurnerHours#"
       id="idHeatingBurnerHours#uid#"></span></br>
-    <span class="classSousTitre#uid#">Nombre de démarrages</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Nombre de démarrages</span><span class="classValeur#uid# history cursor" data-cmd_id="#idHeatingBurnerStarts#"
       id="idHeatingBurnerStarts#uid#"></span></br>
-    <span class="classSousTitre#uid#">Modulation</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Modulation</span><span class="classValeur#uid# history cursor" data-cmd_id="#idHeatingBurnerModulation#"
       id="idHeatingBurnerModulation#uid#"></span></br>
     </br>
     <span class="classTitre#uid#">Courbes</span></br></br>
-    <span class="classSousTitre#uid#">Pente</span><span class="classValeur#uid#" id="idSlope#uid#"></span></br>
-    <span class="classSousTitre#uid#">Parallèle</span><span class="classValeur#uid#" id="idShift#uid#"></span></br>
+    <span class="classSousTitre#uid#">Pente</span><span class="classValeur#uid# history cursor" data-cmd_id="#idSlope#" id="idSlope#uid#"></span></br>
+    <span class="classSousTitre#uid#">Parallèle</span><span class="classValeur#uid# history cursor" data-cmd_id="#idShift#" id="idShift#uid#"></span></br>
     </br>
     <span class="classTitre#uid#">Installation</span></br></br>
-    <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid#" id="idPressureSupply#uid#"></span></br>
+    <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor" data-cmd_id="#idPressureSupply#" id="idPressureSupply#uid#"></span></br>
     
     <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Chaudière</span></br>
@@ -109,21 +109,21 @@
     </br>
     <span class="classTitre#uid#">Températures</span></br></br>
     <span class="classSousTitre#uid#">Confort</span><span id="idComfortProgramTemperature#uid#"
-      class="classValeur#uid#"></span><img class="classCrayon#uid# cursor" id="idModifierConfort#uid#"
+      class="classValeur#uid#  history cursor" data-cmd_id="#idComfortProgramTemperature#"></span><img class="classCrayon#uid# cursor" id="idModifierConfort#uid#"
       src="plugins/viessmann/resources/crayon.svg"></br>
     <span class="classSousTitre#uid#">Normale</span><span id="idNormalProgramTemperature#uid#"
-      class="classValeur#uid#"></span><img class="classCrayon#uid# cursor" id="idModifierNormale#uid#"
+      class="classValeur#uid# history cursor" data-cmd_id="#idNormalProgramTemperature#"></span><img class="classCrayon#uid# cursor" id="idModifierNormale#uid#"
       src="plugins/viessmann/resources/crayon.svg"></br>
     <span class="classSousTitre#uid#">Réduite</span><span id="idReducedProgramTemperature#uid#"
-      class="classValeur#uid#"></span><img class="classCrayon#uid# cursor" id="idModifierReduite#uid#"
+      class="classValeur#uid# history cursor" data-cmd_id="#idReducedProgramTemperature#"></span><img class="classCrayon#uid# cursor" id="idModifierReduite#uid#"
       src="plugins/viessmann/resources/crayon.svg"></br>
     </br>
     <span class="classTitre#uid#">#circuitName#</span></br></br>
-    <span class="classSousTitre#uid#">Température pièce</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Température pièce</span><span class="classValeur#uid# history cursor" data-cmd_id="#idRoomTemperature#"
       id="idTemperaturePiece#uid#"></span></br>
-    <span class="classSousTitre#uid#">Température de départ</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Température de départ</span><span class="classValeur#uid# history cursor" data-cmd_id="#idSupplyProgramTemperature#"
       id="idTemperatureDepart#uid#"></span></br>
-    <span class="classSousTitre#uid#">Température eau radiateur</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Température eau radiateur</span><span class="classValeur#uid# history cursor" data-cmd_id="#idBoilerTemperature#"
       id="idTemperatureEauRadiateur#uid#"></span></br>
     <span class="classSousTitre#uid#">Mise hors gel</span><span class="classValeur#uid#"
       id="idFrostProtection#uid#"></span></br>
@@ -182,10 +182,10 @@
     </br>
     <span class="classTitre#uid#">Températures</span>
     </br></br>
-    <span class="classSousTitre#uid#">Consigne</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Consigne</span><span class="classValeur#uid# history cursor" data-cmd_id="#idDhwTemperature#"
       id="idConsigneEauChaude#uid#"></span><img class="classCrayon#uid# cursor" id="idModifierDhw#uid#"
       src="plugins/viessmann/resources/crayon.svg"></br>
-    <span class="classSousTitre#uid#">Actuel</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Actuel</span><span class="classValeur#uid# history cursor" data-cmd_id="#idHotWaterStorageTemperature#"
       id="idActuelEauChaude#uid#"></span></br>
 
     <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
@@ -1263,7 +1263,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} m3</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1316,7 +1316,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} m3</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1369,7 +1369,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} m3</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1422,7 +1422,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} m3</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
