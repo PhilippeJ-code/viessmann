@@ -269,16 +269,15 @@
               $this->getCmd(null, 'heatingPowerConsumptionYear')->event($year);
           }
 
+          $totalDay = array();
+          $totalWeek = array();
+          $totalMonth = array();
+          $totalYear = array();
+
           // Consommation gaz eau chaude
           //
           if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW) !== false) {
 
-              $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("day", true);
-              log::add('viessmann', 'debug', 'Test Unit ' . $dhwGazConsumptions);
-              $test = json_decode($dhwGazConsumptions, true);
-              log::add('viessmann', 'debug', 'Unit ' . $test['unit']);
-              log::add('viessmann', 'debug', 'Value ' . $test['value']);
-              
               $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("day");
               $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumptions[0]*$facteurConversionGaz);
               $day = '';
@@ -287,6 +286,7 @@
                       $day = ',' . $day;
                   }
                   $day = $dhwGazConsumption*$facteurConversionGaz . $day;
+                  $totalDay[] = $dhwGazConsumption*$facteurConversionGaz;
               }
               $this->getCmd(null, 'dhwGazConsumptionDay')->event($day);
 
@@ -297,6 +297,7 @@
                       $week = ',' . $week;
                   }
                   $week = $dhwGazConsumption*$facteurConversionGaz . $week;
+                  $totalWeek[] = $dhwGazConsumption*$facteurConversionGaz;
               }
               $this->getCmd(null, 'dhwGazConsumptionWeek')->event($week);
 
@@ -307,6 +308,7 @@
                       $month = ',' . $month;
                   }
                   $month = $dhwGazConsumption*$facteurConversionGaz . $month;
+                  $totalMonth[] = $dhwGazConsumption*$facteurConversionGaz;
               }
               $this->getCmd(null, 'dhwGazConsumptionMonth')->event($month);
 
@@ -317,6 +319,7 @@
                       $year = ',' . $year;
                   }
                   $year = $dhwGazConsumption*$facteurConversionGaz . $year;
+                  $totalYear[] = $dhwGazConsumption*$facteurConversionGaz;
               }
               $this->getCmd(null, 'dhwGazConsumptionYear')->event($year);
           }
@@ -324,47 +327,97 @@
           // Consommation gaz chauffage
           //
           if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_HEATING) !== false) {
+
               $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("day");
               $this->getCmd(null, 'heatingGazConsumption')->event($heatingGazConsumptions[0]*$facteurConversionGaz);
               $day = '';
+              $n = 0;
               foreach ($heatingGazConsumptions as $heatingGazConsumption) {
                   if ($day !== '') {
                       $day = ',' . $day;
                   }
                   $day = $heatingGazConsumption*$facteurConversionGaz . $day;
+                  $totalDay[$n] += $heatingGazConsumption*$facteurConversionGaz;
+                  $n++;
               }
               $this->getCmd(null, 'heatingGazConsumptionDay')->event($day);
 
+              $day = '';
+              foreach ($totalDay as $total) {
+                  if ($day !== '') {
+                      $day = ',' . $day;
+                  }
+                  $day =  $total . $day;
+              }
+              $this->getCmd(null, 'totalGazConsumptionDay')->event($day);
+
               $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("week");
               $week = '';
+              $n = 0;
               foreach ($heatingGazConsumptions as $heatingGazConsumption) {
                   if ($week !== '') {
                       $week = ',' . $week;
                   }
                   $week = $heatingGazConsumption*$facteurConversionGaz . $week;
+                  $totalWeek[$n] += $heatingGazConsumption*$facteurConversionGaz;
+                  $n++;
               }
               $this->getCmd(null, 'heatingGazConsumptionWeek')->event($week);
 
+              $week = '';
+              foreach ($totalWeek as $total) {
+                  if ($week !== '') {
+                      $week = ',' . $week;
+                  }
+                  $week =  $total . $week;
+              }
+              $this->getCmd(null, 'totalGazConsumptionWeek')->event($week);
+
               $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("month");
               $month = '';
+              $n = 0;
               foreach ($heatingGazConsumptions as $heatingGazConsumption) {
                   if ($month !== '') {
                       $month = ',' . $month;
                   }
                   $month = $heatingGazConsumption*$facteurConversionGaz . $month;
+                  $totalMonth[$n] += $heatingGazConsumption*$facteurConversionGaz;
+                  $n++;
               }
               $this->getCmd(null, 'heatingGazConsumptionMonth')->event($month);
 
+              $month = '';
+              foreach ($totalMonth as $total) {
+                  if ($month !== '') {
+                      $month = ',' . $month;
+                  }
+                  $month =  $total . $month;
+              }
+              $this->getCmd(null, 'totalGazConsumptionMonth')->event($month);
+
               $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("year");
               $year = '';
+              $n = 0;
               foreach ($heatingGazConsumptions as $heatingGazConsumption) {
                   if ($year !== '') {
                       $year = ',' . $year;
                   }
                   $year = $heatingGazConsumption*$facteurConversionGaz . $year;
+                  $totalYear[$n] += $heatingGazConsumption*$facteurConversionGaz;
+                  $n++;
               }
               $this->getCmd(null, 'heatingGazConsumptionYear')->event($year);
-          }
+
+              $year = '';
+              foreach ($totalYear as $total) {
+                  if ($year !== '') {
+                      $year = ',' . $year;
+                  }
+                  $year =  $total . $year;
+              }
+              $this->getCmd(null, 'totalGazConsumptionYear')->event($year);
+
+            }
 
           if (strPos($features, ViessmannFeature::HEATING_BURNER_STATISTICS) !== false) {
               $heatingBurnerHours = $viessmannApi->getHeatingBurnerStatistics("hours");
@@ -665,6 +718,15 @@
           }
       }
 
+      public static function cron()
+      {
+          $maintenant = time();
+          $minute = date("i", $maintenant);
+          if (($minute % 2) == 0) {
+              self::periodique();
+          }
+      }
+    
       public static function cron5()
       {
           self::periodique();
@@ -1381,6 +1443,63 @@
           $obj->setLogicalId('pressureSupply');
           $obj->setOrder(45);
           $obj->save();
+
+          $obj = $this->getCmd(null, 'totalGazConsumptionDay');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Consommation journalière gaz', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('totalGazConsumptionDay');
+          $obj->setOrder(46);
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'totalGazConsumptionWeek');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Consommation hebdomadaire gaz', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('totalGazConsumptionWeek');
+          $obj->setOrder(47);
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'totalGazConsumptionMonth');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Consommation mensuelle gaz', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('totalGazConsumptionMonth');
+          $obj->setOrder(48);
+          $obj->save();
+
+          $obj = $this->getCmd(null, 'totalGazConsumptionYear');
+          if (!is_object($obj)) {
+              $obj = new viessmannCmd();
+              $obj->setName(__('Consommation annuelle gaz', __FILE__));
+              $obj->setIsVisible(1);
+              $obj->setIsHistorized(0);
+          }
+          $obj->setEqLogic_id($this->getId());
+          $obj->setType('info');
+          $obj->setSubType('string');
+          $obj->setLogicalId('totalGazConsumptionYear');
+          $obj->setOrder(49);
+          $obj->save();
+
       }
 
       // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -1501,6 +1620,10 @@
           $replace["#dhwGazConsumptionDay#"] = $obj->execCmd();
           $replace["#idDhwGazConsumptionDay#"] = $obj->getId();
 
+          $obj = $this->getCmd(null, 'totalGazConsumptionDay');
+          $replace["#totalGazConsumptionDay#"] = $obj->execCmd();
+          $replace["#idTotalGazConsumptionDay#"] = $obj->getId();
+
           $jours = array("Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim");
           
           $maintenant = time();
@@ -1529,6 +1652,10 @@
           $replace["#dhwGazConsumptionWeek#"] = $obj->execCmd();
           $replace["#idDhwGazConsumptionWeek#"] = $obj->getId();
 
+          $obj = $this->getCmd(null, 'totalGazConsumptionWeek');
+          $replace["#totalGazConsumptionWeek#"] = $obj->execCmd();
+          $replace["#idTotalGazConsumptionWeek#"] = $obj->getId();
+
           $maintenant = time();
           $semaine = date("W", $maintenant);
           $semaines = '';
@@ -1552,6 +1679,10 @@
           $obj = $this->getCmd(null, 'dhwGazConsumptionMonth');
           $replace["#dhwGazConsumptionMonth#"] = $obj->execCmd();
           $replace["#idDhwGazConsumptionMonth#"] = $obj->getId();
+
+          $obj = $this->getCmd(null, 'totalGazConsumptionMonth');
+          $replace["#totalGazConsumptionMonth#"] = $obj->execCmd();
+          $replace["#idTotalGazConsumptionMonth#"] = $obj->getId();
 
           $libMois = array("Janv", "Févr", "Mars", "Avr", "Mai", "Juin", "Juil", "Août", "Sept", "Oct", "Nov", "Déc");
           
@@ -1580,6 +1711,10 @@
           $obj = $this->getCmd(null, 'dhwGazConsumptionYear');
           $replace["#dhwGazConsumptionYear#"] = $obj->execCmd();
           $replace["#idDhwGazConsumptionYear#"] = $obj->getId();
+
+          $obj = $this->getCmd(null, 'totalGazConsumptionYear');
+          $replace["#totalGazConsumptionYear#"] = $obj->execCmd();
+          $replace["#idTotalGazConsumptionYear#"] = $obj->getId();
 
           $maintenant = time();
           $annee = date("Y", $maintenant);
@@ -1783,7 +1918,7 @@
           $replace["#displayPower#"] = $displayPower;
           $replace["#uniteGaz#"] = $uniteGaz;
 
-          return template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann'));
+          return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann')));		
       }
 
       private function buildFeature($circuitId, $feature)

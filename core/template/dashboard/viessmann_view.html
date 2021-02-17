@@ -12,7 +12,7 @@
           src="plugins/viessmann/resources/options.svg">
 
         <span id="idNomObjet#uid#">#name_display#</span>
-        <span id="idProgrammeActuel#uid#"></span>
+        <span id="idProgrammeActuel#uid#">#activeProgram#</span>
 
         <span class="classOutsideTemperature#uid# history cursor" data-cmd_id="#idOutsideTemperature#"
           id="idOutsideTemperature#uid#"></span>
@@ -27,7 +27,7 @@
           src="plugins/viessmann/resources/options.svg">
         <img class="classOptionsCal#uid#" id="idOptionsCalRadiateurs#uid#"
           src="plugins/viessmann/resources/calendrier.svg">
-        <span id="idRoomTemperature#uid#"></span>
+        <span id="idRoomTemperature#uid#" class="history cursor" data-cmd_id="#idRoomTemperature#"></span>
         <span id="idProgramTemperature#uid#"></span>
         <span class="classLibelleTuile#uid#">#circuitName#</span>
       </div>
@@ -819,21 +819,21 @@
     }
   
     if (_options.display_value == 'comfort')
-      $('#idProgrammeActuel#uid#').html('Mode confort');
+      $('#idProgrammeActuel#uid#').html('Programme confort');
     else if (_options.display_value == 'normal')
-      $('#idProgrammeActuel#uid#').html('Mode normal');
+      $('#idProgrammeActuel#uid#').html('Programme normal');
     else if (_options.display_value == 'eco')
-      $('#idProgrammeActuel#uid#').html('Mode éco');
+      $('#idProgrammeActuel#uid#').html('Programme éco');
     else if (_options.display_value == 'reduced')
-      $('#idProgrammeActuel#uid#').html('Mode réduit');
+      $('#idProgrammeActuel#uid#').html('Programme réduit');
     else if (_options.display_value == 'external')
-      $('#idProgrammeActuel#uid#').html('Mode externe');
+      $('#idProgrammeActuel#uid#').html('Programme externe');
     else if (_options.display_value == 'holiday')
-      $('#idProgrammeActuel#uid#').html('Mode vacances');
+      $('#idProgrammeActuel#uid#').html('Programme vacances');
     else if (_options.display_value == 'standby')
-      $('#idProgrammeActuel#uid#').html('Mode attente');
+      $('#idProgrammeActuel#uid#').html('Programme veille');
     else
-      $('#idProgrammeActuel#uid#').html('Mode inconnu');
+      $('#idProgrammeActuel#uid#').html('Programme inconnu');
   }
   jeedom.cmd.update['#idActiveProgram#']({ display_value: '#activeProgram#' });
 
@@ -930,7 +930,7 @@
     else
       $('#idStatutEauChaude#uid#').html(_options.display_value);
   
-    if ((_options.display_value == 'dhwAndHeating'))
+    if ((_options.display_value == 'dhwAndHeating') || (_options.display_value == 'heating'))
       $('#idStatutChauffage#uid#').html('activé');
     else if (_options.display_value == 'standby')
       $('#idStatutChauffage#uid#').html('inactivé');
@@ -1288,6 +1288,10 @@
           name: 'Eau',
           data: [0]
   
+        }, {
+          name: 'Tot',
+          data: [0]
+  
         }]
       });
   
@@ -1339,6 +1343,10 @@
   
         }, {
           name: 'Eau',
+          data: [0]
+  
+        }, {
+          name: 'Tot',
           data: [0]
   
         }]
@@ -1394,6 +1402,10 @@
           name: 'Eau',
           data: [0]
   
+        }, {
+          name: 'Tot',
+          data: [0]
+  
         }]
       });
   
@@ -1447,6 +1459,10 @@
           name: 'Eau',
           data: [0]
   
+        }, {
+          name: 'Tot',
+          data: [0]
+  
         }]
       });
   
@@ -1472,6 +1488,16 @@
   }
   jeedom.cmd.update['#idDhwGazConsumptionDay#']({ display_value: '#dhwGazConsumptionDay#' });
   
+  jeedom.cmd.update['#idTotalGazConsumptionDay#'] = function (_options) {
+    var items = _options.display_value.split(',');
+    var datas = [];
+    items.forEach(function (item, itemNo) {
+      datas.push(parseFloat(item));
+    });
+    chartGazJour#uid#.series[2].setData(datas);
+  }
+  jeedom.cmd.update['#idTotalGazConsumptionDay#']({ display_value: '#totalGazConsumptionDay#' });
+  
   jeedom.cmd.update['#idHeatingGazConsumptionWeek#'] = function (_options) {
     var items = _options.display_value.split(',');
     var datas = [];
@@ -1491,6 +1517,16 @@
     chartGazSemaine#uid#.series[1].setData(datas);
   }
   jeedom.cmd.update['#idDhwGazConsumptionWeek#']({ display_value: '#dhwGazConsumptionWeek#' });
+  
+  jeedom.cmd.update['#idTotalGazConsumptionWeek#'] = function (_options) {
+    var items = _options.display_value.split(',');
+    var datas = [];
+    items.forEach(function (item, itemNo) {
+      datas.push(parseFloat(item));
+    });
+    chartGazSemaine#uid#.series[2].setData(datas);
+  }
+  jeedom.cmd.update['#idTotalGazConsumptionWeek#']({ display_value: '#totalGazConsumptionWeek#' });
   
   jeedom.cmd.update['#idHeatingGazConsumptionMonth#'] = function (_options) {
     var items = _options.display_value.split(',');
@@ -1512,6 +1548,16 @@
   }
   jeedom.cmd.update['#idDhwGazConsumptionMonth#']({ display_value: '#dhwGazConsumptionMonth#' });
   
+  jeedom.cmd.update['#idTotalGazConsumptionMonth#'] = function (_options) {
+    var items = _options.display_value.split(',');
+    var datas = [];
+    items.forEach(function (item, itemNo) {
+      datas.push(parseFloat(item));
+    });
+    chartGazMois#uid#.series[2].setData(datas);
+  }
+  jeedom.cmd.update['#idTotalGazConsumptionMonth#']({ display_value: '#totalGazConsumptionMonth#' });
+  
   jeedom.cmd.update['#idHeatingGazConsumptionYear#'] = function (_options) {
     var items = _options.display_value.split(',');
     var datas = [];
@@ -1531,6 +1577,16 @@
     chartGazAnnee#uid#.series[1].setData(datas);
   }
   jeedom.cmd.update['#idDhwGazConsumptionYear#']({ display_value: '#dhwGazConsumptionYear#' });
+  
+  jeedom.cmd.update['#idTotalGazConsumptionYear#'] = function (_options) {
+    var items = _options.display_value.split(',');
+    var datas = [];
+    items.forEach(function (item, itemNo) {
+      datas.push(parseFloat(item));
+    });
+    chartGazAnnee#uid#.series[2].setData(datas);
+  }
+  jeedom.cmd.update['#idTotalGazConsumptionYear#']({ display_value: '#totalGazConsumptionYear#' });
   
   // Tuile électricité
   //
@@ -1605,7 +1661,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1654,7 +1710,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1703,7 +1759,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1752,7 +1808,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true

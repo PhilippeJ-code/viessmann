@@ -25,6 +25,12 @@
 
     Accès par le widget à l'historique des commandes
     Choix unité m3 ou kWh pour la conso gaz
-    Ajout des crons 5, 15 et 30
+    Ajout des crons 5, 10, 15 et 30
 
+# 17-02-2021
+
+    Ajout du cron 1 
+    Historique température pièce
+    Total conso gaz
+    Conso électrique à 3 décimales
 

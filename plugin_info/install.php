@@ -22,6 +22,7 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 //
 function viessmann_install() 
 {
+    config::save('functionality::cron::enable', 0, 'viessmann');
     config::save('functionality::cron5::enable', 0, 'viessmann');
     config::save('functionality::cron10::enable', 0, 'viessmann');
     config::save('functionality::cron15::enable', 0, 'viessmann');
@@ -33,6 +34,10 @@ function viessmann_install()
 //
 function viessmann_update() 
 {
+    if (config::byKey('functionality::cron::enable', 'viessmann', -1) == -1) {
+        config::save('functionality::cron::enable', 0, 'viessmann');
+    }
+
     if (config::byKey('functionality::cron5::enable', 'viessmann', -1) == -1) {
         config::save('functionality::cron5::enable', 0, 'viessmann');
     }

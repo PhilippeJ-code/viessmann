@@ -12,7 +12,7 @@
           src="plugins/viessmann/resources/options.svg">
 
         <span id="idNomObjet#uid#">#name_display#</span>
-        <span id="idProgrammeActuel#uid#"></span>
+        <span id="idProgrammeActuel#uid#">#activeProgram#</span>
 
         <span class="classOutsideTemperature#uid# history cursor" data-cmd_id="#idOutsideTemperature#"
           id="idOutsideTemperature#uid#"></span>
@@ -27,7 +27,7 @@
           src="plugins/viessmann/resources/options.svg">
         <img class="classOptionsCal#uid#" id="idOptionsCalRadiateurs#uid#"
           src="plugins/viessmann/resources/calendrier.svg">
-        <span id="idRoomTemperature#uid#"></span>
+        <span id="idRoomTemperature#uid#" class="history cursor" data-cmd_id="#idRoomTemperature#"></span>
         <span id="idProgramTemperature#uid#"></span>
         <span class="classLibelleTuile#uid#">#circuitName#</span>
       </div>
@@ -37,8 +37,8 @@
           src="plugins/viessmann/resources/options.svg">
         <img class="classOptionsCal#uid#" id="idOptionsCalEauChaude#uid#"
           src="plugins/viessmann/resources/calendrier.svg">
-        <span id="idHotWaterStorageTemperature#uid#"></span>
-        <span id="idDhwTemperature#uid#"></span>
+        <span id="idHotWaterStorageTemperature#uid#" class="history cursor" data-cmd_id="#idHotWaterStorageTemperature#"></span>
+        <span id="idDhwTemperature#uid#" class="history cursor" data-cmd_id="#idDhwTemperature#"></span>
         <span class="classLibelleTuile#uid#">Eau Chaude</span>
       </div>
 
@@ -49,15 +49,15 @@
 
       <div id="idTuileGaz#uid#" class="classDemiTuile#uid#">
         <img class="classOptions#uid# cursor" id="idOptionsGaz#uid#" src="plugins/viessmann/resources/options.svg">
-        <span id="idDhwGazConsumption#uid#"></span>
-        <span id="idHeatingGazConsumption#uid#"></span>
+        <span id="idDhwGazConsumption#uid#" class="history cursor" data-cmd_id="#idDhwGazConsumption#"></span>
+        <span id="idHeatingGazConsumption#uid#" class="history cursor" data-cmd_id="#idHeatingGazConsumption#""></span>
         <span class="classLibelleTuile#uid#">Gaz</span>
       </div>
 
       <div id="idTuileElectricite#uid#" class="classDemiTuile#uid#">
         <img class="classOptions#uid# cursor" id="idOptionsElectricite#uid#"
           src="plugins/viessmann/resources/options.svg">
-        <span id="idHeatingPowerConsumption#uid#"></span>
+        <span id="idHeatingPowerConsumption#uid#" class="history cursor" data-cmd_id="#idHeatingPowerConsumption#"></span>
         <span class="classLibelleTuile#uid#">Electricité</span>
       </div>
 
@@ -81,19 +81,19 @@
     <span class="classTitre#uid#">Brûleur</span></br></br>
     <span class="classSousTitre#uid#">Etat du brûleur</span><span class="classValeur#uid#"
       id="idEtatBruleur#uid#"></span></br>
-    <span class="classSousTitre#uid#">Heures de fonctionnement</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Heures de fonctionnement</span><span class="classValeur#uid# history cursor" data-cmd_id="#idHeatingBurnerHours#"
       id="idHeatingBurnerHours#uid#"></span></br>
-    <span class="classSousTitre#uid#">Nombre de démarrages</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Nombre de démarrages</span><span class="classValeur#uid# history cursor" data-cmd_id="#idHeatingBurnerStarts#"
       id="idHeatingBurnerStarts#uid#"></span></br>
-    <span class="classSousTitre#uid#">Modulation</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Modulation</span><span class="classValeur#uid# history cursor" data-cmd_id="#idHeatingBurnerModulation#"
       id="idHeatingBurnerModulation#uid#"></span></br>
     </br>
     <span class="classTitre#uid#">Courbes</span></br></br>
-    <span class="classSousTitre#uid#">Pente</span><span class="classValeur#uid#" id="idSlope#uid#"></span></br>
-    <span class="classSousTitre#uid#">Parallèle</span><span class="classValeur#uid#" id="idShift#uid#"></span></br>
+    <span class="classSousTitre#uid#">Pente</span><span class="classValeur#uid# history cursor" data-cmd_id="#idSlope#" id="idSlope#uid#"></span></br>
+    <span class="classSousTitre#uid#">Parallèle</span><span class="classValeur#uid# history cursor" data-cmd_id="#idShift#" id="idShift#uid#"></span></br>
     </br>
     <span class="classTitre#uid#">Installation</span></br></br>
-    <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid#" id="idPressureSupply#uid#"></span></br>
+    <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor" data-cmd_id="#idPressureSupply#" id="idPressureSupply#uid#"></span></br>
     
     <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Chaudière</span></br>
@@ -109,21 +109,21 @@
     </br>
     <span class="classTitre#uid#">Températures</span></br></br>
     <span class="classSousTitre#uid#">Confort</span><span id="idComfortProgramTemperature#uid#"
-      class="classValeur#uid#"></span><img class="classCrayon#uid# cursor" id="idModifierConfort#uid#"
+      class="classValeur#uid#  history cursor" data-cmd_id="#idComfortProgramTemperature#"></span><img class="classCrayon#uid# cursor" id="idModifierConfort#uid#"
       src="plugins/viessmann/resources/crayon.svg"></br>
     <span class="classSousTitre#uid#">Normale</span><span id="idNormalProgramTemperature#uid#"
-      class="classValeur#uid#"></span><img class="classCrayon#uid# cursor" id="idModifierNormale#uid#"
+      class="classValeur#uid# history cursor" data-cmd_id="#idNormalProgramTemperature#"></span><img class="classCrayon#uid# cursor" id="idModifierNormale#uid#"
       src="plugins/viessmann/resources/crayon.svg"></br>
     <span class="classSousTitre#uid#">Réduite</span><span id="idReducedProgramTemperature#uid#"
-      class="classValeur#uid#"></span><img class="classCrayon#uid# cursor" id="idModifierReduite#uid#"
+      class="classValeur#uid# history cursor" data-cmd_id="#idReducedProgramTemperature#"></span><img class="classCrayon#uid# cursor" id="idModifierReduite#uid#"
       src="plugins/viessmann/resources/crayon.svg"></br>
     </br>
     <span class="classTitre#uid#">#circuitName#</span></br></br>
-    <span class="classSousTitre#uid#">Température pièce</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Température pièce</span><span class="classValeur#uid# history cursor" data-cmd_id="#idRoomTemperature#"
       id="idTemperaturePiece#uid#"></span></br>
-    <span class="classSousTitre#uid#">Température de départ</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Température de départ</span><span class="classValeur#uid# history cursor" data-cmd_id="#idSupplyProgramTemperature#"
       id="idTemperatureDepart#uid#"></span></br>
-    <span class="classSousTitre#uid#">Température eau radiateur</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Température eau radiateur</span><span class="classValeur#uid# history cursor" data-cmd_id="#idBoilerTemperature#"
       id="idTemperatureEauRadiateur#uid#"></span></br>
     <span class="classSousTitre#uid#">Mise hors gel</span><span class="classValeur#uid#"
       id="idFrostProtection#uid#"></span></br>
@@ -182,10 +182,10 @@
     </br>
     <span class="classTitre#uid#">Températures</span>
     </br></br>
-    <span class="classSousTitre#uid#">Consigne</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Consigne</span><span class="classValeur#uid# history cursor" data-cmd_id="#idDhwTemperature#"
       id="idConsigneEauChaude#uid#"></span><img class="classCrayon#uid# cursor" id="idModifierDhw#uid#"
       src="plugins/viessmann/resources/crayon.svg"></br>
-    <span class="classSousTitre#uid#">Actuel</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Actuel</span><span class="classValeur#uid# history cursor" data-cmd_id="#idHotWaterStorageTemperature#"
       id="idActuelEauChaude#uid#"></span></br>
 
     <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
@@ -819,21 +819,21 @@
     }
   
     if (_options.display_value == 'comfort')
-      $('#idProgrammeActuel#uid#').html('Mode confort');
+      $('#idProgrammeActuel#uid#').html('Programme confort');
     else if (_options.display_value == 'normal')
-      $('#idProgrammeActuel#uid#').html('Mode normal');
+      $('#idProgrammeActuel#uid#').html('Programme normal');
     else if (_options.display_value == 'eco')
-      $('#idProgrammeActuel#uid#').html('Mode éco');
+      $('#idProgrammeActuel#uid#').html('Programme éco');
     else if (_options.display_value == 'reduced')
-      $('#idProgrammeActuel#uid#').html('Mode réduit');
+      $('#idProgrammeActuel#uid#').html('Programme réduit');
     else if (_options.display_value == 'external')
-      $('#idProgrammeActuel#uid#').html('Mode externe');
+      $('#idProgrammeActuel#uid#').html('Programme externe');
     else if (_options.display_value == 'holiday')
-      $('#idProgrammeActuel#uid#').html('Mode vacances');
+      $('#idProgrammeActuel#uid#').html('Programme vacances');
     else if (_options.display_value == 'standby')
-      $('#idProgrammeActuel#uid#').html('Mode attente');
+      $('#idProgrammeActuel#uid#').html('Programme veille');
     else
-      $('#idProgrammeActuel#uid#').html('Mode inconnu');
+      $('#idProgrammeActuel#uid#').html('Programme inconnu');
   }
   jeedom.cmd.update['#idActiveProgram#']({ display_value: '#activeProgram#' });
 
@@ -887,7 +887,11 @@
   jeedom.cmd.update['#idShift#']({ display_value: '#shift#' });
   
   jeedom.cmd.update['#idPressureSupply#'] = function (_options) {
-    $('#idPressureSupply#uid#').html(_options.display_value + " bar");
+    if (_options.display_value == 99) {
+      $('#idPressureSupply#uid#').html('--');
+    } else {
+      $('#idPressureSupply#uid#').html(_options.display_value + " bar");
+    }
   }
   jeedom.cmd.update['#idPressureSupply#']({ display_value: '#pressureSupply#' });
   
@@ -926,7 +930,7 @@
     else
       $('#idStatutEauChaude#uid#').html(_options.display_value);
   
-    if ((_options.display_value == 'dhwAndHeating'))
+    if ((_options.display_value == 'dhwAndHeating') || (_options.display_value == 'heating'))
       $('#idStatutChauffage#uid#').html('activé');
     else if (_options.display_value == 'standby')
       $('#idStatutChauffage#uid#').html('inactivé');
@@ -1259,7 +1263,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} m3</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1282,6 +1286,10 @@
   
         }, {
           name: 'Eau',
+          data: [0]
+  
+        }, {
+          name: 'Tot',
           data: [0]
   
         }]
@@ -1312,7 +1320,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} m3</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1335,6 +1343,10 @@
   
         }, {
           name: 'Eau',
+          data: [0]
+  
+        }, {
+          name: 'Tot',
           data: [0]
   
         }]
@@ -1365,7 +1377,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} m3</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1388,6 +1400,10 @@
   
         }, {
           name: 'Eau',
+          data: [0]
+  
+        }, {
+          name: 'Tot',
           data: [0]
   
         }]
@@ -1418,7 +1434,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} m3</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.1f} #uniteGaz#</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1441,6 +1457,10 @@
   
         }, {
           name: 'Eau',
+          data: [0]
+  
+        }, {
+          name: 'Tot',
           data: [0]
   
         }]
@@ -1468,6 +1488,16 @@
   }
   jeedom.cmd.update['#idDhwGazConsumptionDay#']({ display_value: '#dhwGazConsumptionDay#' });
   
+  jeedom.cmd.update['#idTotalGazConsumptionDay#'] = function (_options) {
+    var items = _options.display_value.split(',');
+    var datas = [];
+    items.forEach(function (item, itemNo) {
+      datas.push(parseFloat(item));
+    });
+    chartGazJour#uid#.series[2].setData(datas);
+  }
+  jeedom.cmd.update['#idTotalGazConsumptionDay#']({ display_value: '#totalGazConsumptionDay#' });
+  
   jeedom.cmd.update['#idHeatingGazConsumptionWeek#'] = function (_options) {
     var items = _options.display_value.split(',');
     var datas = [];
@@ -1487,6 +1517,16 @@
     chartGazSemaine#uid#.series[1].setData(datas);
   }
   jeedom.cmd.update['#idDhwGazConsumptionWeek#']({ display_value: '#dhwGazConsumptionWeek#' });
+  
+  jeedom.cmd.update['#idTotalGazConsumptionWeek#'] = function (_options) {
+    var items = _options.display_value.split(',');
+    var datas = [];
+    items.forEach(function (item, itemNo) {
+      datas.push(parseFloat(item));
+    });
+    chartGazSemaine#uid#.series[2].setData(datas);
+  }
+  jeedom.cmd.update['#idTotalGazConsumptionWeek#']({ display_value: '#totalGazConsumptionWeek#' });
   
   jeedom.cmd.update['#idHeatingGazConsumptionMonth#'] = function (_options) {
     var items = _options.display_value.split(',');
@@ -1508,6 +1548,16 @@
   }
   jeedom.cmd.update['#idDhwGazConsumptionMonth#']({ display_value: '#dhwGazConsumptionMonth#' });
   
+  jeedom.cmd.update['#idTotalGazConsumptionMonth#'] = function (_options) {
+    var items = _options.display_value.split(',');
+    var datas = [];
+    items.forEach(function (item, itemNo) {
+      datas.push(parseFloat(item));
+    });
+    chartGazMois#uid#.series[2].setData(datas);
+  }
+  jeedom.cmd.update['#idTotalGazConsumptionMonth#']({ display_value: '#totalGazConsumptionMonth#' });
+  
   jeedom.cmd.update['#idHeatingGazConsumptionYear#'] = function (_options) {
     var items = _options.display_value.split(',');
     var datas = [];
@@ -1527,6 +1577,16 @@
     chartGazAnnee#uid#.series[1].setData(datas);
   }
   jeedom.cmd.update['#idDhwGazConsumptionYear#']({ display_value: '#dhwGazConsumptionYear#' });
+  
+  jeedom.cmd.update['#idTotalGazConsumptionYear#'] = function (_options) {
+    var items = _options.display_value.split(',');
+    var datas = [];
+    items.forEach(function (item, itemNo) {
+      datas.push(parseFloat(item));
+    });
+    chartGazAnnee#uid#.series[2].setData(datas);
+  }
+  jeedom.cmd.update['#idTotalGazConsumptionYear#']({ display_value: '#totalGazConsumptionYear#' });
   
   // Tuile électricité
   //
@@ -1601,7 +1661,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1650,7 +1710,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1699,7 +1759,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
@@ -1748,7 +1808,7 @@
         tooltip: {
           headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
           pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.1f} kWh</b></td></tr>',
+            '<td style="padding:0"><b>{point.y:.3f} kWh</b></td></tr>',
           footerFormat: '</table>',
           shared: true,
           useHTML: true
