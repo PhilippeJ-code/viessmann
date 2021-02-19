@@ -34,3 +34,8 @@
     Total conso gaz
     Conso électrique à 3 décimales
 
+# 19-02-2021
+
+    Ajout données entretien et dysfonctionnements
+
+    

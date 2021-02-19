@@ -18,7 +18,7 @@ $image = imagecreate($width, $height);
 
 $blanc = imagecolorallocate($image, 255, 255, 255);
 
-$bleu = imagecolorallocate($image, 0, 0, 255);
+$orange = imagecolorallocate($image, 255, 125, 39);
 $bleuclair = imagecolorallocate($image, 156, 227, 254);
 
 $gris = imagecolorallocate($image, 128, 128, 128);
@@ -34,7 +34,7 @@ for ($i=0; $i<=24; $i++) {
         } else {
             $str = $i . ':00';
         }
-        imagestring($image, 2, $x-15, 0, $str, $gris);
+        imagestring($image, 2, $x-15, 0, $str, $noir);
     } else {
         ImageLine($image, $x, 20, $x, 25, $grisClair);
     }
@@ -56,7 +56,7 @@ if ($prog !== '') {
             $nombres = explode(":", $end);
             $fin = $nombres[0] * 60 + $nombres[1];
             $fin = $offsetGauche + $taille * $fin / 1440;
-            imagefilledrectangle($image, $debut, 26, $fin, 35, $bleu);
+            imagefilledrectangle($image, $debut, 26, $fin, 35, $orange);
         }
     }
 }

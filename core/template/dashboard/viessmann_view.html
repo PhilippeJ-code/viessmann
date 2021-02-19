@@ -10,6 +10,8 @@
       <div class="classTuile#uid#">
         <img class="classOptions#uid# cursor" id="idOptionsChaudiere#uid#"
           src="plugins/viessmann/resources/options.svg">
+        <img class="classOptionsCal#uid#" id="idOptionsErreurs#uid#"
+          src="plugins/viessmann/resources/alerte.svg">
 
         <span id="idNomObjet#uid#">#name_display#</span>
         <span id="idProgrammeActuel#uid#">#activeProgram#</span>
@@ -105,7 +107,36 @@
 
   </div>
 
-  <div class="classContenant#uid#" id="idRadiateurs#uid#" style="display:none;">
+  <div class="classContenant#uid#" id="idErreurs#uid#" style="display:none;">
+
+  </br></br>
+  <span class="classTitre#uid#">Entretien</span></br></br>
+  <span class="classSousTitre#uid#">Date dernier entretien</span><span class="classValeur#uid#"
+    id="idLastServiceDate#uid#"></span></br>
+    <span class="classSousTitre#uid#">Mois entre entretiens</span><span class="classValeur#uid#"
+    id="idServiceInterval#uid#"></span></br>
+    <span class="classSousTitre#uid#">Mois avant entretien</span><span class="classValeur#uid#"
+    id="idMonthSinceService#uid#"></span></br>
+  </br>
+
+  <span class="classTitre#uid#">Dysfonctionnements</span></br></br>
+  <span class="classSousTitre#uid#" id="idErrorDat_0#uid#"></span><span class="classValeur#uid#" id="idErrorCod_0#uid#"></span></br>
+  <span class="classSousTitre#uid#" id="idErrorDat_1#uid#"></span><span class="classValeur#uid#" id="idErrorCod_1#uid#"></span></br>
+  <span class="classSousTitre#uid#" id="idErrorDat_2#uid#"></span><span class="classValeur#uid#" id="idErrorCod_2#uid#"></span></br>
+  <span class="classSousTitre#uid#" id="idErrorDat_3#uid#"></span><span class="classValeur#uid#" id="idErrorCod_3#uid#"></span></br>
+  <span class="classSousTitre#uid#" id="idErrorDat_4#uid#"></span><span class="classValeur#uid#" id="idErrorCod_4#uid#"></span></br>
+  <span class="classSousTitre#uid#" id="idErrorDat_5#uid#"></span><span class="classValeur#uid#" id="idErrorCod_5#uid#"></span></br>
+  <span class="classSousTitre#uid#" id="idErrorDat_6#uid#"></span><span class="classValeur#uid#" id="idErrorCod_6#uid#"></span></br>
+  <span class="classSousTitre#uid#" id="idErrorDat_7#uid#"></span><span class="classValeur#uid#" id="idErrorCod_7#uid#"></span></br>
+  <span class="classSousTitre#uid#" id="idErrorDat_8#uid#"></span><span class="classValeur#uid#" id="idErrorCod_8#uid#"></span></br>
+  <span class="classSousTitre#uid#" id="idErrorDat_9#uid#"></span><span class="classValeur#uid#" id="idErrorCod_9#uid#"></span></br>
+
+  <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
+  <span class="classTitreTuile#uid#">Statut</span></br>
+
+</div>
+
+<div class="classContenant#uid#" id="idRadiateurs#uid#" style="display:none;">
 
     </br></br>
     <span class="classTitre#uid#">Statut</span></br></br>
@@ -123,11 +154,11 @@
       class="classCrayon#uid# cursor" id="idModifierReduite#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
     </br>
     <span class="classTitre#uid#">#circuitName#</span></br></br>
-    <span class="classSousTitre#uid#">Température pièce</span><span class="classValeur#uid# history cursor"
+    <span class="classSousTitre#uid#">Température intérieure</span><span class="classValeur#uid# history cursor"
       data-cmd_id="#idRoomTemperature#" id="idTemperaturePiece#uid#"></span></br>
     <span class="classSousTitre#uid#">Température de départ</span><span class="classValeur#uid# history cursor"
       data-cmd_id="#idSupplyProgramTemperature#" id="idTemperatureDepart#uid#"></span></br>
-    <span class="classSousTitre#uid#">Température eau radiateur</span><span class="classValeur#uid# history cursor"
+    <span class="classSousTitre#uid#">Température circuit chauffage</span><span class="classValeur#uid# history cursor"
       data-cmd_id="#idBoilerTemperature#" id="idTemperatureEauRadiateur#uid#"></span></br>
     <span class="classSousTitre#uid#">Mise hors gel</span><span class="classValeur#uid#"
       id="idFrostProtection#uid#"></span></br>
@@ -422,9 +453,9 @@
 
   #idNomObjet#uid# {
     position: absolute;
-    width: 70%;
+    width: 65%;
     top: 0px;
-    left: 30px;
+    left: 50px;
     text-align: center;
     font-size: 14px;
     color: #808080 !important;
@@ -432,9 +463,9 @@
 
   #idProgrammeActuel#uid# {
     position: absolute;
-    width: 70%;
+    width: 65%;
     bottom: 0px;
-    left: 30px;
+    left: 50px;
     text-align: center;
     font-size: 14px;
   }
@@ -761,6 +792,7 @@
   //
   $('#idResume#uid#').show();
   $('#idChaudiere#uid#').hide();
+  $('#idErreurs#uid#').hide();
   $('#idRadiateurs#uid#').hide();
   $('#idCalRadiateurs#uid#').hide();
   $('#idEauChaude#uid#').hide();
@@ -783,6 +815,7 @@
   $('.classPrecedent#uid#').on('click', function () {
     $('#idResume#uid#').show();
     $('#idChaudiere#uid#').hide();
+    $('#idErreurs#uid#').hide();
     $('#idRadiateurs#uid#').hide();
     $('#idCalRadiateurs#uid#').hide();
     $('#idEauChaude#uid#').hide();
@@ -893,6 +926,147 @@
     }
   }
   jeedom.cmd.update['#idPressureSupply#']({ display_value: '#pressureSupply#' });
+
+  // Click pour accès tuile options erreurs
+  //
+  $('#idOptionsErreurs#uid#').on('click', function () {
+    $('#idResume#uid#').hide();
+    $('#idErreurs#uid#').show();
+  });
+
+  // Tuile options erreurs
+  //
+  jeedom.cmd.update['#idErrors#'] = function (_options) {
+    $('#idErrorDat_0#uid#').html('');
+    $('#idErrorCod_0#uid#').html('');
+    $('#idErrorDat_1#uid#').html('');
+    $('#idErrorCod_1#uid#').html('');
+    $('#idErrorDat_2#uid#').html('');
+    $('#idErrorCod_2#uid#').html('');
+    $('#idErrorDat_3#uid#').html('');
+    $('#idErrorCod_3#uid#').html('');
+    $('#idErrorDat_4#uid#').html('');
+    $('#idErrorCod_4#uid#').html('');
+    $('#idErrorDat_5#uid#').html('');
+    $('#idErrorCod_5#uid#').html('');
+    $('#idErrorDat_6#uid#').html('');
+    $('#idErrorCod_6#uid#').html('');
+    $('#idErrorDat_7#uid#').html('');
+    $('#idErrorCod_7#uid#').html('');
+    $('#idErrorDat_8#uid#').html('');
+    $('#idErrorCod_8#uid#').html('');
+    $('#idErrorDat_9#uid#').html('');
+    $('#idErrorCod_9#uid#').html('');
+
+    $('#idErrorCod_0#uid#').css("color", "#808080");
+    $('#idErrorCod_1#uid#').css("color", "#808080");
+    $('#idErrorCod_2#uid#').css("color", "#808080");
+    $('#idErrorCod_3#uid#').css("color", "#808080");
+    $('#idErrorCod_4#uid#').css("color", "#808080");
+    $('#idErrorCod_5#uid#').css("color", "#808080");
+    $('#idErrorCod_6#uid#').css("color", "#808080");
+    $('#idErrorCod_7#uid#').css("color", "#808080");
+    $('#idErrorCod_8#uid#').css("color", "#808080");
+    $('#idErrorCod_9#uid#').css("color", "#808080");
+
+    var items = _options.display_value.split(';');
+    var n = items.length;
+
+    if ( n >=3 ) {
+      $('#idErrorDat_0#uid#').html(items[1]);
+      $('#idErrorCod_0#uid#').html(items[2]);
+      if ( items[0] == "EC") {
+        $('#idErrorCod_0#uid#').css("color", "red");
+      }
+    }
+    if ( n >=6 ) {
+      $('#idErrorDat_1#uid#').html(items[4]);
+      $('#idErrorCod_1#uid#').html(items[5]);
+      if ( items[3] == "EC") {
+        $('#idErrorCod_1#uid#').css("color", "red");
+      }
+    }
+    if ( n >=9 ) {
+      $('#idErrorDat_2#uid#').html(items[7]);
+      $('#idErrorCod_2#uid#').html(items[8]);
+      if ( items[6] == "EC") {
+        $('#idErrorCod_2#uid#').css("color", "red");
+      }
+    }
+    if ( n >=12 ) {
+      $('#idErrorDat_3#uid#').html(items[10]);
+      $('#idErrorCod_3#uid#').html(items[11]);
+      if ( items[9] == "EC") {
+        $('#idErrorCod_3#uid#').css("color", "red");
+      }
+    }
+    if ( n >=15 ) {
+      $('#idErrorDat_4#uid#').html(items[13]);
+      $('#idErrorCod_4#uid#').html(items[14]);
+      if ( items[12] == "EC") {
+        $('#idErrorCod_4#uid#').css("color", "red");
+      }
+    }
+    if ( n >=18 ) {
+      $('#idErrorDat_5#uid#').html(items[16]);
+      $('#idErrorCod_5#uid#').html(items[17]);
+      if ( items[15] == "EC") {
+        $('#idErrorCod_5#uid#').css("color", "red");
+      }
+    }
+    if ( n >=21 ) {
+      $('#idErrorDat_6#uid#').html(items[19]);
+      $('#idErrorCod_6#uid#').html(items[20]);
+      if ( items[18] == "EC") {
+        $('#idErrorCod_6#uid#').css("color", "red");
+      }
+    }
+    if ( n >=24 ) {
+      $('#idErrorDat_7#uid#').html(items[22]);
+      $('#idErrorCod_7#uid#').html(items[23]);
+      if ( items[21] == "EC") {
+        $('#idErrorCod_7#uid#').css("color", "red");
+      }
+    }
+    if ( n >=27 ) {
+      $('#idErrorDat_8#uid#').html(items[25]);
+      $('#idErrorCod_8#uid#').html(items[26]);
+      if ( items[24] == "EC") {
+        $('#idErrorCod_8#uid#').css("color", "red");
+      }
+    }
+    if ( n >=30 ) {
+      $('#idErrorDat_9#uid#').html(items[28]);
+      $('#idErrorCod_9#uid#').html(items[29]);
+      if ( items[27] == "EC") {
+        $('#idErrorCod_9#uid#').css("color", "red");
+      }
+    }
+  }
+  jeedom.cmd.update['#idErrors#']({ display_value: '#errors#' });
+
+  jeedom.cmd.update['#idLastServiceDate#'] = function (_options) {
+    $('#idLastServiceDate#uid#').html(_options.display_value);
+  }
+  jeedom.cmd.update['#idLastServiceDate#']({ display_value: '#lastServiceDate#' });
+
+  jeedom.cmd.update['#idServiceInterval#'] = function (_options) {
+    if (_options.display_value == 99) {
+      $('#idServiceInterval#uid#').html('--');
+    } else {
+      $('#idServiceInterval#uid#').html(_options.display_value);
+    }
+  }
+  jeedom.cmd.update['#idServiceInterval#']({ display_value: '#serviceInterval#' });
+
+  jeedom.cmd.update['#idMonthSinceService#'] = function (_options) {
+    if (_options.display_value == 99) {
+      $('#idMonthSinceService#uid#').html('--');
+    } else {
+      $('#idMonthSinceService#uid#').html(_options.display_value);
+    }
+  }
+  jeedom.cmd.update['#idMonthSinceService#']({ display_value: '#monthSinceService#' });
 
   // Tuile Radiateurs
   //
