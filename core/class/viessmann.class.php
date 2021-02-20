@@ -22,7 +22,7 @@
   use Viessmann\API\ViessmannApiException;
   use Viessmann\API\ViessmannFeature;
   
-  include 'phar://' . __DIR__ . '/../../3rdparty/Viessmann-Api-1.4.0.phar/index.php';
+  include 'phar://' . __DIR__ . '/../../3rdparty/Viessmann-Api.phar/index.php';
   
   class viessmann extends eqLogic
   {
@@ -225,7 +225,6 @@
           
           // Consommation électricité
           //
-
           if (strPos($features, ViessmannFeature::HEATING_POWER_CONSUMPTION.',') !== false) {
               $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("day");
               $this->getCmd(null, 'heatingPowerConsumption')->event($heatingPowerConsumptions[0]);
@@ -277,8 +276,17 @@
           // Consommation gaz eau chaude
           //
           if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW.',') !== false) {
+
               $dhwGazConsumptions = $viessmannApi->getDhwGasConsumption("day");
               $this->getCmd(null, 'dhwGazConsumption')->event($dhwGazConsumptions[0]*$facteurConversionGaz);
+
+              $conso = $dhwGazConsumptions[0]*$facteurConversionGaz;
+              $oldConso = $this->getCache('oldConsoDhw', -1);
+              if ( $oldConso > $conso ) {
+                log::add('viessmann', 'debug', 'Historiser dhw : ' . $dhwGazConsumptions[1]*$facteurConversionGaz);
+              }
+              $this->setCache('oldConsoDhw', $conso);
+
               $day = '';
               foreach ($dhwGazConsumptions as $dhwGazConsumption) {
                   if ($day !== '') {
@@ -328,6 +336,14 @@
           if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_HEATING.',') !== false) {
               $heatingGazConsumptions = $viessmannApi->getHeatingGasConsumption("day");
               $this->getCmd(null, 'heatingGazConsumption')->event($heatingGazConsumptions[0]*$facteurConversionGaz);
+
+              $conso = $heatingGazConsumptions[0]*$facteurConversionGaz;
+              $oldConso = $this->getCache('oldConsoHeating', -1);
+              if ( $oldConso > $conso ) {
+                log::add('viessmann', 'debug', 'Historiser heating : ' . $dhwGazConsumptions[1]*$facteurConversionGaz);
+              }
+              $this->setCache('oldConsoHeating', $conso);
+
               $day = '';
               $n = 0;
               foreach ($heatingGazConsumptions as $heatingGazConsumption) {
@@ -751,7 +767,8 @@
           $this->getCmd(null, 'errors')->event($erreurs);
       
           if (strPos($features, ViessmannFeature::HEATING_SERVICE_TIMEBASED.',') !== false) {
-            $lastServiceDate = $viessmannApi->getLastServiceDate();
+            $lastServiceDate = substr($viessmannApi->getLastServiceDate(),0, 19);
+            $lastServiceDate = str_replace('T', ' ', $lastServiceDate);
             $serviceInterval = $viessmannApi->getServiceInterval();
             $monthSinceService = $viessmannApi->getActiveMonthSinceService();
           } else {

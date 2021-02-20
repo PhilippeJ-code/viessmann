@@ -73,7 +73,8 @@
         <span id="idRafraichir#uid#" class="cmd refresh pull-right cursor classOptions#uid#" data-cmd_id="#idRefresh#">
           <i class="fas fa-sync"></i>
         </span>
-
+        <img class="classFlamme#uid#" id="idBruleurAllumer#uid#"
+          src="plugins/viessmann/resources/flamme.svg">
       </div>
     </div>
 
@@ -584,6 +585,15 @@
     filter: invert(29%) sepia(99%) saturate(1522%) hue-rotate(346deg) brightness(102%) contrast(96%);
   }
 
+  .classFlamme#uid# {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    right: 3px;
+    top: 3px;
+    filter: invert(7%) sepia(100%) saturate(7480%) hue-rotate(248deg) brightness(104%) contrast(141%);
+  }
+
   .classPrecedent#uid# {
     position: absolute;
     width: 20px;
@@ -886,9 +896,11 @@
   jeedom.cmd.update['#idIsHeatingBurnerActive#'] = function (_options) {
     if (_options.display_value == 1) {
       $('#idEtatBruleur#uid#').html('Allumé');
+      $('#idBruleurAllumer#uid#').show();
     }
     else {
       $('#idEtatBruleur#uid#').html('Eteint');
+      $('#idBruleurAllumer#uid#').hide();
     }
   }
   jeedom.cmd.update['#idIsHeatingBurnerActive#']({ display_value: '#isHeatingBurnerActive#' });
@@ -973,70 +985,70 @@
     var n = items.length;
 
     if ( n >=3 ) {
-      $('#idErrorDat_0#uid#').html(items[1]);
+      $('#idErrorDat_0#uid#').html(items[0]+ ' ' + items[1]);
       $('#idErrorCod_0#uid#').html(items[2]);
       if ( items[0] == "EC") {
         $('#idErrorCod_0#uid#').css("color", "red");
       }
     }
     if ( n >=6 ) {
-      $('#idErrorDat_1#uid#').html(items[4]);
+      $('#idErrorDat_1#uid#').html(items[3]+ ' ' + items[4]);
       $('#idErrorCod_1#uid#').html(items[5]);
       if ( items[3] == "EC") {
         $('#idErrorCod_1#uid#').css("color", "red");
       }
     }
     if ( n >=9 ) {
-      $('#idErrorDat_2#uid#').html(items[7]);
+      $('#idErrorDat_2#uid#').html(items[6]+ ' ' + items[7]);
       $('#idErrorCod_2#uid#').html(items[8]);
       if ( items[6] == "EC") {
         $('#idErrorCod_2#uid#').css("color", "red");
       }
     }
     if ( n >=12 ) {
-      $('#idErrorDat_3#uid#').html(items[10]);
+      $('#idErrorDat_3#uid#').html(items[9]+ ' ' + items[10]);
       $('#idErrorCod_3#uid#').html(items[11]);
       if ( items[9] == "EC") {
         $('#idErrorCod_3#uid#').css("color", "red");
       }
     }
     if ( n >=15 ) {
-      $('#idErrorDat_4#uid#').html(items[13]);
+      $('#idErrorDat_4#uid#').html(items[12]+ ' ' + items[13]);
       $('#idErrorCod_4#uid#').html(items[14]);
       if ( items[12] == "EC") {
         $('#idErrorCod_4#uid#').css("color", "red");
       }
     }
     if ( n >=18 ) {
-      $('#idErrorDat_5#uid#').html(items[16]);
+      $('#idErrorDat_5#uid#').html(items[15]+ ' ' + items[16]);
       $('#idErrorCod_5#uid#').html(items[17]);
       if ( items[15] == "EC") {
         $('#idErrorCod_5#uid#').css("color", "red");
       }
     }
     if ( n >=21 ) {
-      $('#idErrorDat_6#uid#').html(items[19]);
+      $('#idErrorDat_6#uid#').html(items[18]+ ' ' + items[19]);
       $('#idErrorCod_6#uid#').html(items[20]);
       if ( items[18] == "EC") {
         $('#idErrorCod_6#uid#').css("color", "red");
       }
     }
     if ( n >=24 ) {
-      $('#idErrorDat_7#uid#').html(items[22]);
+      $('#idErrorDat_7#uid#').html(items[21]+ ' ' + items[22]);
       $('#idErrorCod_7#uid#').html(items[23]);
       if ( items[21] == "EC") {
         $('#idErrorCod_7#uid#').css("color", "red");
       }
     }
     if ( n >=27 ) {
-      $('#idErrorDat_8#uid#').html(items[25]);
+      $('#idErrorDat_8#uid#').html(items[24]+ ' ' + items[25]);
       $('#idErrorCod_8#uid#').html(items[26]);
       if ( items[24] == "EC") {
         $('#idErrorCod_8#uid#').css("color", "red");
       }
     }
     if ( n >=30 ) {
-      $('#idErrorDat_9#uid#').html(items[28]);
+      $('#idErrorDat_9#uid#').html(items[27]+ ' ' + items[28]);
       $('#idErrorCod_9#uid#').html(items[29]);
       if ( items[27] == "EC") {
         $('#idErrorCod_9#uid#').css("color", "red");

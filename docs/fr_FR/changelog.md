@@ -38,4 +38,7 @@
 
     Ajout données entretien et dysfonctionnements
 
+# 20-02-2021
+
+    Changement OAuth par thetrueavatar suivant demande Viessmann
     
