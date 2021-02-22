@@ -340,7 +340,7 @@
               $conso = $heatingGazConsumptions[0]*$facteurConversionGaz;
               $oldConso = $this->getCache('oldConsoHeating', -1);
               if ( $oldConso > $conso ) {
-                log::add('viessmann', 'debug', 'Historiser heating : ' . $dhwGazConsumptions[1]*$facteurConversionGaz);
+                log::add('viessmann', 'debug', 'Historiser heating : ' . $heatingGazConsumptions[1]*$facteurConversionGaz);
               }
               $this->setCache('oldConsoHeating', $conso);
 
@@ -1917,7 +1917,7 @@
               $moisS = "'" . $libMois[$mois] . "'" . $moisS;
               $mois--;
               if ($mois < 0) {
-                  $mois = 12;
+                  $mois = 11;
               }
           }
           $replace["#moisS#"] = $moisS;
@@ -2008,7 +2008,7 @@
               $moisS = "'" . $libMois[$mois] . "'" . $moisS;
               $mois--;
               if ($mois < 0) {
-                  $mois = 12;
+                  $mois = 11;
               }
           }
           $replace["#elec_moisS#"] = $moisS;
