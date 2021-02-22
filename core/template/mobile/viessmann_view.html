@@ -106,9 +106,11 @@
     </br>
     <span class="classTitre#uid#">Courbes</span></br></br>
     <span class="classSousTitre#uid#">Pente</span><span class="classValeur#uid# history cursor" data-cmd_id="#idSlope#"
-      id="idSlope#uid#"></span></br>
+      id="idSlope#uid#"></span></span><img
+      class="classCrayon#uid# cursor" id="idModifierPente#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
     <span class="classSousTitre#uid#">Parallèle</span><span class="classValeur#uid# history cursor"
-      data-cmd_id="#idShift#" id="idShift#uid#"></span></br>
+      data-cmd_id="#idShift#" id="idShift#uid#"></span></span><img
+      class="classCrayon#uid# cursor" id="idModifierParallele#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
     </br>
     <span class="classTitre#uid#">Installation</span></br></br>
     <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor"
@@ -145,6 +147,48 @@
 
   <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
   <span class="classTitreTuile#uid#">Statut</span></br>
+
+</div>
+
+<div id="idPopupPente#uid#" class="classModal#uid#">
+
+  <div class="classModalContenu#uid#">
+    <div class="classModalEntete#uid#">
+      <img class="classModalClose#uid# cursor" src="plugins/viessmann/resources/previous.svg">
+      <span>Pente</span>
+    </div>
+    <div class="classModalCorps#uid#">
+      <div class="classConsigne#uid#">
+        </br>
+        <img id="idPentePlus#uid#" class="classFleches#uid#" src="plugins/viessmann/resources/plus.svg">
+        <span id="idPenteValeur#uid#" class="classValeurConsigne#uid#"></span>
+        <img id="idPenteMoins#uid#" class="classFleches#uid#" src="plugins/viessmann/resources/moins.svg">
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div id="idPopupParallele#uid#" class="classModal#uid#">
+
+  <div class="classModalContenu#uid#">
+    <div class="classModalEntete#uid#">
+      <img class="classModalClose#uid# cursor" src="plugins/viessmann/resources/previous.svg">
+      <span>Parallele</span>
+    </div>
+    <div class="classModalCorps#uid#">
+      <div class="classConsigne#uid#">
+        </br>
+        <img id="idParallelePlus#uid#" class="classFleches#uid#" src="plugins/viessmann/resources/plus.svg">
+        <span id="idParalleleValeur#uid#" class="classValeurConsigne#uid#"></span>
+        <img id="idParalleleMoins#uid#" class="classFleches#uid#" src="plugins/viessmann/resources/moins.svg">
+
+      </div>
+
+    </div>
+  </div>
 
 </div>
 
@@ -865,6 +909,8 @@
     $('#idPopupNormale#uid#').hide();
     $('#idPopupReduite#uid#').hide();
     $('#idPopupDhw#uid#').hide();
+    $('#idPopupPente#uid#').hide();
+    $('#idPopupParallele#uid#').hide();
   });
 
   // Tuile chaudière
@@ -946,11 +992,13 @@
 
   jeedom.cmd.update['#idSlope#'] = function (_options) {
     $('#idSlope#uid#').html(_options.display_value);
+    $('#idPenteValeur#uid#').html(_options.display_value);
   }
   jeedom.cmd.update['#idSlope#']({ display_value: '#slope#' });
 
   jeedom.cmd.update['#idShift#'] = function (_options) {
     $('#idShift#uid#').html(_options.display_value);
+    $('#idParalleleValeur#uid#').html(_options.display_value);
   }
   jeedom.cmd.update['#idShift#']({ display_value: '#shift#' });
 
@@ -962,6 +1010,84 @@
     }
   }
   jeedom.cmd.update['#idPressureSupply#']({ display_value: '#pressureSupply#' });
+
+  // Click pour accès modification pente
+  //
+  $('#idModifierPente#uid#').on('click', function () {
+    $('#idPopupPente#uid#').show();
+  });
+
+  // Tuile modification pente
+  //
+  $('#idPentePlus#uid#').on('click', function () {
+    var max = ('#maxSlope#' == '') ? Number.MAX_VALUE : parseFloat('#maxSlope#');
+    var step = (isNaN(parseFloat('#stepSlope#'))) ? 1 : parseFloat('#stepSlope#');
+    if (parseFloat($('#idPenteValeur#uid#').html()) <= max - step) {
+      jeedom.cmd.update['#idSlope#']({ display_value: (parseFloat($('#idPenteValeur#uid#').html())*10 + step*10)/10 });
+      $('#idPenteValeur#uid#').trigger('change');
+    } else if (parseFloat($('#idPenteValeur#uid#').html()) < max) {
+      jeedom.cmd.update['#idSlope#']({ display_value: max });
+      $('#idPenteValeur#uid#').trigger('change');
+    }
+  });
+  $('#idPenteMoins#uid#').on('click', function () {
+    var min = ('#minSlope#' == '') ? Number.MIN_VALUE : parseFloat('#minSlope#');
+    var step = (isNaN(parseFloat('#stepSlope#'))) ? 1 : parseFloat('#stepSlope#');
+    if (parseFloat($('#idPenteValeur#uid#').html()) >= min + step) {
+      jeedom.cmd.update['#idSlope#']({ display_value: (parseFloat($('#idPenteValeur#uid#').html()*10) - step*10)/10 });
+      $('#idPenteValeur#uid#').trigger('change');
+    } else if (parseFloat($('#idPenteValeur#uid#').html()) > min) {
+      jeedom.cmd.update['#idSlope#']({ display_value: min });
+      $('#idPenteValeur#uid#').trigger('change');
+    }
+  });
+  $('#idPenteValeur#uid#').on('change', function () {
+    if (typeof timerPenteValeur#uid# !== 'undefined') {
+    clearTimeout(timerPenteValeur#uid#);
+  }
+  timerPenteValeur#uid# = setTimeout(function () {
+    jeedom.cmd.execute({ id: '#idSlopeSlider#', value: { slider: $('#idPenteValeur#uid#').html().replace("°", "").replace(" ", "") } });
+  }, 1000)
+  });
+
+  // Tuile modification parallèle
+  //
+  $('#idParallelePlus#uid#').on('click', function () {
+    var max = ('#maxShift#' == '') ? Number.MAX_VALUE : parseFloat('#maxShift#');
+    var step = (isNaN(parseFloat('#stepShift#'))) ? 1 : parseFloat('#stepShift#');
+    if (parseFloat($('#idParalleleValeur#uid#').html()) <= max - step) {
+      jeedom.cmd.update['#idShift#']({ display_value: parseFloat($('#idParalleleValeur#uid#').html()) + step });
+      $('#idParalleleValeur#uid#').trigger('change');
+    } else if (parseFloat($('#idParalleleValeur#uid#').html()) < max) {
+      jeedom.cmd.update['#idShift#']({ display_value: max });
+      $('#idParalleleValeur#uid#').trigger('change');
+    }
+  });
+  $('#idParalleleMoins#uid#').on('click', function () {
+    var min = ('#minShift#' == '') ? Number.MIN_VALUE : parseFloat('#minShift#');
+    var step = (isNaN(parseFloat('#stepShift#'))) ? 1 : parseFloat('#stepShift#');
+    if (parseFloat($('#idParalleleValeur#uid#').html()) >= min + step) {
+      jeedom.cmd.update['#idShift#']({ display_value: parseFloat($('#idParalleleValeur#uid#').html()) - step });
+      $('#idParalleleValeur#uid#').trigger('change');
+    } else if (parseFloat($('#idParalleleValeur#uid#').html()) > min) {
+      jeedom.cmd.update['#idShift#']({ display_value: min });
+      $('#idParalleleValeur#uid#').trigger('change');
+    }
+  });
+  $('#idParalleleValeur#uid#').on('change', function () {
+    if (typeof timerParalleleValeur#uid# !== 'undefined') {
+    clearTimeout(timerParalleleValeur#uid#);
+  }
+  timerParalleleValeur#uid# = setTimeout(function () {
+    jeedom.cmd.execute({ id: '#idShiftSlider#', value: { slider: $('#idParalleleValeur#uid#').html().replace("°", "").replace(" ", "") } });
+  }, 1000)
+  });
+
+  // Click pour accès modification parallèle
+  //
+  $('#idModifierParallele#uid#').on('click', function () {
+    $('#idPopupParallele#uid#').show();
+  });
 
   // Click pour accès tuile options erreurs
   //

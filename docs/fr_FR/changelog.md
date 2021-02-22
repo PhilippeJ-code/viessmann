@@ -41,4 +41,8 @@
 # 20-02-2021
 
     Changement OAuth par thetrueavatar suivant demande Viessmann
+
+# 22-02-2021
+
+    Modification pente et parallèle
     
