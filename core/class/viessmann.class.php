@@ -842,7 +842,7 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'shift');
         $shift = $obj->execCmd();
         
-        $viessmannApi->setCurve($shift, $slope);
+        $viessmannApi->setCurve($shift, round($slope,1));
     }
 
     // Set Shift
@@ -857,7 +857,7 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'slope');
         $slope = $obj->execCmd();
 
-        $viessmannApi->setCurve($shift, $slope);
+        $viessmannApi->setCurve($shift, round($slope,1));
     }
 
     public static function periodique()
@@ -1122,7 +1122,7 @@ class viessmann extends eqLogic
         $objComfort->setLogicalId('comfortProgramTemperature');
         $objComfort->setConfiguration('minValue', 3);
         $objComfort->setConfiguration('maxValue', 37);
-        $objComfort->setOrder(10);
+         $objComfort->setOrder(10);
         $objComfort->save();
   
         $objNormal = $this->getCmd(null, 'normalProgramTemperature');
@@ -1156,7 +1156,7 @@ class viessmann extends eqLogic
         $objReduced->setLogicalId('reducedProgramTemperature');
         $objReduced->setConfiguration('minValue', 3);
         $objReduced->setConfiguration('maxValue', 37);
-        $objReduced->setOrder(12);
+       $objReduced->setOrder(12);
         $objReduced->save();
   
         $obj = $this->getCmd(null, 'programTemperature');
@@ -1201,7 +1201,7 @@ class viessmann extends eqLogic
         $objDhw->setLogicalId('dhwTemperature');
         $objDhw->setConfiguration('minValue', 10);
         $objDhw->setConfiguration('maxValue', 60);
-        $objDhw->setOrder(15);
+       $objDhw->setOrder(15);
         $objDhw->save();
 
         $obj = $this->getCmd(null, 'heatingBurnerHours');
@@ -1489,7 +1489,7 @@ class viessmann extends eqLogic
         $obj->setValue($objNormal->getId());
         $obj->setConfiguration('minValue', 3);
         $obj->setConfiguration('maxValue', 37);
-        $obj->setOrder(35);
+         $obj->setOrder(35);
         $obj->save();
 
         $obj = $this->getCmd(null, 'reducedProgramSlider');
@@ -1766,6 +1766,12 @@ class viessmann extends eqLogic
         $obj->setValue($objSlope->getId());
         $obj->setConfiguration('minValue', 0.2);
         $obj->setConfiguration('maxValue', 3.5);
+        $optParam = $obj->getDisplay('parameters');
+        if (!is_array($optParam)) {
+           $optParam = array();
+		}
+        $optParam['step'] = 0.1;
+        $obj->setDisplay('parameters', $optParam);        
         $obj->setOrder(54);
         $obj->save();
 
@@ -2287,7 +2293,7 @@ class viessmannCmd extends cmd
             if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
                 return;
             }
-            $eqlogic->getCmd(null, 'slope')->event($_options['slider']);
+            $eqlogic->getCmd(null, 'slope')->event(round($_options['slider'],1));
             $eqlogic->setSlope($_options['slider']);
         }
         
