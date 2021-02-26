@@ -114,7 +114,7 @@ class viessmann extends eqLogic
         $features .= ',';
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::CIRCULATION_PUMP).',') !== false) {
-            $pumpStatus = $viessmannApi->getCirculationPumpStatus();
+            $pumpStatus = $viessmannApi->getCirculationPumpStatus($circuitId);
         } else {
             $pumpStatus = '?';
         }
@@ -128,14 +128,14 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'boilerTemperature')->event($boilerTemperature);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ACTIVE_OPERATING_MODE).',') !== false) {
-            $activeMode = $viessmannApi->getActiveMode();
+            $activeMode = $viessmannApi->getActiveMode($circuitId);
         } else {
             $activeMode = '';
         }
         $this->getCmd(null, 'activeMode')->event($activeMode);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ACTIVE_PROGRAM).',') !== false) {
-            $activeProgram = $viessmannApi->getActiveProgram();
+            $activeProgram = $viessmannApi->getActiveProgram($circuitId);
         } else {
             $activeProgram = 'reduced';
         }
@@ -149,7 +149,7 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'isHeatingBurnerActive')->event($isHeatingBurnerActive);
         
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::DHW_MODE).',') !== false) {
-            $isDhwModeActive = $viessmannApi->isDhwModeActive();
+            $isDhwModeActive = $viessmannApi->isDhwModeActive($circuitId);
         } else {
             $isDhwModeActive = 0;
         }
@@ -163,7 +163,7 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'outsideTemperature')->event($outsideTemperature);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::SENSORS_TEMPERATURE_SUPPLY).',') !== false) {
-            $supplyProgramTemperature = $viessmannApi->getSupplyTemperature();
+            $supplyProgramTemperature = $viessmannApi->getSupplyTemperature($circuitId);
         } else {
             $supplyProgramTemperature = 99;
         }
@@ -177,8 +177,8 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'dhwTemperature')->event($dhwTemperature);
           
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_CURVE).',') !== false) {
-            $slope = $viessmannApi->getSlope();
-            $shift = $viessmannApi->getShift();
+            $slope = $viessmannApi->getSlope($circuitId);
+            $shift = $viessmannApi->getShift($circuitId);
         } else {
             $slope = 0;
             $shift = 0;
@@ -188,21 +188,21 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'shift')->event($shift);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM).',') !== false) {
-            $comfortProgramTemperature = $viessmannApi->getComfortProgramTemperature();
+            $comfortProgramTemperature = $viessmannApi->getComfortProgramTemperature($circuitId);
         } else {
             $comfortProgramTemperature = 0;
         }
         $this->getCmd(null, 'comfortProgramTemperature')->event($comfortProgramTemperature);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::NORMAL_PROGRAM).',') !== false) {
-            $normalProgramTemperature = $viessmannApi->getNormalProgramTemperature();
+            $normalProgramTemperature = $viessmannApi->getNormalProgramTemperature($circuitId);
         } else {
             $normalProgramTemperature = 0;
         }
         $this->getCmd(null, 'normalProgramTemperature')->event($normalProgramTemperature);
           
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::REDUCED_PROGRAM).',') !== false) {
-            $reducedProgramTemperature = $viessmannApi->getReducedProgramTemperature();
+            $reducedProgramTemperature = $viessmannApi->getReducedProgramTemperature($circuitId);
         } else {
             $reducedProgramTemperature = 0;
         }
@@ -228,6 +228,17 @@ class viessmann extends eqLogic
         if (strPos($features, ViessmannFeature::HEATING_POWER_CONSUMPTION.',') !== false) {
             $heatingPowerConsumptions = $viessmannApi->getHeatingPowerConsumption("day");
             $this->getCmd(null, 'heatingPowerConsumption')->event($heatingPowerConsumptions[0]);
+
+            $conso = $heatingPowerConsumptions[0];
+            $oldConso = $this->getCache('oldConsoPower', -1);
+            if ($oldConso > $conso) {
+                log::add('viessmann', 'debug', 'Historiser power : ' . $heatingPowerConsumptions[1]);
+                $dateVeille = time()-24*60*60;
+                $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
+                $this->getCmd(null, 'heatingPowerHistorize')->event($heatingPowerConsumptions[1], $dateVeille);
+            }
+            $this->setCache('oldConsoPower', $conso);
+
             $day = '';
             foreach ($heatingPowerConsumptions as $heatingPowerConsumption) {
                 if ($day !== '') {
@@ -283,6 +294,9 @@ class viessmann extends eqLogic
             $oldConso = $this->getCache('oldConsoDhw', -1);
             if ($oldConso > $conso) {
                 log::add('viessmann', 'debug', 'Historiser dhw : ' . $dhwGazConsumptions[1]*$facteurConversionGaz);
+                $dateVeille = time()-24*60*60;
+                $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
+                $this->getCmd(null, 'dhwGazHistorize')->event($dhwGazConsumptions[1]*$facteurConversionGaz, $dateVeille);
             }
             $this->setCache('oldConsoDhw', $conso);
 
@@ -340,6 +354,9 @@ class viessmann extends eqLogic
             $oldConso = $this->getCache('oldConsoHeating', -1);
             if ($oldConso > $conso) {
                 log::add('viessmann', 'debug', 'Historiser heating : ' . $heatingGazConsumptions[1]*$facteurConversionGaz);
+                $dateVeille = time()-24*60*60;
+                $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
+                $this->getCmd(null, 'heatingGazHistorize')->event($heatingGazConsumptions[1]*$facteurConversionGaz, $dateVeille);
             }
             $this->setCache('oldConsoHeating', $conso);
 
@@ -609,14 +626,14 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'refreshDate')->event($date);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_FROSTPROTECTION).',') !== false) {
-            $frostProtection = $viessmannApi->getFrostprotection();
+            $frostProtection = $viessmannApi->getFrostprotection($circuitId);
         } else {
             $frostProtection = 0;
         }
         $this->getCmd(null, 'frostProtection')->event($frostProtection);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::SENSORS_TEMPERATURE_ROOM).',') !== false) {
-            $roomTemperature = $viessmannApi->getRoomTemperature();
+            $roomTemperature = $viessmannApi->getRoomTemperature($circuitId);
         } else {
             $roomTemperature = 99;
         }
@@ -779,6 +796,13 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'serviceInterval')->event($serviceInterval);
         $this->getCmd(null, 'monthSinceService')->event($monthSinceService);
 
+        if (strPos($features, ViessmannFeature::HEATING_DHW_ONETIMECHARGE.',') !== false) {
+            $isOneTimeDhwCharge = $viessmannApi->isOneTimeDhwCharge();
+        } else {
+            $isOneTimeDhwCharge = 0;
+        }
+        $this->getCmd(null, 'isOneTimeDhwCharge')->event($isOneTimeDhwCharge);
+
         return;
     }
 
@@ -842,7 +866,7 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'shift');
         $shift = $obj->execCmd();
         
-        $viessmannApi->setCurve($shift, round($slope,1));
+        $viessmannApi->setCurve($shift, round($slope, 1));
     }
 
     // Set Shift
@@ -857,7 +881,35 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'slope');
         $slope = $obj->execCmd();
 
-        $viessmannApi->setCurve($shift, round($slope,1));
+        $viessmannApi->setCurve($shift, round($slope, 1));
+    }
+
+    // Start One Time Dhw Charge
+    //
+    public function startOneTimeDhwCharge()
+    {
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+        
+        $viessmannApi->startOneTimeDhwCharge();
+
+        $this->getCmd(null, 'isOneTimeDhwCharge')->event(1);
+    }
+
+    // Stop One Time Dhw Charge
+    //
+    public function stopOneTimeDhwCharge()
+    {
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+        
+        $viessmannApi->stopOneTimeDhwCharge();
+
+        $this->getCmd(null, 'isOneTimeDhwCharge')->event(0);
     }
 
     public static function periodique()
@@ -1122,7 +1174,7 @@ class viessmann extends eqLogic
         $objComfort->setLogicalId('comfortProgramTemperature');
         $objComfort->setConfiguration('minValue', 3);
         $objComfort->setConfiguration('maxValue', 37);
-         $objComfort->setOrder(10);
+        $objComfort->setOrder(10);
         $objComfort->save();
   
         $objNormal = $this->getCmd(null, 'normalProgramTemperature');
@@ -1156,7 +1208,7 @@ class viessmann extends eqLogic
         $objReduced->setLogicalId('reducedProgramTemperature');
         $objReduced->setConfiguration('minValue', 3);
         $objReduced->setConfiguration('maxValue', 37);
-       $objReduced->setOrder(12);
+        $objReduced->setOrder(12);
         $objReduced->save();
   
         $obj = $this->getCmd(null, 'programTemperature');
@@ -1201,7 +1253,7 @@ class viessmann extends eqLogic
         $objDhw->setLogicalId('dhwTemperature');
         $objDhw->setConfiguration('minValue', 10);
         $objDhw->setConfiguration('maxValue', 60);
-       $objDhw->setOrder(15);
+        $objDhw->setOrder(15);
         $objDhw->save();
 
         $obj = $this->getCmd(null, 'heatingBurnerHours');
@@ -1319,7 +1371,7 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'heatingGazConsumption');
         if (!is_object($obj)) {
             $obj = new viessmannCmd();
-            $obj->setName(__('Consommation gaz radiateurs', __FILE__));
+            $obj->setName(__('Consommation gaz chauffage', __FILE__));
             $obj->setIsVisible(1);
             $obj->setIsHistorized(0);
         }
@@ -1333,7 +1385,7 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'heatingGazConsumptionDay');
         if (!is_object($obj)) {
             $obj = new viessmannCmd();
-            $obj->setName(__('Consommation journalière gaz radiateurs', __FILE__));
+            $obj->setName(__('Consommation journalière gaz chauffage', __FILE__));
             $obj->setIsVisible(1);
             $obj->setIsHistorized(0);
         }
@@ -1347,7 +1399,7 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'heatingGazConsumptionWeek');
         if (!is_object($obj)) {
             $obj = new viessmannCmd();
-            $obj->setName(__('Consommation hebdomadaire gaz radiateurs', __FILE__));
+            $obj->setName(__('Consommation hebdomadaire gaz chauffage', __FILE__));
             $obj->setIsVisible(1);
             $obj->setIsHistorized(0);
         }
@@ -1361,7 +1413,7 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'heatingGazConsumptionMonth');
         if (!is_object($obj)) {
             $obj = new viessmannCmd();
-            $obj->setName(__('Consommation mensuelle gaz radiateurs', __FILE__));
+            $obj->setName(__('Consommation mensuelle gaz chauffage', __FILE__));
             $obj->setIsVisible(1);
             $obj->setIsHistorized(0);
         }
@@ -1375,7 +1427,7 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'heatingGazConsumptionYear');
         if (!is_object($obj)) {
             $obj = new viessmannCmd();
-            $obj->setName(__('Consommation annuelle gaz radiateurs', __FILE__));
+            $obj->setName(__('Consommation annuelle gaz chauffage', __FILE__));
             $obj->setIsVisible(1);
             $obj->setIsHistorized(0);
         }
@@ -1489,7 +1541,7 @@ class viessmann extends eqLogic
         $obj->setValue($objNormal->getId());
         $obj->setConfiguration('minValue', 3);
         $obj->setConfiguration('maxValue', 37);
-         $obj->setOrder(35);
+        $obj->setOrder(35);
         $obj->save();
 
         $obj = $this->getCmd(null, 'reducedProgramSlider');
@@ -1768,10 +1820,10 @@ class viessmann extends eqLogic
         $obj->setConfiguration('maxValue', 3.5);
         $optParam = $obj->getDisplay('parameters');
         if (!is_array($optParam)) {
-           $optParam = array();
-		}
+            $optParam = array();
+        }
         $optParam['step'] = 0.1;
-        $obj->setDisplay('parameters', $optParam);        
+        $obj->setDisplay('parameters', $optParam);
         $obj->setOrder(54);
         $obj->save();
 
@@ -1792,6 +1844,85 @@ class viessmann extends eqLogic
         $obj->setOrder(55);
         $obj->save();
 
+        $obj = $this->getCmd(null, 'heatingGazHistorize');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Historisation gaz chauffage', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(1);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('numeric');
+        $obj->setLogicalId('heatingGazHistorize');
+        $obj->setOrder(56);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'dhwGazHistorize');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Historisation gaz eau chaude', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(1);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('numeric');
+        $obj->setLogicalId('dhwGazHistorize');
+        $obj->setOrder(57);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'heatingPowerHistorize');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Historisation électricité', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(1);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('numeric');
+        $obj->setLogicalId('heatingPowerHistorize');
+        $obj->setOrder(58);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'isOneTimeDhwCharge');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Forcer Eau chaude', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(0);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('binary');
+        $obj->setLogicalId('isOneTimeDhwCharge');
+        $obj->setOrder(59);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'startOneTimeDhwCharge');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Activer eau chaude', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('startOneTimeDhwCharge');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->setOrder(60);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'stopOneTimeDhwCharge');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Désactiver eau chaude', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('stopOneTimeDhwCharge');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->setOrder(61);
+        $obj->save();
     }
 
     // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -2237,6 +2368,16 @@ class viessmann extends eqLogic
         $replace["#monthSinceService#"] = $obj->execCmd();
         $replace["#idMonthSinceService#"] = $obj->getId();
           
+        $obj = $this->getCmd(null, 'isOneTimeDhwCharge');
+        $replace["#isOneTimeDhwCharge#"] = $obj->execCmd();
+        $replace["#idIsOneTimeDhwCharge#"] = $obj->getId();
+          
+        $obj = $this->getCmd(null, 'startOneTimeDhwCharge');
+        $replace["#idStartOneTimeDhwCharge#"] = $obj->getId();
+
+        $obj = $this->getCmd(null, 'stopOneTimeDhwCharge');
+        $replace["#idStopOneTimeDhwCharge#"] = $obj->getId();
+
         return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann')));
     }
 
@@ -2257,6 +2398,16 @@ class viessmannCmd extends cmd
             $viessmannApi = $eqlogic->getViessmann();
             if ($viessmannApi !== null) {
                 $eqlogic->rafraichir($viessmannApi);
+            }
+        } elseif ($this->getLogicalId() == 'startOneTimeDhwCharge') {
+            $viessmannApi = $eqlogic->getViessmann();
+            if ($viessmannApi !== null) {
+                $eqlogic->startOneTimeDhwCharge($viessmannApi);
+            }
+        } elseif ($this->getLogicalId() == 'stopOneTimeDhwCharge') {
+            $viessmannApi = $eqlogic->getViessmann();
+            if ($viessmannApi !== null) {
+                $eqlogic->stopOneTimeDhwCharge($viessmannApi);
             }
         } elseif ($this->getLogicalId() == 'comfortProgramSlider') {
             if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
@@ -2282,7 +2433,6 @@ class viessmannCmd extends cmd
             }
             $eqlogic->getCmd(null, 'dhwTemperature')->event($_options['slider']);
             $eqlogic->setDhwTemperature($_options['slider']);
-           
         } elseif ($this->getLogicalId() == 'shiftSlider') {
             if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
                 return;
@@ -2293,9 +2443,8 @@ class viessmannCmd extends cmd
             if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
                 return;
             }
-            $eqlogic->getCmd(null, 'slope')->event(round($_options['slider'],1));
+            $eqlogic->getCmd(null, 'slope')->event(round($_options['slider'], 1));
             $eqlogic->setSlope($_options['slider']);
         }
-        
     }
 }

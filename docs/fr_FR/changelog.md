@@ -45,4 +45,8 @@
 # 22-02-2021
 
     Modification pente et parallèle
+
+# 26-02-2021
+
+    Ajout historique jeedom et forcer eau chaude
     
