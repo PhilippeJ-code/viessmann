@@ -19,6 +19,7 @@ $image = imagecreate($width, $height);
 $blanc = imagecolorallocate($image, 255, 255, 255);
 
 $orange = imagecolorallocate($image, 255, 125, 39);
+$rouge = imagecolorallocate($image, 255, 0, 0);
 $bleuclair = imagecolorallocate($image, 156, 227, 254);
 
 $gris = imagecolorallocate($image, 128, 128, 128);
@@ -46,17 +47,22 @@ imagefilledrectangle($image, $offsetGauche, 26, $taille + $offsetGauche, 35, $bl
 if ($prog !== '') {
     $progs = explode(",", $prog);
     $n = count($progs);
-    if (($n % 2) == 0) {
-      for ($i=0; $i<$n; $i+=2) {
-            $start = $progs[$i];
-            $end = $progs[$i+1];
+    if (($n % 3) == 0) {
+        for ($i=0; $i<$n; $i+=3) {
+            $mode = $progs[$i];
+            $start = $progs[$i+1];
+            $end = $progs[$i+2];
             $nombres = explode(":", $start);
             $debut = $nombres[0] * 60 + $nombres[1];
             $debut = $offsetGauche + $taille * $debut / 1440;
             $nombres = explode(":", $end);
             $fin = $nombres[0] * 60 + $nombres[1];
             $fin = $offsetGauche + $taille * $fin / 1440;
-            imagefilledrectangle($image, $debut, 26, $fin, 35, $orange);
+            if ($mode === 'n') {
+                imagefilledrectangle($image, $debut, 26, $fin, 35, $orange);
+            } else {
+                imagefilledrectangle($image, $debut, 26, $fin, 35, $rouge);
+            }
         }
     }
 }

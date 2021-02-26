@@ -1481,13 +1481,13 @@
   }
   jeedom.cmd.update['#idDhwTemperature#']({ display_value: '#dhwTemperature#' });
 
-  jeedom.cmd.update['#idIsDhwModeActive#'] = function (_options) {
+  jeedom.cmd.update['#idIsDhwCharging#'] = function (_options) {
     if (_options.display_value == 1)
       $('#idDhwTemperature#uid#').css("color", "orange");
     else
       $('#idDhwTemperature#uid#').css("color", "black");
   }
-  jeedom.cmd.update['#idIsDhwModeActive#']({ display_value: '#isDhwModeActive#' });
+  jeedom.cmd.update['#idIsDhwCharging#']({ display_value: '#isDhwCharging#' });
 
   jeedom.cmd.update['#idIsOneTimeDhwCharge#'] = function (_options) {
     if (_options.display_value == 1) {

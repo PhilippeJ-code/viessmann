@@ -474,6 +474,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['mon']);
             for ($i=0; $i<$n; $i++) {
+                $dhwSchedule .= 'n,';
                 $dhwSchedule .= $json['entries']['value']['mon'][$i]['start'] . ',';
                 $dhwSchedule .= $json['entries']['value']['mon'][$i]['end'];
                 if ($i < $n-1) {
@@ -484,6 +485,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['tue']);
             for ($i=0; $i<$n; $i++) {
+                $dhwSchedule .= 'n,';
                 $dhwSchedule .= $json['entries']['value']['tue'][$i]['start'] . ',';
                 $dhwSchedule .= $json['entries']['value']['tue'][$i]['end'];
                 if ($i < $n-1) {
@@ -494,6 +496,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['wed']);
             for ($i=0; $i<$n; $i++) {
+                $dhwSchedule .= 'n,';
                 $dhwSchedule .= $json['entries']['value']['wed'][$i]['start'] . ',';
                 $dhwSchedule .= $json['entries']['value']['wed'][$i]['end'];
                 if ($i < $n-1) {
@@ -504,6 +507,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['thu']);
             for ($i=0; $i<$n; $i++) {
+                $dhwSchedule .= 'n,';
                 $dhwSchedule .= $json['entries']['value']['thu'][$i]['start'] . ',';
                 $dhwSchedule .= $json['entries']['value']['thu'][$i]['end'];
                 if ($i < $n-1) {
@@ -514,6 +518,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['fri']);
             for ($i=0; $i<$n; $i++) {
+                $dhwSchedule .= 'n,';
                 $dhwSchedule .= $json['entries']['value']['fri'][$i]['start'] . ',';
                 $dhwSchedule .= $json['entries']['value']['fri'][$i]['end'];
                 if ($i < $n-1) {
@@ -524,6 +529,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['sat']);
             for ($i=0; $i<$n; $i++) {
+                $dhwSchedule .= 'n,';
                 $dhwSchedule .= $json['entries']['value']['sat'][$i]['start'] . ',';
                 $dhwSchedule .= $json['entries']['value']['sat'][$i]['end'];
                 if ($i < $n-1) {
@@ -534,6 +540,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['sun']);
             for ($i=0; $i<$n; $i++) {
+                $dhwSchedule .= 'n,';
                 $dhwSchedule .= $json['entries']['value']['sun'][$i]['start'] . ',';
                 $dhwSchedule .= $json['entries']['value']['sun'][$i]['end'];
                 if ($i < $n-1) {
@@ -546,12 +553,14 @@ class viessmann extends eqLogic
         $heatingSchedule = '';
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_SCHEDULE).',') !== false) {
             $heatingSchedule = $viessmannApi->getHeatingSchedule();
+
             $json = json_decode($heatingSchedule, true);
 
             $heatingSchedule = '';
 
             $n = count($json['entries']['value']['mon']);
             for ($i=0; $i<$n; $i++) {
+                $heatingSchedule .= substr($json['entries']['value']['mon'][$i]['mode'], 0, 1) . ',';
                 $heatingSchedule .= $json['entries']['value']['mon'][$i]['start'] . ',';
                 $heatingSchedule .= $json['entries']['value']['mon'][$i]['end'];
                 if ($i < $n-1) {
@@ -562,6 +571,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['tue']);
             for ($i=0; $i<$n; $i++) {
+                $heatingSchedule .= substr($json['entries']['value']['tue'][$i]['mode'], 0, 1) . ',';
                 $heatingSchedule .= $json['entries']['value']['tue'][$i]['start'] . ',';
                 $heatingSchedule .= $json['entries']['value']['tue'][$i]['end'];
                 if ($i < $n-1) {
@@ -572,6 +582,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['wed']);
             for ($i=0; $i<$n; $i++) {
+                $heatingSchedule .= substr($json['entries']['value']['wed'][$i]['mode'], 0, 1) . ',';
                 $heatingSchedule .= $json['entries']['value']['wed'][$i]['start'] . ',';
                 $heatingSchedule .= $json['entries']['value']['wed'][$i]['end'];
                 if ($i < $n-1) {
@@ -582,6 +593,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['thu']);
             for ($i=0; $i<$n; $i++) {
+                $heatingSchedule .= substr($json['entries']['value']['thu'][$i]['mode'], 0, 1) . ',';
                 $heatingSchedule .= $json['entries']['value']['thu'][$i]['start'] . ',';
                 $heatingSchedule .= $json['entries']['value']['thu'][$i]['end'];
                 if ($i < $n-1) {
@@ -592,6 +604,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['fri']);
             for ($i=0; $i<$n; $i++) {
+                $heatingSchedule .= substr($json['entries']['value']['fri'][$i]['mode'], 0, 1) . ',';
                 $heatingSchedule .= $json['entries']['value']['fri'][$i]['start'] . ',';
                 $heatingSchedule .= $json['entries']['value']['fri'][$i]['end'];
                 if ($i < $n-1) {
@@ -602,6 +615,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['sat']);
             for ($i=0; $i<$n; $i++) {
+                $heatingSchedule .= substr($json['entries']['value']['sat'][$i]['mode'], 0, 1) . ',';
                 $heatingSchedule .= $json['entries']['value']['sat'][$i]['start'] . ',';
                 $heatingSchedule .= $json['entries']['value']['sat'][$i]['end'];
                 if ($i < $n-1) {
@@ -612,6 +626,7 @@ class viessmann extends eqLogic
 
             $n = count($json['entries']['value']['sun']);
             for ($i=0; $i<$n; $i++) {
+                $heatingSchedule .= substr($json['entries']['value']['sun'][$i]['mode'], 0, 1) . ',';
                 $heatingSchedule .= $json['entries']['value']['sun'][$i]['start'] . ',';
                 $heatingSchedule .= $json['entries']['value']['sun'][$i]['end'];
                 if ($i < $n-1) {
@@ -803,6 +818,13 @@ class viessmann extends eqLogic
         }
         $this->getCmd(null, 'isOneTimeDhwCharge')->event($isOneTimeDhwCharge);
 
+        if (strPos($features, ViessmannFeature::HEATING_DHW_CHARGING.',') !== false) {
+            $isDhwCharging = $viessmannApi->isDhwCharging();
+        } else {
+            $isDhwCharging = 0;
+        }
+        $this->getCmd(null, 'isDhwCharging')->event($isDhwCharging);
+
         return;
     }
 
@@ -816,6 +838,8 @@ class viessmann extends eqLogic
         }
           
         $viessmannApi->setNormalProgramTemperature($temperature);
+        unset($viessmannApi);
+
     }
 
     // Set Comfort Program Temperature
@@ -828,6 +852,7 @@ class viessmann extends eqLogic
         }
         
         $viessmannApi->setComfortProgramTemperature($temperature);
+        unset($viessmannApi);
     }
 
     // Set Reduced Program Temperature
@@ -840,6 +865,7 @@ class viessmann extends eqLogic
         }
         
         $viessmannApi->setReducedProgramTemperature($temperature);
+        unset($viessmannApi);
     }
 
     // Set Dhw Temperature
@@ -852,6 +878,7 @@ class viessmann extends eqLogic
         }
         
         $viessmannApi->setDhwTemperature($temperature);
+        unset($viessmannApi);
     }
 
     // Set Slope
@@ -867,6 +894,7 @@ class viessmann extends eqLogic
         $shift = $obj->execCmd();
         
         $viessmannApi->setCurve($shift, round($slope, 1));
+        unset($viessmannApi);
     }
 
     // Set Shift
@@ -882,6 +910,7 @@ class viessmann extends eqLogic
         $slope = $obj->execCmd();
 
         $viessmannApi->setCurve($shift, round($slope, 1));
+        unset($viessmannApi);
     }
 
     // Start One Time Dhw Charge
@@ -894,6 +923,7 @@ class viessmann extends eqLogic
         }
         
         $viessmannApi->startOneTimeDhwCharge();
+        unset($viessmannApi);
 
         $this->getCmd(null, 'isOneTimeDhwCharge')->event(1);
     }
@@ -908,8 +938,35 @@ class viessmann extends eqLogic
         }
         
         $viessmannApi->stopOneTimeDhwCharge();
+        unset($viessmannApi);
 
         $this->getCmd(null, 'isOneTimeDhwCharge')->event(0);
+    }
+
+    // Activate Comfort Program
+    //
+    public function activateComfortProgram()
+    {
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+        
+        $viessmannApi->activateComfortProgram();
+        unset($viessmannApi);
+    }
+
+    // deActivate Comfort Program
+    //
+    public function deActivateComfortProgram()
+    {
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+        
+        $viessmannApi->deActivateComfortProgram();
+        unset($viessmannApi);
     }
 
     public static function periodique()
@@ -949,13 +1006,17 @@ class viessmann extends eqLogic
                     }
                 }
             }
+            unset($viessmannApi);
+
         } else {
+
             $viessmann = null;
             foreach (self::byType('viessmann') as $viessmann) {
                 if ($viessmann->getIsEnable() == 1) {
                     $viessmannApi = $viessmann->getViessmann();
                     if ($viessmannApi != null) {
                         $viessmann->rafraichir($viessmannApi);
+                        unset($viessmannApi);
                     }
                 }
             }
@@ -1923,6 +1984,44 @@ class viessmann extends eqLogic
         $obj->setSubType('other');
         $obj->setOrder(61);
         $obj->save();
+
+        $obj = $this->getCmd(null, 'isDhwCharging');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Chauffage Eau chaude', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(0);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('binary');
+        $obj->setLogicalId('isDhwCharging');
+        $obj->setOrder(62);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'activateComfortProgram');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Activer programme confort', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('activateComfortProgram');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->setOrder(63);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'deActivateComfortProgram');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Désactiver programme confort', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('deActivateComfortProgram');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->setOrder(64);
+        $obj->save();
     }
 
     // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -2378,6 +2477,10 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'stopOneTimeDhwCharge');
         $replace["#idStopOneTimeDhwCharge#"] = $obj->getId();
 
+        $obj = $this->getCmd(null, 'isDhwCharging');
+        $replace["#isDhwCharging#"] = $obj->execCmd();
+        $replace["#idIsDhwCharging#"] = $obj->getId();
+ 
         return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann')));
     }
 
@@ -2398,17 +2501,16 @@ class viessmannCmd extends cmd
             $viessmannApi = $eqlogic->getViessmann();
             if ($viessmannApi !== null) {
                 $eqlogic->rafraichir($viessmannApi);
+                unset($viessmannApi);
             }
         } elseif ($this->getLogicalId() == 'startOneTimeDhwCharge') {
-            $viessmannApi = $eqlogic->getViessmann();
-            if ($viessmannApi !== null) {
-                $eqlogic->startOneTimeDhwCharge($viessmannApi);
-            }
+            $eqlogic->startOneTimeDhwCharge();
+        } elseif ($this->getLogicalId() == 'activateComfortProgram') {
+            $eqlogic->activateComfortProgram();
+        } elseif ($this->getLogicalId() == 'deActivateComfortProgram') {
+            $eqlogic->deActivateComfortProgram();
         } elseif ($this->getLogicalId() == 'stopOneTimeDhwCharge') {
-            $viessmannApi = $eqlogic->getViessmann();
-            if ($viessmannApi !== null) {
-                $eqlogic->stopOneTimeDhwCharge($viessmannApi);
-            }
+            $eqlogic->stopOneTimeDhwCharge();
         } elseif ($this->getLogicalId() == 'comfortProgramSlider') {
             if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
                 return;
