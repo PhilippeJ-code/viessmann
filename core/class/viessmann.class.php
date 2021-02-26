@@ -22,8 +22,6 @@ use Viessmann\API\ViessmannAPI;
 use Viessmann\API\ViessmannApiException;
 use Viessmann\API\ViessmannFeature;
   
-include 'phar://' . __DIR__ . '/../../3rdparty/Viessmann-Api.phar/index.php';
-  
 class viessmann extends eqLogic
 {
     const PRESSURE_SUPPLY = "heating.sensors.pressure.supply";
@@ -53,6 +51,7 @@ class viessmann extends eqLogic
         ];
 
         try {
+            include 'phar://' . __DIR__ . '/../../3rdparty/Viessmann-Api.phar/index.php';  
             $viessmannApi = new ViessmannAPI($params);
         } catch (ViessmannApiException $e) {
             log::add('viessmann', 'error', $e->getMessage());
