@@ -83,6 +83,8 @@
 
     <div class="classFlex#uid#">
       <div class="classTuile#uid#">
+        <img class="classOptions#uid# cursor" id="idOptionsActions#uid#"
+          src="plugins/viessmann/resources/main.svg">
         <span id="idRefreshDate#uid#"></span>
       </div>
     </div>
@@ -282,12 +284,6 @@
       id="idModifierDhw#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
     <span class="classSousTitre#uid#">Actuel</span><span class="classValeur#uid# history cursor"
       data-cmd_id="#idHotWaterStorageTemperature#" id="idActuelEauChaude#uid#"></span></br>
-    <span class="classSousTitre#uid#">Forcer eau chaude</span><span class="classValeur#uid# history cursor"
-      data-cmd_id="#idIsOneTimeDhwCharge#" id="idIsOneTimeDhwCharge#uid#"></span>
-    </span><img class="classCrayon#uid# cursor" id="idStartOneTimeDhwCharge#uid#"
-      src="plugins/viessmann/resources/start.svg">
-    </span><img class="classCrayon#uid# cursor" id="idStopOneTimeDhwCharge#uid#"
-      src="plugins/viessmann/resources/stop.svg"></br>
 
     <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Eau chaude</span></br>
@@ -471,6 +467,46 @@
     </div>
 
   </div>
+
+  <div class="classContenant#uid#" id="idActions#uid#" style="display:none;">
+
+  </br></br>
+  <span class="classSousTitre#uid#">Forcer eau chaude</span><span class="classValeur#uid# history cursor"
+    data-cmd_id="#idIsOneTimeDhwCharge#" id="idIsOneTimeDhwCharge#uid#"></span>
+  <img class="classCrayon#uid# cursor" id="idStartOneTimeDhwCharge#uid#"
+    src="plugins/viessmann/resources/start.svg">
+  <img class="classCrayon#uid# cursor" id="idStopOneTimeDhwCharge#uid#"
+    src="plugins/viessmann/resources/stop.svg"></br>
+
+  <span class="classSousTitre#uid#">Programme confort</span><span class="classValeur#uid# history cursor"
+  data-cmd_id="#idIsActivateComfortProgram#" id="idIsActivateComfortProgram#uid#"></span>
+  <img class="classCrayon#uid# cursor" id="idActivateComfortProgram#uid#"
+    src="plugins/viessmann/resources/start.svg">
+  <img class="classCrayon#uid# cursor" id="idDeActivateComfortProgram#uid#"
+    src="plugins/viessmann/resources/stop.svg"></br>    
+
+  <span class="classSousTitre#uid#">Programme éco</span><span class="classValeur#uid# history cursor"
+  data-cmd_id="#idIsActivateEcoProgram#" id="idIsActivateEcoProgram#uid#"></span>
+  <img class="classCrayon#uid# cursor" id="idActivateEcoProgram#uid#"
+    src="plugins/viessmann/resources/start.svg">
+  <img class="classCrayon#uid# cursor" id="idDeActivateEcoProgram#uid#"
+    src="plugins/viessmann/resources/stop.svg"></br></br>
+  
+  <span class="classSousTitre#uid#">Date début</span>
+  <input type="date" id="idStartHoliday#uid#"></br>
+  <span class="classSousTitre#uid#">Date fin</span>
+  <input type="date" id="idEndHoliday#uid#"></br></br>
+  <span class="classSousTitre#uid#">Programme vacances</span><span class="classValeur#uid# history cursor"
+    data-cmd_id="#idIsScheduleHolidayProgram#" id="idIsScheduleHolidayProgram#uid#"></span>
+  <img class="classCrayon#uid# cursor" id="idScheduleHolidayProgram#uid#"
+    src="plugins/viessmann/resources/start.svg">
+  <img class="classCrayon#uid# cursor" id="idUnscheduleHolidayProgram#uid#"
+    src="plugins/viessmann/resources/stop.svg"></br>
+
+  <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
+  <span class="classTitreTuile#uid#">Actions</span></br>
+
+</div>
 
 </div>
 
@@ -876,6 +912,23 @@
     font-size: 30px;
     margin-top: -8px;
   }
+
+  #idStartHoliday#uid# {
+    position: absolute;
+    right: 3px;
+    border-radius: 5px;
+    background-color: #fff !important;
+    border: 1px solid #808080 !important;
+    }
+
+  #idEndHoliday#uid# {
+    position: absolute;
+    right: 3px;
+    border-radius: 5px;
+    background-color: #fff !important;
+    border: 1px solid #808080 !important;
+    }
+
 </style>
 
 <script type="text/javascript">
@@ -891,6 +944,7 @@
   $('#idCalEauChaude#uid#').hide();
   $('#idGaz#uid#').hide();
   $('#idElec#uid#').hide();
+  $('#idActions#uid#').hide();
 
   if ('#displayGas#' == '1')
     $('#idTuileGaz#uid#').show();
@@ -914,6 +968,7 @@
     $('#idCalEauChaude#uid#').hide();
     $('#idGaz#uid#').hide();
     $('#idElec#uid#').hide();
+    $('#idActions#uid#').hide();
   });
 
   // Fermer popup
@@ -2253,6 +2308,13 @@
     });
   });
 
+  // Click accès tuile actions
+  //
+  $('#idOptionsActions#uid#').on('click', function () {
+    $('#idResume#uid#').hide();
+    $('#idActions#uid#').show();
+  });
+
   // Click pour start dhw
   //
   $('#idStartOneTimeDhwCharge#uid#').on('click', function () {
@@ -2260,11 +2322,117 @@
       id: '#idStartOneTimeDhwCharge#'
     });
   });
+
   // Click pour stop dhw
   //
   $('#idStopOneTimeDhwCharge#uid#').on('click', function () {
     jeedom.cmd.execute({
       id: '#idStopOneTimeDhwCharge#'
+    });
+  });
+
+  // Click pour activer comfort program
+  //
+  $('#idActivateComfortProgram#uid#').on('click', function () {
+    jeedom.cmd.execute({
+      id: '#idActivateComfortProgram#'
+    });
+  });
+
+  // Click pour désactiver comfort program
+  //
+  $('#idDeActivateComfortProgram#uid#').on('click', function () {
+    jeedom.cmd.execute({
+      id: '#idDeActivateComfortProgram#'
+    });
+  });
+
+  // Click pour activer eco program
+  //
+  $('#idActivateEcoProgram#uid#').on('click', function () {
+    jeedom.cmd.execute({
+      id: '#idActivateEcoProgram#'
+    });
+  });
+
+  // Click pour désactiver eco program
+  //
+  $('#idDeActivateEcoProgram#uid#').on('click', function () {
+    jeedom.cmd.execute({
+      id: '#idDeActivateEcoProgram#'
+    });
+  });
+
+  jeedom.cmd.update['#idStartHoliday#'] = function (_options) {
+    $('#idStartHoliday#uid#').val(_options.display_value);
+  }
+  jeedom.cmd.update['#idStartHoliday#']({ display_value: '#startHoliday#' });
+
+  jeedom.cmd.update['#idEndHoliday#'] = function (_options) {
+    $('#idEndHoliday#uid#').val(_options.display_value);
+  }
+  jeedom.cmd.update['#idEndHoliday#']({ display_value: '#endHoliday#' });
+
+  $('#idStartHoliday#uid#').on('change', function () {    
+    jeedom.cmd.execute({id: '#idStartHolidayText#', value: {text: $('#idStartHoliday#uid#').val() }});
+  });
+
+  $('#idEndHoliday#uid#').on('change', function () {    
+    jeedom.cmd.execute({id: '#idEndHolidayText#', value: {text: $('#idEndHoliday#uid#').val() }});
+  });
+
+  jeedom.cmd.update['#idIsScheduleHolidayProgram#'] = function (_options) {
+    if (_options.display_value == 1) {
+      $('#idIsScheduleHolidayProgram#uid#').html("Activé");
+      $('#idScheduleHolidayProgram#uid#').hide();
+      $('#idUnscheduleHolidayProgram#uid#').show();
+    } else {
+      $('#idIsScheduleHolidayProgram#uid#').html("Désactivé");
+      $('#idScheduleHolidayProgram#uid#').show();
+      $('#idUnscheduleHolidayProgram#uid#').hide();
+    }
+  }
+  jeedom.cmd.update['#idIsScheduleHolidayProgram#']({ display_value: '#isScheduleHolidayProgram#' });
+
+  jeedom.cmd.update['#idIsActivateComfortProgram#'] = function (_options) {
+    if (_options.display_value == 1) {
+      $('#idIsActivateComfortProgram#uid#').html("Activé");
+      $('#idActivateComfortProgram#uid#').hide();
+      $('#idDeActivateComfortProgram#uid#').show();
+    } else {
+      $('#idIsActivateComfortProgram#uid#').html("Désactivé");
+      $('#idActivateComfortProgram#uid#').show();
+      $('#idDeActivateComfortProgram#uid#').hide();
+    }
+  }
+  jeedom.cmd.update['#idIsActivateComfortProgram#']({ display_value: '#isActivateComfortProgram#' });
+
+  jeedom.cmd.update['#idIsActivateEcoProgram#'] = function (_options) {
+    if (_options.display_value == 1) {
+      $('#idIsActivateEcoProgram#uid#').html("Activé");
+      $('#idActivateEcoProgram#uid#').hide();
+      $('#idDeActivateEcoProgram#uid#').show();
+    } else {
+      $('#idIsActivateEcoProgram#uid#').html("Désactivé");
+      $('#idActivateEcoProgram#uid#').show();
+      $('#idDeActivateEcoProgram#uid#').hide();
+    }
+  }
+  jeedom.cmd.update['#idIsActivateEcoProgram#']({ display_value: '#isActivateEcoProgram#' });
+
+  // Click pour activer holiday program
+  //
+  $('#idScheduleHolidayProgram#uid#').on('click', function () {
+    jeedom.cmd.execute({
+      id: '#idScheduleHolidayProgram#'
+    });
+  });
+
+  // Click pour désactiver holiday program
+  //
+  $('#idUnscheduleHolidayProgram#uid#').on('click', function () {
+    jeedom.cmd.execute({
+      id: '#idUnscheduleHolidayProgram#'
     });
   });
 

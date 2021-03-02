@@ -49,4 +49,8 @@
 # 26-02-2021
 
     Ajout historique jeedom et forcer eau chaude
+
+# 02-03-2021
+
+    Ajout programme confort, éco et vacances
     

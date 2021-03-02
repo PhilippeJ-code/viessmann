@@ -18,6 +18,8 @@
 
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
+include 'phar://' . __DIR__ . '/../../3rdparty/Viessmann-Api.phar/index.php';
+
 use Viessmann\API\ViessmannAPI;
 use Viessmann\API\ViessmannApiException;
 use Viessmann\API\ViessmannFeature;
@@ -51,7 +53,6 @@ class viessmann extends eqLogic
         ];
 
         try {
-            include 'phar://' . __DIR__ . '/../../3rdparty/Viessmann-Api.phar/index.php';  
             $viessmannApi = new ViessmannAPI($params);
         } catch (ViessmannApiException $e) {
             log::add('viessmann', 'error', $e->getMessage());
@@ -824,7 +825,43 @@ class viessmann extends eqLogic
         }
         $this->getCmd(null, 'isDhwCharging')->event($isDhwCharging);
 
+        if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HOLIDAY_PROGRAM).',') !== false) {
+            $active = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::HOLIDAY_PROGRAM), 'active');
+            $start = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::HOLIDAY_PROGRAM), 'start');
+            $end = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::HOLIDAY_PROGRAM), 'end');
+
+            if ( $active === true ) {
+                $this->getCmd(null, 'isScheduleHolidayProgram')->event(1);
+                $this->getCmd(null, 'startHoliday')->event($start);
+                $this->getCmd(null, 'endHoliday')->event($end);
+            } else {
+                $this->getCmd(null, 'isScheduleHolidayProgram')->event(0);
+            }
+        }
+
+        if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM).',') !== false) {
+            $active = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM), 'active');
+
+            if ( $active === true ) {
+                $this->getCmd(null, 'isActivateComfortProgram')->event(1);
+            } else {
+                $this->getCmd(null, 'isActivateComfortProgram')->event(0);
+            }
+        }
+                    
+        if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ECO_PROGRAM).',') !== false) {
+            $active = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::ECO_PROGRAM), 'active');
+
+            if ( $active === true ) {
+                $this->getCmd(null, 'isActivateEcoProgram')->event(1);
+            } else {
+                $this->getCmd(null, 'isActivateEcoProgram')->event(0);
+            }
+
+        }
+                    
         return;
+
     }
 
     // Set Normal Program Temperature
@@ -838,7 +875,6 @@ class viessmann extends eqLogic
           
         $viessmannApi->setNormalProgramTemperature($temperature);
         unset($viessmannApi);
-
     }
 
     // Set Comfort Program Temperature
@@ -953,6 +989,8 @@ class viessmann extends eqLogic
         
         $viessmannApi->activateComfortProgram();
         unset($viessmannApi);
+ 
+        $this->getCmd(null, 'isActivateComfortProgram')->event(1);
     }
 
     // deActivate Comfort Program
@@ -966,6 +1004,96 @@ class viessmann extends eqLogic
         
         $viessmannApi->deActivateComfortProgram();
         unset($viessmannApi);
+
+        $this->getCmd(null, 'isActivateComfortProgram')->event(0);
+    }
+
+    // Activate Eco Program
+    //
+    public function activateEcoProgram()
+    {
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+        
+        $viessmannApi->activateEcoProgram();
+        unset($viessmannApi);
+
+        $this->getCmd(null, 'isActivateEcoProgram')->event(1);
+    }
+
+    // deActivate Eco Program
+    //
+    public function deActivateEcoProgram()
+    {
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+        
+        $viessmannApi->deActivateEcoProgram();
+        unset($viessmannApi);
+
+        $this->getCmd(null, 'isActivateEcoProgram')->event(0);
+    }
+
+    public function validateDate($date, $format = 'Y-m-d H:i:s')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
+    }
+    
+    // Schedule Holiday Program
+    //
+    public function scheduleHolidayProgram()
+    {
+        $obj = $this->getCmd(null, 'startHoliday');
+        $startHoliday = $obj->execCmd();
+        if ($this->validateDate($startHoliday, 'Y-m-d') == false) {
+            throw new Exception(__('Date de début invalide', __FILE__));
+            return;
+        }
+
+        $obj = $this->getCmd(null, 'endHoliday');
+        $endHoliday = $obj->execCmd();
+        if ($this->validateDate($endHoliday, 'Y-m-d') == false) {
+            throw new Exception(__('Date de fin invalide', __FILE__));
+            return;
+        }
+
+        if ($startHoliday > $endHoliday) {
+            throw new Exception(__('Date de début postérieure à la date de fin', __FILE__));
+            return;
+        }
+    
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+
+        $viessmannApi->scheduleHolidayProgram($startHoliday, $endHoliday);
+        unset($viessmannApi);
+
+        $this->getCmd(null, 'isScheduleHolidayProgram')->event(1);
+
+
+    }
+
+    // Unschedule Holiday Program
+    //
+    public function unscheduleHolidayProgram()
+    {
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+        
+        $viessmannApi->unscheduleHolidayProgram();
+        unset($viessmannApi);
+
+        $this->getCmd(null, 'isScheduleHolidayProgram')->event(0);
+
     }
 
     public static function periodique()
@@ -1006,9 +1134,7 @@ class viessmann extends eqLogic
                 }
             }
             unset($viessmannApi);
-
         } else {
-
             $viessmann = null;
             foreach (self::byType('viessmann') as $viessmann) {
                 if ($viessmann->getIsEnable() == 1) {
@@ -2021,6 +2147,149 @@ class viessmann extends eqLogic
         $obj->setSubType('other');
         $obj->setOrder(64);
         $obj->save();
+
+        $obj = $this->getCmd(null, 'activateEcoProgram');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Activer programme éco', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('activateEcoProgram');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->setOrder(65);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'deActivateEcoProgram');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Désactiver programme éco', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('deActivateEcoProgram');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->setOrder(66);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'startHoliday');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Date début', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(0);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('string');
+        $obj->setLogicalId('startHoliday');
+        $obj->setOrder(67);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'endHoliday');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Date fin', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(0);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('string');
+        $obj->setLogicalId('endHoliday');
+        $obj->setOrder(68);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'startHolidayText');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Date Début texte', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('startHolidayText');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->setOrder(69);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'endHolidayText');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Date Fin texte', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('endHolidayText');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->setOrder(70);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'scheduleHolidayProgram');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Activer programme vacances', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('scheduleHolidayProgram');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->setOrder(71);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'unscheduleHolidayProgram');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Désactiver programme vacances', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('unscheduleHolidayProgram');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->setOrder(72);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'isScheduleHolidayProgram');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Programme vacances actif', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(0);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('binary');
+        $obj->setLogicalId('isScheduleHolidayProgram');
+        $obj->setOrder(73);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'isActivateComfortProgram');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Programme comfort actif', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(0);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('binary');
+        $obj->setLogicalId('isActivateComfortProgram');
+        $obj->setOrder(74);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'isActivateEcoProgram');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Programme éco actif', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(0);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('binary');
+        $obj->setLogicalId('isActivateEcoProgram');
+        $obj->setOrder(75);
+        $obj->save();
+
     }
 
     // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -2480,6 +2749,50 @@ class viessmann extends eqLogic
         $replace["#isDhwCharging#"] = $obj->execCmd();
         $replace["#idIsDhwCharging#"] = $obj->getId();
  
+        $obj = $this->getCmd(null, 'activateComfortProgram');
+        $replace["#idActivateComfortProgram#"] = $obj->getId();
+
+        $obj = $this->getCmd(null, 'deActivateComfortProgram');
+        $replace["#idDeActivateComfortProgram#"] = $obj->getId();
+
+        $obj = $this->getCmd(null, 'activateEcoProgram');
+        $replace["#idActivateEcoProgram#"] = $obj->getId();
+
+        $obj = $this->getCmd(null, 'deActivateEcoProgram');
+        $replace["#idDeActivateEcoProgram#"] = $obj->getId();
+
+        $obj = $this->getCmd(null, 'isScheduleHolidayProgram');
+        $replace["#isScheduleHolidayProgram#"] = $obj->execCmd();
+        $replace["#idIsScheduleHolidayProgram#"] = $obj->getId();
+ 
+        $obj = $this->getCmd(null, 'startHoliday');
+        $replace["#startHoliday#"] = $obj->execCmd();
+        $replace["#idStartHoliday#"] = $obj->getId();
+ 
+        $obj = $this->getCmd(null, 'endHoliday');
+        $replace["#endHoliday#"] = $obj->execCmd();
+        $replace["#idEndHoliday#"] = $obj->getId();
+ 
+        $obj = $this->getCmd(null, 'startHolidayText');
+        $replace["#idStartHolidayText#"] = $obj->getId();
+ 
+        $obj = $this->getCmd(null, 'endHolidayText');
+        $replace["#idEndHolidayText#"] = $obj->getId();
+
+        $obj = $this->getCmd(null, 'scheduleHolidayProgram');
+        $replace["#idScheduleHolidayProgram#"] = $obj->getId();
+
+        $obj = $this->getCmd(null, 'unscheduleHolidayProgram');
+        $replace["#idUnscheduleHolidayProgram#"] = $obj->getId();
+
+        $obj = $this->getCmd(null, 'isActivateComfortProgram');
+        $replace["#isActivateComfortProgram#"] = $obj->execCmd();
+        $replace["#idIsActivateComfortProgram#"] = $obj->getId();
+ 
+        $obj = $this->getCmd(null, 'isActivateEcoProgram');
+        $replace["#isActivateEcoProgram#"] = $obj->execCmd();
+        $replace["#idIsActivateEcoProgram#"] = $obj->getId();
+ 
         return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann')));
     }
 
@@ -2504,12 +2817,20 @@ class viessmannCmd extends cmd
             }
         } elseif ($this->getLogicalId() == 'startOneTimeDhwCharge') {
             $eqlogic->startOneTimeDhwCharge();
+        } elseif ($this->getLogicalId() == 'stopOneTimeDhwCharge') {
+            $eqlogic->stopOneTimeDhwCharge();
         } elseif ($this->getLogicalId() == 'activateComfortProgram') {
             $eqlogic->activateComfortProgram();
         } elseif ($this->getLogicalId() == 'deActivateComfortProgram') {
             $eqlogic->deActivateComfortProgram();
-        } elseif ($this->getLogicalId() == 'stopOneTimeDhwCharge') {
-            $eqlogic->stopOneTimeDhwCharge();
+        } elseif ($this->getLogicalId() == 'activateEcoProgram') {
+            $eqlogic->activateEcoProgram();
+        } elseif ($this->getLogicalId() == 'deActivateEcoProgram') {
+            $eqlogic->deActivateEcoProgram();
+        } elseif ($this->getLogicalId() == 'scheduleHolidayProgram') {
+            $eqlogic->scheduleHolidayProgram();
+        } elseif ($this->getLogicalId() == 'unscheduleHolidayProgram') {
+            $eqlogic->unscheduleHolidayProgram();
         } elseif ($this->getLogicalId() == 'comfortProgramSlider') {
             if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
                 return;
@@ -2540,12 +2861,16 @@ class viessmannCmd extends cmd
             }
             $eqlogic->getCmd(null, 'shift')->event($_options['slider']);
             $eqlogic->setShift($_options['slider']);
-        } elseif ($this->getLogicalId() == 'slopeSlider') {
-            if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
+        } elseif ($this->getLogicalId() == 'startHolidayText') {
+            if (!isset($_options['text']) || $_options['text'] == '') {
                 return;
             }
-            $eqlogic->getCmd(null, 'slope')->event(round($_options['slider'], 1));
-            $eqlogic->setSlope($_options['slider']);
+            $eqlogic->getCmd(null, 'startHoliday')->event($_options['text']);
+        } elseif ($this->getLogicalId() == 'endHolidayText') {
+            if (!isset($_options['text']) || $_options['text'] == '') {
+                return;
+            }
+            $eqlogic->getCmd(null, 'endHoliday')->event($_options['text']);
         }
     }
 }
