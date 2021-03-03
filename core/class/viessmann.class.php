@@ -830,19 +830,23 @@ class viessmann extends eqLogic
             $start = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::HOLIDAY_PROGRAM), 'start');
             $end = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::HOLIDAY_PROGRAM), 'end');
 
-            if ( $active === true ) {
+            log::add('viessmann', 'debug', $active);
+
+            if ( $active == 'true' ) {
                 $this->getCmd(null, 'isScheduleHolidayProgram')->event(1);
                 $this->getCmd(null, 'startHoliday')->event($start);
                 $this->getCmd(null, 'endHoliday')->event($end);
+                log::add('viessmann', 'debug', $active . ' true');
             } else {
                 $this->getCmd(null, 'isScheduleHolidayProgram')->event(0);
+                log::add('viessmann', 'debug', $active . ' false');
             }
         }
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM).',') !== false) {
             $active = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM), 'active');
 
-            if ( $active === true ) {
+            if ( $active == 'true' ) {
                 $this->getCmd(null, 'isActivateComfortProgram')->event(1);
             } else {
                 $this->getCmd(null, 'isActivateComfortProgram')->event(0);
@@ -852,7 +856,7 @@ class viessmann extends eqLogic
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ECO_PROGRAM).',') !== false) {
             $active = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::ECO_PROGRAM), 'active');
 
-            if ( $active === true ) {
+            if ( $active == 'true' ) {
                 $this->getCmd(null, 'isActivateEcoProgram')->event(1);
             } else {
                 $this->getCmd(null, 'isActivateEcoProgram')->event(0);
