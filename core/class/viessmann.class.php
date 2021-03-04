@@ -28,6 +28,12 @@ class viessmann extends eqLogic
 {
     const PRESSURE_SUPPLY = "heating.sensors.pressure.supply";
 
+    public function validateDate($date, $format = 'Y-m-d H:i:s')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
+    }
+    
     // Accès au serveur Viessmann
     //
     public function getViessmann()
@@ -232,7 +238,6 @@ class viessmann extends eqLogic
             $conso = $heatingPowerConsumptions[0];
             $oldConso = $this->getCache('oldConsoPower', -1);
             if ($oldConso > $conso) {
-                log::add('viessmann', 'debug', 'Historiser power : ' . $heatingPowerConsumptions[1]);
                 $dateVeille = time()-24*60*60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                 $this->getCmd(null, 'heatingPowerHistorize')->event($heatingPowerConsumptions[1], $dateVeille);
@@ -293,7 +298,6 @@ class viessmann extends eqLogic
             $conso = $dhwGazConsumptions[0]*$facteurConversionGaz;
             $oldConso = $this->getCache('oldConsoDhw', -1);
             if ($oldConso > $conso) {
-                log::add('viessmann', 'debug', 'Historiser dhw : ' . $dhwGazConsumptions[1]*$facteurConversionGaz);
                 $dateVeille = time()-24*60*60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                 $this->getCmd(null, 'dhwGazHistorize')->event($dhwGazConsumptions[1]*$facteurConversionGaz, $dateVeille);
@@ -353,7 +357,6 @@ class viessmann extends eqLogic
             $conso = $heatingGazConsumptions[0]*$facteurConversionGaz;
             $oldConso = $this->getCache('oldConsoHeating', -1);
             if ($oldConso > $conso) {
-                log::add('viessmann', 'debug', 'Historiser heating : ' . $heatingGazConsumptions[1]*$facteurConversionGaz);
                 $dateVeille = time()-24*60*60;
                 $dateVeille = date('Y-m-d 00:00:00', $dateVeille);
                 $this->getCmd(null, 'heatingGazHistorize')->event($heatingGazConsumptions[1]*$facteurConversionGaz, $dateVeille);
@@ -830,16 +833,15 @@ class viessmann extends eqLogic
             $start = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::HOLIDAY_PROGRAM), 'start');
             $end = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::HOLIDAY_PROGRAM), 'end');
 
-            log::add('viessmann', 'debug', $active);
+            $start = str_replace('"', '', $start);
+            $end = str_replace('"', '', $end);
 
-            if ( $active == 'true' ) {
+            if ($this->validateDate($start, 'Y-m-d') == true) {            
                 $this->getCmd(null, 'isScheduleHolidayProgram')->event(1);
                 $this->getCmd(null, 'startHoliday')->event($start);
                 $this->getCmd(null, 'endHoliday')->event($end);
-                log::add('viessmann', 'debug', $active . ' true');
             } else {
                 $this->getCmd(null, 'isScheduleHolidayProgram')->event(0);
-                log::add('viessmann', 'debug', $active . ' false');
             }
         }
 
@@ -1042,12 +1044,6 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'isActivateEcoProgram')->event(0);
     }
 
-    public function validateDate($date, $format = 'Y-m-d H:i:s')
-    {
-        $d = DateTime::createFromFormat($format, $date);
-        return $d && $d->format($format) == $date;
-    }
-    
     // Schedule Holiday Program
     //
     public function scheduleHolidayProgram()
