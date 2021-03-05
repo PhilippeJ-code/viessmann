@@ -91,7 +91,7 @@
             On y retrouve, le statut de la chaudière
             Les consignes de température modifiables sur le widget
             Les températures intérieure, de départ et du circuit de chauffage
-            Le staut "Mise hor gel" et l'état du circulateur
+            Le staut "Mise hors gel" et l'état du circulateur
 
         Une icone permet l'affichage des informations de programmation du chauffage sous forme graphique
 
