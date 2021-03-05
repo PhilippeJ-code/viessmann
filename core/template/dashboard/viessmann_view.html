@@ -10,6 +10,8 @@
       <div class="classTuile#uid#">
 
         <img class="classFlamme#uid#" id="idBruleurAllumer#uid#" src="plugins/viessmann/resources/flamme.svg">
+        <img class="classIconeAlerte#uid#" id="idIconeAlerte#uid#" src="plugins/viessmann/resources/alerte.svg">
+        <span id="idTexteAlerte#uid#"></span>
 
         <a href="#eqLink#" <span id="idNomObjet#uid#" class="cursor">#name_display#</span></a>
 
@@ -28,7 +30,7 @@
           src="plugins/viessmann/resources/options.svg">
         <img class="classOptionsCal#uid#" id="idOptionsErreurs#uid#" src="plugins/viessmann/resources/alerte.svg">
 
-        <span id="idProgrammeActuel#uid#">#activeProgram#</span>
+        <span id="idProgrammeActuel#uid#"></span>
 
         <span class="classOutsideTemperature#uid# history cursor" data-cmd_id="#idOutsideTemperature#"
           id="idOutsideTemperature#uid#"></span>
@@ -697,6 +699,23 @@
     left: 3px;
     top: 3px;
     filter: invert(7%) sepia(100%) saturate(7480%) hue-rotate(248deg) brightness(104%) contrast(141%);
+  }
+
+  .classIconeAlerte#uid# {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 26px;
+    top: 3px;
+    filter: invert(33%) sepia(55%) saturate(7464%) hue-rotate(348deg) brightness(86%) contrast(142%);
+  }
+
+  #idTexteAlerte#uid# {
+    position: absolute;
+    height: 20px;
+    left: 50px;
+    top: 5px;  
+    color: #ff0000;
   }
 
   .classRefresh#uid# {
@@ -2438,5 +2457,15 @@
       id: '#idUnscheduleHolidayProgram#'
     });
   });
+
+  jeedom.cmd.update['#idCurrentError#'] = function (_options) {
+    if (_options.display_value == '') {
+      $('#idIconeAlerte#uid#').hide();
+    } else {
+      $('#idIconeAlerte#uid#').show();
+    }
+    $('#idTexteAlerte#uid#').html(_options.display_value);
+  }
+  jeedom.cmd.update['#idCurrentError#']({ display_value: '#currentError#' });
 
 </script>

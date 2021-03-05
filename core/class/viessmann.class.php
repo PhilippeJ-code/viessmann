@@ -666,6 +666,7 @@ class viessmann extends eqLogic
           
         $nbr = 0;
         $erreurs = '';
+        $erreurCourante = '';
           
         if (strPos($features, ViessmannFeature::HEATING_ERRORS_ACTIVE.',') !== false) {
             $errors = $viessmannApi->getProperties(ViessmannFeature::HEATING_ERRORS_ACTIVE);
@@ -680,6 +681,9 @@ class viessmann extends eqLogic
                         $erreurs .= ';';
                     }
                     $erreurs .= 'AN;' . $timeStamp . ';' . $errorCode;
+                    if ( $erreurCourante == '' ) {
+                        $erreurCourante = $errorCode;
+                    }
                     $nbr++;
                 }
             }
@@ -799,6 +803,7 @@ class viessmann extends eqLogic
             }
         }
         $this->getCmd(null, 'errors')->event($erreurs);
+        $this->getCmd(null, 'currentError')->event($erreurCourante);
       
         if (strPos($features, ViessmannFeature::HEATING_SERVICE_TIMEBASED.',') !== false) {
             $lastServiceDate = substr($viessmannApi->getLastServiceDate(), 0, 19);
@@ -1225,7 +1230,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('refresh');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(1);
         $obj->save();
 
         $obj = $this->getCmd(null, 'activeMode');
@@ -1239,7 +1243,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('activeMode');
-        $obj->setOrder(2);
         $obj->save();
 
         $obj = $this->getCmd(null, 'activeProgram');
@@ -1253,7 +1256,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('activeProgram');
-        $obj->setOrder(3);
         $obj->save();
 
         $obj = $this->getCmd(null, 'isHeatingBurnerActive');
@@ -1267,7 +1269,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('binary');
         $obj->setLogicalId('isHeatingBurnerActive');
-        $obj->setOrder(4);
         $obj->save();
 
         $obj = $this->getCmd(null, 'isDhwModeActive');
@@ -1281,7 +1282,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('binary');
         $obj->setLogicalId('isDhwModeActive');
-        $obj->setOrder(5);
         $obj->save();
 
         $obj = $this->getCmd(null, 'outsideTemperature');
@@ -1296,7 +1296,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('outsideTemperature');
-        $obj->setOrder(6);
         $obj->save();
   
         $obj = $this->getCmd(null, 'supplyProgramTemperature');
@@ -1311,7 +1310,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('supplyProgramTemperature');
-        $obj->setOrder(7);
         $obj->save();
 
         $objSlope = $this->getCmd(null, 'slope');
@@ -1327,7 +1325,6 @@ class viessmann extends eqLogic
         $objSlope->setLogicalId('slope');
         $objSlope->setConfiguration('minValue', 0.2);
         $objSlope->setConfiguration('maxValue', 3.5);
-        $objSlope->setOrder(8);
         $objSlope->save();
   
         $objShift = $this->getCmd(null, 'shift');
@@ -1343,7 +1340,6 @@ class viessmann extends eqLogic
         $objShift->setLogicalId('shift');
         $objShift->setConfiguration('minValue', -13);
         $objShift->setConfiguration('maxValue', 40);
-        $objShift->setOrder(9);
         $objShift->save();
 
         $objComfort = $this->getCmd(null, 'comfortProgramTemperature');
@@ -1360,7 +1356,6 @@ class viessmann extends eqLogic
         $objComfort->setLogicalId('comfortProgramTemperature');
         $objComfort->setConfiguration('minValue', 3);
         $objComfort->setConfiguration('maxValue', 37);
-        $objComfort->setOrder(10);
         $objComfort->save();
   
         $objNormal = $this->getCmd(null, 'normalProgramTemperature');
@@ -1377,7 +1372,6 @@ class viessmann extends eqLogic
         $objNormal->setLogicalId('normalProgramTemperature');
         $objNormal->setConfiguration('minValue', 3);
         $objNormal->setConfiguration('maxValue', 37);
-        $objNormal->setOrder(11);
         $objNormal->save();
   
         $objReduced = $this->getCmd(null, 'reducedProgramTemperature');
@@ -1394,7 +1388,6 @@ class viessmann extends eqLogic
         $objReduced->setLogicalId('reducedProgramTemperature');
         $objReduced->setConfiguration('minValue', 3);
         $objReduced->setConfiguration('maxValue', 37);
-        $objReduced->setOrder(12);
         $objReduced->save();
   
         $obj = $this->getCmd(null, 'programTemperature');
@@ -1409,7 +1402,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('programTemperature');
-        $obj->setOrder(13);
         $obj->save();
   
         $obj = $this->getCmd(null, 'hotWaterStorageTemperature');
@@ -1423,7 +1415,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('hotWaterStorageTemperature');
-        $obj->setOrder(14);
         $obj->save();
           
         $objDhw = $this->getCmd(null, 'dhwTemperature');
@@ -1439,7 +1430,6 @@ class viessmann extends eqLogic
         $objDhw->setLogicalId('dhwTemperature');
         $objDhw->setConfiguration('minValue', 10);
         $objDhw->setConfiguration('maxValue', 60);
-        $objDhw->setOrder(15);
         $objDhw->save();
 
         $obj = $this->getCmd(null, 'heatingBurnerHours');
@@ -1453,7 +1443,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('heatingBurnerHours');
-        $obj->setOrder(16);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingBurnerStarts');
@@ -1467,7 +1456,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('heatingBurnerStarts');
-        $obj->setOrder(17);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingBurnerModulation');
@@ -1481,7 +1469,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('heatingBurnerModulation');
-        $obj->setOrder(18);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingPowerConsumption');
@@ -1495,7 +1482,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('heatingPowerConsumption');
-        $obj->setOrder(19);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingPowerConsumptionDay');
@@ -1509,7 +1495,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('heatingPowerConsumptionDay');
-        $obj->setOrder(20);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingPowerConsumptionWeek');
@@ -1523,7 +1508,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('heatingPowerConsumptionWeek');
-        $obj->setOrder(21);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingPowerConsumptionMonth');
@@ -1537,7 +1521,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('heatingPowerConsumptionMonth');
-        $obj->setOrder(22);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingPowerConsumptionYear');
@@ -1551,7 +1534,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('heatingPowerConsumptionYear');
-        $obj->setOrder(23);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingGazConsumption');
@@ -1565,7 +1547,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('heatingGazConsumption');
-        $obj->setOrder(24);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingGazConsumptionDay');
@@ -1579,7 +1560,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('heatingGazConsumptionDay');
-        $obj->setOrder(25);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingGazConsumptionWeek');
@@ -1593,7 +1573,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('heatingGazConsumptionWeek');
-        $obj->setOrder(26);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingGazConsumptionMonth');
@@ -1607,7 +1586,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('heatingGazConsumptionMonth');
-        $obj->setOrder(27);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingGazConsumptionYear');
@@ -1621,7 +1599,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('heatingGazConsumptionYear');
-        $obj->setOrder(28);
         $obj->save();
 
         $obj = $this->getCmd(null, 'dhwGazConsumption');
@@ -1635,7 +1612,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('dhwGazConsumption');
-        $obj->setOrder(29);
         $obj->save();
 
         $obj = $this->getCmd(null, 'dhwGazConsumptionDay');
@@ -1649,7 +1625,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('dhwGazConsumptionDay');
-        $obj->setOrder(30);
         $obj->save();
           
         $obj = $this->getCmd(null, 'dhwGazConsumptionWeek');
@@ -1663,7 +1638,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('dhwGazConsumptionWeek');
-        $obj->setOrder(31);
         $obj->save();
           
         $obj = $this->getCmd(null, 'dhwGazConsumptionMonth');
@@ -1677,7 +1651,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('dhwGazConsumptionMonth');
-        $obj->setOrder(32);
         $obj->save();
           
         $obj = $this->getCmd(null, 'dhwGazConsumptionYear');
@@ -1691,7 +1664,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('dhwGazConsumptionYear');
-        $obj->setOrder(33);
         $obj->save();
 
         $obj = $this->getCmd(null, 'comfortProgramSlider');
@@ -1709,7 +1681,6 @@ class viessmann extends eqLogic
         $obj->setValue($objComfort->getId());
         $obj->setConfiguration('minValue', 3);
         $obj->setConfiguration('maxValue', 37);
-        $obj->setOrder(34);
         $obj->save();
 
         $obj = $this->getCmd(null, 'normalProgramSlider');
@@ -1727,7 +1698,6 @@ class viessmann extends eqLogic
         $obj->setValue($objNormal->getId());
         $obj->setConfiguration('minValue', 3);
         $obj->setConfiguration('maxValue', 37);
-        $obj->setOrder(35);
         $obj->save();
 
         $obj = $this->getCmd(null, 'reducedProgramSlider');
@@ -1745,7 +1715,6 @@ class viessmann extends eqLogic
         $obj->setValue($objReduced->getId());
         $obj->setConfiguration('minValue', 3);
         $obj->setConfiguration('maxValue', 37);
-        $obj->setOrder(36);
         $obj->save();
 
         $obj = $this->getCmd(null, 'dhwSlider');
@@ -1763,7 +1732,6 @@ class viessmann extends eqLogic
         $obj->setValue($objDhw->getId());
         $obj->setConfiguration('minValue', 10);
         $obj->setConfiguration('maxValue', 60);
-        $obj->setOrder(37);
         $obj->save();
 
         $obj = $this->getCmd(null, 'dhwSchedule');
@@ -1777,7 +1745,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('dhwSchedule');
-        $obj->setOrder(38);
         $obj->save();
           
         $obj = $this->getCmd(null, 'heatingSchedule');
@@ -1791,7 +1758,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('heatingSchedule');
-        $obj->setOrder(39);
         $obj->save();
 
         $obj = $this->getCmd(null, 'refreshDate');
@@ -1805,7 +1771,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('refreshDate');
-        $obj->setOrder(40);
         $obj->save();
 
         $obj = $this->getCmd(null, 'frostProtection');
@@ -1819,7 +1784,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('frostProtection');
-        $obj->setOrder(41);
         $obj->save();
 
         $obj = $this->getCmd(null, 'roomTemperature');
@@ -1833,7 +1797,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('roomTemperature');
-        $obj->setOrder(42);
         $obj->save();
 
         $obj = $this->getCmd(null, 'boilerTemperature');
@@ -1847,7 +1810,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('boilerTemperature');
-        $obj->setOrder(43);
         $obj->save();
 
         $obj = $this->getCmd(null, 'pumpStatus');
@@ -1861,7 +1823,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('pumpStatus');
-        $obj->setOrder(44);
         $obj->save();
 
         $obj = $this->getCmd(null, 'pressureSupply');
@@ -1875,7 +1836,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('pressureSupply');
-        $obj->setOrder(45);
         $obj->save();
 
         $obj = $this->getCmd(null, 'totalGazConsumptionDay');
@@ -1889,7 +1849,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('totalGazConsumptionDay');
-        $obj->setOrder(46);
         $obj->save();
 
         $obj = $this->getCmd(null, 'totalGazConsumptionWeek');
@@ -1903,7 +1862,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('totalGazConsumptionWeek');
-        $obj->setOrder(47);
         $obj->save();
 
         $obj = $this->getCmd(null, 'totalGazConsumptionMonth');
@@ -1917,7 +1875,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('totalGazConsumptionMonth');
-        $obj->setOrder(48);
         $obj->save();
 
         $obj = $this->getCmd(null, 'totalGazConsumptionYear');
@@ -1931,7 +1888,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('totalGazConsumptionYear');
-        $obj->setOrder(49);
         $obj->save();
 
         $obj = $this->getCmd(null, 'errors');
@@ -1945,7 +1901,19 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('errors');
-        $obj->setOrder(50);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'currentError');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Erreur courante', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(0);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('info');
+        $obj->setSubType('string');
+        $obj->setLogicalId('currentError');
         $obj->save();
 
         $obj = $this->getCmd(null, 'lastServiceDate');
@@ -1959,7 +1927,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('lastServiceDate');
-        $obj->setOrder(51);
         $obj->save();
 
         $obj = $this->getCmd(null, 'serviceInterval');
@@ -1973,7 +1940,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('serviceInterval');
-        $obj->setOrder(52);
         $obj->save();
 
         $obj = $this->getCmd(null, 'monthSinceService');
@@ -1987,7 +1953,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('monthSinceService');
-        $obj->setOrder(53);
         $obj->save();
 
         $obj = $this->getCmd(null, 'slopeSlider');
@@ -2010,7 +1975,6 @@ class viessmann extends eqLogic
         }
         $optParam['step'] = 0.1;
         $obj->setDisplay('parameters', $optParam);
-        $obj->setOrder(54);
         $obj->save();
 
         $obj = $this->getCmd(null, 'shiftSlider');
@@ -2027,7 +1991,6 @@ class viessmann extends eqLogic
         $obj->setValue($objShift->getId());
         $obj->setConfiguration('minValue', -13);
         $obj->setConfiguration('maxValue', 40);
-        $obj->setOrder(55);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingGazHistorize');
@@ -2041,7 +2004,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('heatingGazHistorize');
-        $obj->setOrder(56);
         $obj->save();
 
         $obj = $this->getCmd(null, 'dhwGazHistorize');
@@ -2055,7 +2017,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('dhwGazHistorize');
-        $obj->setOrder(57);
         $obj->save();
 
         $obj = $this->getCmd(null, 'heatingPowerHistorize');
@@ -2069,7 +2030,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('numeric');
         $obj->setLogicalId('heatingPowerHistorize');
-        $obj->setOrder(58);
         $obj->save();
 
         $obj = $this->getCmd(null, 'isOneTimeDhwCharge');
@@ -2083,7 +2043,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('binary');
         $obj->setLogicalId('isOneTimeDhwCharge');
-        $obj->setOrder(59);
         $obj->save();
 
         $obj = $this->getCmd(null, 'startOneTimeDhwCharge');
@@ -2095,7 +2054,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('startOneTimeDhwCharge');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(60);
         $obj->save();
 
         $obj = $this->getCmd(null, 'stopOneTimeDhwCharge');
@@ -2107,7 +2065,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('stopOneTimeDhwCharge');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(61);
         $obj->save();
 
         $obj = $this->getCmd(null, 'isDhwCharging');
@@ -2121,7 +2078,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('binary');
         $obj->setLogicalId('isDhwCharging');
-        $obj->setOrder(62);
         $obj->save();
 
         $obj = $this->getCmd(null, 'activateComfortProgram');
@@ -2133,7 +2089,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('activateComfortProgram');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(63);
         $obj->save();
 
         $obj = $this->getCmd(null, 'deActivateComfortProgram');
@@ -2145,7 +2100,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('deActivateComfortProgram');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(64);
         $obj->save();
 
         $obj = $this->getCmd(null, 'activateEcoProgram');
@@ -2157,7 +2111,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('activateEcoProgram');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(65);
         $obj->save();
 
         $obj = $this->getCmd(null, 'deActivateEcoProgram');
@@ -2169,7 +2122,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('deActivateEcoProgram');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(66);
         $obj->save();
 
         $obj = $this->getCmd(null, 'startHoliday');
@@ -2183,7 +2135,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('startHoliday');
-        $obj->setOrder(67);
         $obj->save();
 
         $obj = $this->getCmd(null, 'endHoliday');
@@ -2197,7 +2148,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('string');
         $obj->setLogicalId('endHoliday');
-        $obj->setOrder(68);
         $obj->save();
 
         $obj = $this->getCmd(null, 'startHolidayText');
@@ -2209,7 +2159,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('startHolidayText');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(69);
         $obj->save();
 
         $obj = $this->getCmd(null, 'endHolidayText');
@@ -2221,7 +2170,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('endHolidayText');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(70);
         $obj->save();
 
         $obj = $this->getCmd(null, 'scheduleHolidayProgram');
@@ -2233,7 +2181,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('scheduleHolidayProgram');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(71);
         $obj->save();
 
         $obj = $this->getCmd(null, 'unscheduleHolidayProgram');
@@ -2245,7 +2192,6 @@ class viessmann extends eqLogic
         $obj->setLogicalId('unscheduleHolidayProgram');
         $obj->setType('action');
         $obj->setSubType('other');
-        $obj->setOrder(72);
         $obj->save();
 
         $obj = $this->getCmd(null, 'isScheduleHolidayProgram');
@@ -2259,7 +2205,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('binary');
         $obj->setLogicalId('isScheduleHolidayProgram');
-        $obj->setOrder(73);
         $obj->save();
 
         $obj = $this->getCmd(null, 'isActivateComfortProgram');
@@ -2273,7 +2218,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('binary');
         $obj->setLogicalId('isActivateComfortProgram');
-        $obj->setOrder(74);
         $obj->save();
 
         $obj = $this->getCmd(null, 'isActivateEcoProgram');
@@ -2287,7 +2231,6 @@ class viessmann extends eqLogic
         $obj->setType('info');
         $obj->setSubType('binary');
         $obj->setLogicalId('isActivateEcoProgram');
-        $obj->setOrder(75);
         $obj->save();
 
     }
@@ -2722,6 +2665,10 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'errors');
         $replace["#errors#"] = $obj->execCmd();
         $replace["#idErrors#"] = $obj->getId();
+          
+        $obj = $this->getCmd(null, 'currentError');
+        $replace["#currentError#"] = $obj->execCmd();
+        $replace["#idCurrentError#"] = $obj->getId();
           
         $obj = $this->getCmd(null, 'lastServiceDate');
         $replace["#lastServiceDate#"] = $obj->execCmd();
