@@ -2741,6 +2741,7 @@ class viessmann extends eqLogic
         $replace["#idIsActivateEcoProgram#"] = $obj->getId();
  
         return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann')));
+        
     }
 
     private function buildFeature($circuitId, $feature)
