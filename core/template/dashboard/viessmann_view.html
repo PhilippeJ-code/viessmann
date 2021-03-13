@@ -488,12 +488,14 @@
       data-cmd_id="#idIsActivateEcoProgram#" id="idIsActivateEcoProgram#uid#"></span>
     <img class="classCrayon#uid# cursor" id="idActivateEcoProgram#uid#" src="plugins/viessmann/resources/start.svg">
     <img class="classCrayon#uid# cursor" id="idDeActivateEcoProgram#uid#"
-      src="plugins/viessmann/resources/stop.svg"></br></br>
-
+      src="plugins/viessmann/resources/stop.svg"></br>
+      <div class="gap-10"></div>
     <span class="classSousTitre#uid#">Date début</span>
     <input type="date" id="idStartHoliday#uid#"></br>
+    <div class="gap-10"></div>
     <span class="classSousTitre#uid#">Date fin</span>
-    <input type="date" id="idEndHoliday#uid#"></br></br>
+    <input type="date" id="idEndHoliday#uid#"></br>
+    <div class="gap-10"></div>
     <span class="classSousTitre#uid#">Programme vacances</span><span class="classValeur#uid# history cursor"
       data-cmd_id="#idIsScheduleHolidayProgram#" id="idIsScheduleHolidayProgram#uid#"></span>
     <img class="classCrayon#uid# cursor" id="idScheduleHolidayProgram#uid#" src="plugins/viessmann/resources/start.svg">
@@ -552,6 +554,11 @@
       text-align: center;
       font-size: 14px;
       color: #808080;
+    }
+
+    .gap-10 {
+      width: 100%;
+      height: 10px;
     }
 
     #idNomObjet#uid# {
@@ -767,7 +774,7 @@
     .classValeur#uid# {
       position: absolute;
       width: 100%;
-      right: 20px;
+      right: 25px;
       text-align: right;
       font-size: 14px;
       color: #808080;
@@ -787,8 +794,8 @@
 
     .classCrayon#uid# {
       position: absolute;
-      width: 15px;
-      height: 15px;
+      width: 20px;
+      height: 20px;
       right: 3px;
       filter: invert(56%) sepia(0%) saturate(299%) hue-rotate(144deg) brightness(89%) contrast(94%);
     }
