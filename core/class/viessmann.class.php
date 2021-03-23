@@ -196,28 +196,37 @@ class viessmann extends eqLogic
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM).',') !== false) {
             $comfortProgramTemperature = $viessmannApi->getComfortProgramTemperature($circuitId);
         } else {
-            $comfortProgramTemperature = 0;
+            $comfortProgramTemperature = 3;
         }
         $this->getCmd(null, 'comfortProgramTemperature')->event($comfortProgramTemperature);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::NORMAL_PROGRAM).',') !== false) {
             $normalProgramTemperature = $viessmannApi->getNormalProgramTemperature($circuitId);
         } else {
-            $normalProgramTemperature = 0;
+            $normalProgramTemperature = 3;
         }
         $this->getCmd(null, 'normalProgramTemperature')->event($normalProgramTemperature);
           
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::REDUCED_PROGRAM).',') !== false) {
             $reducedProgramTemperature = $viessmannApi->getReducedProgramTemperature($circuitId);
         } else {
-            $reducedProgramTemperature = 0;
+            $reducedProgramTemperature = 3;
         }
         $this->getCmd(null, 'reducedProgramTemperature')->event($reducedProgramTemperature);
+          
+        if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ECO_PROGRAM).',') !== false) {
+            $ecoProgramTemperature = $viessmannApi->getEcoProgramTemperature($circuitId);
+        } else {
+            $ecoProgramTemperature = 2;
+        }
+        $this->getCmd(null, 'ecoProgramTemperature')->event($ecoProgramTemperature);
           
         if ($activeProgram === 'comfort') {
             $this->getCmd(null, 'programTemperature')->event($comfortProgramTemperature);
         } elseif ($activeProgram === 'normal') {
             $this->getCmd(null, 'programTemperature')->event($normalProgramTemperature);
+        } elseif ($activeProgram === 'eco') {
+            $this->getCmd(null, 'programTemperature')->event($ecoProgramTemperature);
         } else {
             $this->getCmd(null, 'programTemperature')->event($reducedProgramTemperature);
         }
@@ -914,6 +923,19 @@ class viessmann extends eqLogic
         unset($viessmannApi);
     }
 
+    // Set Eco Program Temperature
+    //
+    public function setEcoProgramTemperature($temperature)
+    {
+        $viessmannApi = $this->getViessmann();
+        if ($viessmannApi == null) {
+            return;
+        }
+        
+        $viessmannApi->setEcoProgramTemperature($temperature);
+        unset($viessmannApi);
+    }
+
     // Set Dhw Temperature
     //
     public function setDhwTemperature($temperature)
@@ -1390,6 +1412,22 @@ class viessmann extends eqLogic
         $objReduced->setConfiguration('maxValue', 37);
         $objReduced->save();
   
+        $objEco = $this->getCmd(null, 'ecoProgramTemperature');
+        if (!is_object($objEco)) {
+            $objEco = new viessmannCmd();
+            $objEco->setName(__('Température éco', __FILE__));
+            $objEco->setUnite('°C');
+            $objEco->setIsVisible(1);
+            $objEco->setIsHistorized(0);
+        }
+        $objEco->setEqLogic_id($this->getId());
+        $objEco->setType('info');
+        $objEco->setSubType('numeric');
+        $objEco->setLogicalId('ecoProgramTemperature');
+        $objEco->setConfiguration('minValue', 2);
+        $objEco->setConfiguration('maxValue', 37);
+        $objEco->save();
+  
         $obj = $this->getCmd(null, 'programTemperature');
         if (!is_object($obj)) {
             $obj = new viessmannCmd();
@@ -1714,6 +1752,23 @@ class viessmann extends eqLogic
         $obj->setLogicalId('reducedProgramSlider');
         $obj->setValue($objReduced->getId());
         $obj->setConfiguration('minValue', 3);
+        $obj->setConfiguration('maxValue', 37);
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'ecoProgramSlider');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setUnite('°C');
+            $obj->setName(__('Slider température éco', __FILE__));
+            $obj->setIsVisible(1);
+            $obj->setIsHistorized(0);
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setType('action');
+        $obj->setSubType('slider');
+        $obj->setLogicalId('ecoProgramSlider');
+        $obj->setValue($objEco->getId());
+        $obj->setConfiguration('minValue', 2);
         $obj->setConfiguration('maxValue', 37);
         $obj->save();
 
@@ -2305,6 +2360,13 @@ class viessmann extends eqLogic
         $replace["#maxReduced#"] = $obj->getConfiguration('maxValue');
         $replace["#stepReduced#"] = 1;
           
+        $obj = $this->getCmd(null, 'ecoProgramTemperature');
+        $replace["#ecoProgramTemperature#"] = $obj->execCmd();
+        $replace["#idEcoProgramTemperature#"] = $obj->getId();
+        $replace["#minEco#"] = $obj->getConfiguration('minValue') + 1;
+        $replace["#maxEco#"] = $obj->getConfiguration('maxValue');
+        $replace["#stepEco#"] = 1;
+          
         $obj = $this->getCmd(null, 'programTemperature');
         $replace["#programTemperature#"] = $obj->execCmd();
         $replace["#idProgramTemperature#"] = $obj->getId();
@@ -2649,6 +2711,8 @@ class viessmann extends eqLogic
         $replace["#idNormalProgramSlider#"] = $obj->getId();
         $obj = $this->getCmd(null, 'reducedProgramSlider');
         $replace["#idReducedProgramSlider#"] = $obj->getId();
+        $obj = $this->getCmd(null, 'ecoProgramSlider');
+        $replace["#idEcoProgramSlider#"] = $obj->getId();
         $obj = $this->getCmd(null, 'dhwSlider');
         $replace["#idDhwSlider#"] = $obj->getId();
 
@@ -2797,6 +2861,12 @@ class viessmannCmd extends cmd
             }
             $eqlogic->getCmd(null, 'reducedProgramTemperature')->event($_options['slider']);
             $eqlogic->setReducedProgramTemperature($_options['slider']);
+        } elseif ($this->getLogicalId() == 'ecoProgramSlider') {
+            if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
+                return;
+            }
+            $eqlogic->getCmd(null, 'ecoProgramTemperature')->event($_options['slider']);
+            $eqlogic->setEcoProgramTemperature($_options['slider']);
         } elseif ($this->getLogicalId() == 'dhwSlider') {
             if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
                 return;
