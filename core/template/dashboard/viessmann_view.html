@@ -212,7 +212,8 @@
     </br></br>
     <span class="classTitre#uid#">Statut</span></br>
     <div class="gap-10"></div>
-    <span id="idStatutChauffage#uid#" class="classSousTitre#uid#"></span></br>
+    <span id="idStatutChauffage#uid#" class="classSousTitre#uid#"></span></span><img
+    class="classCrayon#uid# cursor" id="idModifierStatut#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
     <div class="gap-10"></div>    
     <span class="classTitre#uid#">Températures</span></br>
     <div class="gap-10"></div>
@@ -225,9 +226,6 @@
     <span class="classSousTitre#uid#">Réduite</span><span id="idReducedProgramTemperature#uid#"
       class="classValeur#uid# history cursor" data-cmd_id="#idReducedProgramTemperature#"></span><img
       class="classCrayon#uid# cursor" id="idModifierReduite#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
-    <span class="classSousTitre#uid#">Eco</span><span id="idEcoProgramTemperature#uid#"
-      class="classValeur#uid# history cursor" data-cmd_id="#idEcoProgramTemperature#"></span><img
-      class="classCrayon#uid# cursor" id="idModifierEco#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
     <div class="gap-10"></div>    
     <span class="classTitre#uid#">#circuitName#</span></br>
     <div class="gap-10"></div>
@@ -459,22 +457,18 @@
 
   </div>
 
-  <div id="idPopupEco#uid#" class="classModal#uid#">
+  <div id="idPopupStatut#uid#" class="classModal#uid#">
 
     <div class="classModalContenu#uid#">
       <div class="classModalEntete#uid#">
         <img class="classModalClose#uid# cursor" src="plugins/viessmann/resources/previous.svg">
-        <span>Température réduite</span>
+        <span>Statut chauffage</span>
       </div>
       <div class="classModalCorps#uid#">
-        <div class="classConsigne#uid#">
-          </br>
-          <img id="idEcoPlus#uid#" class="classFleches#uid#" src="plugins/viessmann/resources/plus.svg">
-          <span id="idEcoValeur#uid#" class="classValeurConsigne#uid#"></span>
-          <img id="idEcoMoins#uid#" class="classFleches#uid#" src="plugins/viessmann/resources/moins.svg">
-
-        </div>
-
+        <input type="radio" name="modes" value="standby" id="idModeStandby#uid#">Arrêt<br>
+        <input type="radio" name="modes" value="heating" id="idModeHeating#uid#">Chauffage seul<br>  
+        <input type="radio" name="modes" value="dhw" id="idModeDhw#uid#">Eau chaude seule<br>  
+        <input type="radio" name="modes" value="dhwAndHeating" id="idModeDhwAndHeating#uid#">Chauffage et eau chauffe<br>  
       </div>
     </div>
 
@@ -824,11 +818,7 @@
       color: blue;
     }
 
-    #idEcoProgramTemperature#uid# {
-      color: blue;
-    }
-
-    .classCrayon#uid# {
+   .classCrayon#uid# {
       position: absolute;
       width: 20px;
       height: 20px;
@@ -1033,7 +1023,7 @@
       $('#idPopupConfort#uid#').hide();
       $('#idPopupNormale#uid#').hide();
       $('#idPopupReduite#uid#').hide();
-      $('#idPopupEco#uid#').hide();
+      $('#idPopupStatut#uid#').hide();
       $('#idPopupDhw#uid#').hide();
       $('#idPopupPente#uid#').hide();
       $('#idPopupParallele#uid#').hide();
@@ -1388,20 +1378,26 @@
     //
     jeedom.cmd.update['#idActiveMode#'] = function (_options) {
 
-      if (_options.display_value == 'standby')
-        $('#idStatutChauffage#uid#').html('Arrêt');
-      else if (_options.display_value == 'heating')
+      $('#idModeStandby#uid#').attr('checked', 'checked');
+      
+      if (_options.display_value == 'standby') {
+        $('#idStatutChauffage#uid#').html('Arrêt');        
+      } else if (_options.display_value == 'heating') {
         $('#idStatutChauffage#uid#').html('Chauffage seul activé');
-      else if (_options.display_value == 'dhw')
+        $('#idModeHeating#uid#').attr('checked', 'checked');
+      } else if (_options.display_value == 'dhw') {
         $('#idStatutChauffage#uid#').html('Eau chaude seule activée');
-      else if (_options.display_value == 'dhwAndHeating')
+        $('#idModeDhw#uid#').attr('checked', 'checked');
+      } else if (_options.display_value == 'dhwAndHeating') {
         $('#idStatutChauffage#uid#').html('Chauffage et eau chaude activés');
-      else if (_options.display_value == 'forcedReduced')
+        $('#idModeDhwAndHeating#uid#').attr('checked', 'checked');
+      } else if (_options.display_value == 'forcedReduced') {
         $('#idStatutChauffage#uid#').html('Marche réduite en permanence');
-      else if (_options.display_value == 'forcedNormal')
+      } else if (_options.display_value == 'forcedNormal') {
         $('#idStatutChauffage#uid#').html('Mode jour en permanence');
-      else
+      } else {
         $('#idStatutChauffage#uid#').html(_options.display_value);
+      }
     }
     jeedom.cmd.update['#idActiveMode#']({ display_value: '#activeMode#' });
 
@@ -1422,18 +1418,6 @@
       $('#idReduiteValeur#uid#').html(_options.display_value + '°');
     }
     jeedom.cmd.update['#idReducedProgramTemperature#']({ display_value: '#reducedProgramTemperature#' });
-
-    jeedom.cmd.update['#idEcoProgramTemperature#'] = function (_options) {
-      if (_options.display_value == 2) {
-        $('#idEcoProgramTemperature#uid#').html('-- ');
-        $('#idModifierEco#uid#').hide();
-      } else {
-        $('#idEcoProgramTemperature#uid#').html(_options.display_value + '°');
-        $('#idEcoValeur#uid#').html(_options.display_value + '°');
-        $('#idModifierEco#uid#').show();
-      }
-    }
-    jeedom.cmd.update['#idEcoProgramTemperature#']({ display_value: '#ecoProgramTemperature#' });
 
     jeedom.cmd.update['#idSupplyProgramTemperature#'] = function (_options) {
       $('#idTemperatureDepart#uid#').html(_options.display_value + '°');
@@ -1586,44 +1570,11 @@
     }, 1000)
   });
 
-    // Click pour accès modification température éco
+    // Click pour accès modification statut chauffage
     //
-    $('#idModifierEco#uid#').on('click', function () {
-      $('#idPopupEco#uid#').show();
+    $('#idModifierStatut#uid#').on('click', function () {
+      $('#idPopupStatut#uid#').show();
     });
-
-    // Tuile modification température réduite
-    //
-    $('#idEcoPlus#uid#').on('click', function () {
-      var max = ('#maxEco#' == '') ? Number.MAX_VALUE : parseFloat('#maxEco#');
-      var step = (isNaN(parseFloat('#stepEco#'))) ? 1 : parseFloat('#stepEco#');
-      if (parseFloat($('#idEcoValeur#uid#').html()) <= max - step) {
-        jeedom.cmd.update['#idEcoProgramTemperature#']({ display_value: parseFloat($('#idEcoValeur#uid#').html()) + step });
-        $('#idEcoValeur#uid#').trigger('change');
-      } else if (parseFloat($('#idEcoValeur#uid#').html()) < max) {
-        jeedom.cmd.update['#idEcoProgramTemperature#']({ display_value: max });
-        $('#idEcoValeur#uid#').trigger('change');
-      }
-    });
-    $('#idEcoMoins#uid#').on('click', function () {
-      var min = ('#minEco#' == '') ? Number.MIN_VALUE : parseFloat('#minEco#');
-      var step = (isNaN(parseFloat('#stepEco#'))) ? 1 : parseFloat('#stepEco#');
-      if (parseFloat($('#idEcoValeur#uid#').html()) >= min + step) {
-        jeedom.cmd.update['#idEcoProgramTemperature#']({ display_value: parseFloat($('#idEcoValeur#uid#').html()) - step });
-        $('#idEcoValeur#uid#').trigger('change');
-      } else if (parseFloat($('#idEcoValeur#uid#').html()) > min) {
-        jeedom.cmd.update['#idEcoProgramTemperature#']({ display_value: min });
-        $('#idEcoValeur#uid#').trigger('change');
-      }
-    });
-    $('#idEcoValeur#uid#').on('change', function () {
-      if (typeof timerEcoValeur#uid# !== 'undefined') {
-      clearTimeout(timerEcoValeur#uid#);
-    }
-    timerEcoValeur#uid# = setTimeout(function () {
-      jeedom.cmd.execute({ id: '#idEcoProgramSlider#', value: { slider: $('#idEcoValeur#uid#').html().replace("°", "").replace(" ", "") } });
-    }, 1000)
-  });
 
     // Click accès tuile options eau chaude
     //
@@ -2556,6 +2507,38 @@
       $('#idTexteAlerte#uid#').html(_options.display_value);
     }
     jeedom.cmd.update['#idCurrentError#']({ display_value: '#currentError#' });
+
+    // Click pour mode standby
+    //
+    $('#idModeStandby#uid#').on('click', function () {
+      jeedom.cmd.execute({
+        id: '#idModeStandby#'
+      });
+    });
+
+    // Click pour mode heating
+    //
+    $('#idModeHeating#uid#').on('click', function () {
+      jeedom.cmd.execute({
+        id: '#idModeHeating#'
+      });
+    });
+
+    // Click pour mode dhw
+    //
+    $('#idModeDhw#uid#').on('click', function () {
+      jeedom.cmd.execute({
+        id: '#idModeDhw#'
+      });
+    });
+
+    // Click pour mode dhw and heating
+    //
+    $('#idModeDhwAndHeating#uid#').on('click', function () {
+      jeedom.cmd.execute({
+        id: '#idModeDhwAndHeating#'
+      });
+    });
 
   </script>
 
