@@ -2292,6 +2292,28 @@ class viessmann extends eqLogic
         $obj->setSubType('other');
         $obj->save();
 
+        $obj = $this->getCmd(null, 'modeForcedReduced');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Marche réduite permanente', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('modeForcedReduced');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->save();
+
+        $obj = $this->getCmd(null, 'modeForcedNormal');
+        if (!is_object($obj)) {
+            $obj = new viessmannCmd();
+            $obj->setName(__('Marche normale permanente', __FILE__));
+        }
+        $obj->setEqLogic_id($this->getId());
+        $obj->setLogicalId('modeForcedNormal');
+        $obj->setType('action');
+        $obj->setSubType('other');
+        $obj->save();
+
     }
 
     // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -2811,6 +2833,12 @@ class viessmann extends eqLogic
         $obj = $this->getCmd(null, 'modeDhwAndHeating');
         $replace["#idModeDhwAndHeating#"] = $obj->getId();
  
+        $obj = $this->getCmd(null, 'modeForcedReduced');
+        $replace["#idModeForcedReduced#"] = $obj->getId();
+ 
+        $obj = $this->getCmd(null, 'modeForcedNormal');
+        $replace["#idModeForcedNormal#"] = $obj->getId();
+ 
         return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann')));
         
     }
@@ -2858,6 +2886,10 @@ class viessmannCmd extends cmd
             $eqlogic->setMode('heating');
         } elseif ($this->getLogicalId() == 'modeDhwAndHeating') {
             $eqlogic->setMode('dhwAndHeating');
+        } elseif ($this->getLogicalId() == 'modeForcedReduced') {
+            $eqlogic->setMode('forcedReduced');
+        } elseif ($this->getLogicalId() == 'modeForcedNormal') {
+            $eqlogic->setMode('forcedNormal');
         } elseif ($this->getLogicalId() == 'comfortProgramSlider') {
             if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
                 return;

@@ -459,7 +459,7 @@
 
   <div id="idPopupStatut#uid#" class="classModal#uid#">
 
-    <div class="classModalContenu#uid#">
+    <div class="classModalContenus#uid#">
       <div class="classModalEntete#uid#">
         <img class="classModalClose#uid# cursor" src="plugins/viessmann/resources/previous.svg">
         <span>Statut chauffage</span>
@@ -468,7 +468,9 @@
         <input type="radio" name="modes" value="standby" id="idModeStandby#uid#">Arrêt<br>
         <input type="radio" name="modes" value="heating" id="idModeHeating#uid#">Chauffage seul<br>  
         <input type="radio" name="modes" value="dhw" id="idModeDhw#uid#">Eau chaude seule<br>  
-        <input type="radio" name="modes" value="dhwAndHeating" id="idModeDhwAndHeating#uid#">Chauffage et eau chauffe<br>  
+        <input type="radio" name="modes" value="dhwAndHeating" id="idModeDhwAndHeating#uid#">Chauffage et eau chaude<br>  
+        <input type="radio" name="modes" value="forcedReduced" id="idModeForcedReduced#uid#">Marche réduite permanente<br>  
+        <input type="radio" name="modes" value="forcedNormal" id="idModeForcedNormal#uid#">Marche normale permanente<br>  
       </div>
     </div>
 
@@ -878,6 +880,22 @@
       border: 1px solid #808080;
       width: 80%;
       height: 140px;
+      box-shadow: 4px 4px 1px 1px rgba(128, 128, 128, .3);
+      -webkit-animation-name: animatetop#uid#;
+      -webkit-animation-duration: 0.5s;
+      animation-name: animatetop#uid#;
+      animation-duration: 0.5s
+    }
+
+    /* Modal Content */
+    .classModalContenus#uid# {
+      position: relative;
+      background-color: #fefefe;
+      margin: auto;
+      padding: 0;
+      border: 1px solid #808080;
+      width: 80%;
+      height: 180px;
       box-shadow: 4px 4px 1px 1px rgba(128, 128, 128, .3);
       -webkit-animation-name: animatetop#uid#;
       -webkit-animation-duration: 0.5s;
@@ -1393,8 +1411,10 @@
         $('#idModeDhwAndHeating#uid#').attr('checked', 'checked');
       } else if (_options.display_value == 'forcedReduced') {
         $('#idStatutChauffage#uid#').html('Marche réduite en permanence');
+        $('#idModeForcedReduced#uid#').attr('checked', 'checked');
       } else if (_options.display_value == 'forcedNormal') {
         $('#idStatutChauffage#uid#').html('Mode jour en permanence');
+        $('#idModeForcedNormal#uid#').attr('checked', 'checked');
       } else {
         $('#idStatutChauffage#uid#').html(_options.display_value);
       }
@@ -2537,6 +2557,22 @@
     $('#idModeDhwAndHeating#uid#').on('click', function () {
       jeedom.cmd.execute({
         id: '#idModeDhwAndHeating#'
+      });
+    });
+
+    // Click pour mode forced reduced
+    //
+    $('#idModeForcedReduced#uid#').on('click', function () {
+      jeedom.cmd.execute({
+        id: '#idModeForcedReduced#'
+      });
+    });
+
+    // Click pour mode forced normal
+    //
+    $('#idModeForcedNormal#uid#').on('click', function () {
+      jeedom.cmd.execute({
+        id: '#idModeForcedNormal#'
       });
     });
 
