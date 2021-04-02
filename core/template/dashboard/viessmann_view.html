@@ -134,7 +134,7 @@
       id="idLastServiceDate#uid#"></span></br>
     <span class="classSousTitre#uid#">Mois entre entretiens</span><span class="classValeur#uid#"
       id="idServiceInterval#uid#"></span></br>
-    <span class="classSousTitre#uid#">Mois avant entretien</span><span class="classValeur#uid#"
+    <span class="classSousTitre#uid#">Mois depuis l'entretien</span><span class="classValeur#uid#"
       id="idMonthSinceService#uid#"></span></br>
     <div class="gap-10"></div>
     
@@ -933,6 +933,7 @@
 
     .classModalCorps#uid# {
       padding-top: 10px;
+      color: #808080 !important;
     }
 
     .classModalClose#uid# {
@@ -1068,19 +1069,21 @@
       }
 
       if (_options.display_value == 'comfort')
-        $('#idProgrammeActuel#uid#').html('Programme confort');
+        $('#idProgrammeActuel#uid#').html('Confort');
       else if (_options.display_value == 'normal')
-        $('#idProgrammeActuel#uid#').html('Programme normal');
+        $('#idProgrammeActuel#uid#').html('Normal');
       else if (_options.display_value == 'eco')
-        $('#idProgrammeActuel#uid#').html('Programme éco');
+        $('#idProgrammeActuel#uid#').html('Eco');
       else if (_options.display_value == 'reduced')
-        $('#idProgrammeActuel#uid#').html('Programme réduit');
+        $('#idProgrammeActuel#uid#').html('Réduit');
       else if (_options.display_value == 'external')
-        $('#idProgrammeActuel#uid#').html('Programme externe');
+        $('#idProgrammeActuel#uid#').html('Externe');
       else if (_options.display_value == 'holiday')
-        $('#idProgrammeActuel#uid#').html('Programme vacances');
+        $('#idProgrammeActuel#uid#').html('Vacances');
       else if (_options.display_value == 'standby')
-        $('#idProgrammeActuel#uid#').html('Programme veille');
+        $('#idProgrammeActuel#uid#').html('Veille');
+      else if (_options.display_value == 'summerEco')
+        $('#idProgrammeActuel#uid#').html('Economique été');
       else
         $('#idProgrammeActuel#uid#').html('Programme inconnu');
     }
