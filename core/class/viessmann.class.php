@@ -74,7 +74,13 @@ class viessmann extends eqLogic
             log::add('viessmann', 'debug', 'Récupération id gateway ' . $gatewayId);
             $features = $viessmannApi->getAvailableFeatures();
             if (strPos($features, ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW.',') !== false) {
-                $uniteGaz = trim($viessmannApi->getGenericFeaturePropertyAsJSON(ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW, "unit"));
+                try {
+                    $uniteGaz = trim($viessmannApi->getGenericFeaturePropertyAsJSON(ViessmannFeature::HEATING_GAS_CONSUMPTION_DHW, "unit"));
+                } catch (Exception $e) {
+                    $uniteGaz = '';
+                } catch (Throwable $t) {
+                    $uniteGaz = '';
+                }
                 if ($uniteGaz === '"cubicMeter"') {
                     $this->setConfiguration('uniteGaz', 'm3');
                 } else {
@@ -120,71 +126,133 @@ class viessmann extends eqLogic
         $features .= ',';
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::CIRCULATION_PUMP).',') !== false) {
-            $pumpStatus = $viessmannApi->getCirculationPumpStatus($circuitId);
+            try {
+                $pumpStatus = $viessmannApi->getCirculationPumpStatus($circuitId);
+            } catch (Exception $e) {
+                $pumpStatus = '?';
+            } catch (Throwable $t) {
+                $pumpStatus = '?';
+            }
         } else {
             $pumpStatus = '?';
         }
         $this->getCmd(null, 'pumpStatus')->event($pumpStatus);
 
         if (strPos($features, ViessmannFeature::HEATING_BOILER_SENSORS_TEMPERATURE_MAIN.',') !== false) {
-            $boilerTemperature = $viessmannApi->getBoilerTemperature();
+            try {
+                $boilerTemperature = $viessmannApi->getBoilerTemperature();
+            } catch (Exception $e) {
+                $boilerTemperature = 99;
+            } catch (Throwable $t) {
+                $boilerTemperature = 99;
+            }
         } else {
             $boilerTemperature = 99;
         }
         $this->getCmd(null, 'boilerTemperature')->event($boilerTemperature);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ACTIVE_OPERATING_MODE).',') !== false) {
-            $activeMode = $viessmannApi->getActiveMode($circuitId);
+            try {
+                $activeMode = $viessmannApi->getActiveMode($circuitId);
+            } catch (Exception $e) {
+                $activeMode = '';
+            } catch (Throwable $t) {
+                $activeMode = '';
+            }
         } else {
             $activeMode = '';
         }
         $this->getCmd(null, 'activeMode')->event($activeMode);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ACTIVE_PROGRAM).',') !== false) {
-            $activeProgram = $viessmannApi->getActiveProgram($circuitId);
+            try {
+                $activeProgram = $viessmannApi->getActiveProgram($circuitId);
+            } catch (Exception $e) {
+                $activeProgram = 'reduced';
+            } catch (Throwable $t) {
+                $activeProgram = 'reduced';
+            }
         } else {
             $activeProgram = 'reduced';
         }
         $this->getCmd(null, 'activeProgram')->event($activeProgram);
 
         if (strPos($features, ViessmannFeature::HEATING_BURNER.',') !== false) {
-            $isHeatingBurnerActive = $viessmannApi->isHeatingBurnerActive();
+            try {
+                $isHeatingBurnerActive = $viessmannApi->isHeatingBurnerActive();
+            } catch (Exception $e) {
+                $isHeatingBurnerActive = 0;
+            } catch (Throwable $t) {
+                $isHeatingBurnerActive = 0;
+            }
         } else {
             $isHeatingBurnerActive = 0;
         }
         $this->getCmd(null, 'isHeatingBurnerActive')->event($isHeatingBurnerActive);
         
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::DHW_MODE).',') !== false) {
-            $isDhwModeActive = $viessmannApi->isDhwModeActive($circuitId);
+            try {
+                $isDhwModeActive = $viessmannApi->isDhwModeActive($circuitId);
+            } catch (Exception $e) {
+                $isDhwModeActive = 0;
+            } catch (Throwable $t) {
+                $isDhwModeActive = 0;
+            }
         } else {
             $isDhwModeActive = 0;
         }
         $this->getCmd(null, 'isDhwModeActive')->event($isDhwModeActive);
           
         if (strPos($features, ViessmannFeature::HEATING_SENSORS_TEMPERATURE_OUTSIDE.',') !== false) {
-            $outsideTemperature = $viessmannApi->getOutsideTemperature();
+            try {
+                $outsideTemperature = $viessmannApi->getOutsideTemperature();
+            } catch (Exception $e) {
+                $outsideTemperature = 99;
+            } catch (Throwable $t) {
+                $outsideTemperature = 99;
+            }
         } else {
             $outsideTemperature = 99;
         }
         $this->getCmd(null, 'outsideTemperature')->event($outsideTemperature);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::SENSORS_TEMPERATURE_SUPPLY).',') !== false) {
-            $supplyProgramTemperature = $viessmannApi->getSupplyTemperature($circuitId);
+            try {
+                $supplyProgramTemperature = $viessmannApi->getSupplyTemperature($circuitId);
+            } catch (Exception $e) {
+                $supplyProgramTemperature = 99;
+            } catch (Throwable $t) {
+                $supplyProgramTemperature = 99;
+            }
         } else {
             $supplyProgramTemperature = 99;
         }
         $this->getCmd(null, 'supplyProgramTemperature')->event($supplyProgramTemperature);
 
         if (strPos($features, ViessmannFeature::HEATING_DHW_TEMPERATURE.',') !== false) {
-            $dhwTemperature = $viessmannApi->getDhwTemperature();
+            try {
+                $dhwTemperature = $viessmannApi->getDhwTemperature();
+            } catch (Exception $e) {
+                $dhwTemperature = 99;
+            } catch (Throwable $t) {
+                $dhwTemperature = 99;
+            }
         } else {
             $dhwTemperature = 99;
         }
         $this->getCmd(null, 'dhwTemperature')->event($dhwTemperature);
           
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_CURVE).',') !== false) {
-            $slope = $viessmannApi->getSlope($circuitId);
-            $shift = $viessmannApi->getShift($circuitId);
+            try {
+                $slope = $viessmannApi->getSlope($circuitId);
+                $shift = $viessmannApi->getShift($circuitId);
+            } catch (Exception $e) {
+                $slope = 0;
+                $shift = 0;
+            } catch (Throwable $t) {
+                $slope = 0;
+                $shift = 0;
+            }
         } else {
             $slope = 0;
             $shift = 0;
@@ -194,21 +262,39 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'shift')->event($shift);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM).',') !== false) {
-            $comfortProgramTemperature = $viessmannApi->getComfortProgramTemperature($circuitId);
+            try {
+                $comfortProgramTemperature = $viessmannApi->getComfortProgramTemperature($circuitId);
+            } catch (Exception $e) {
+                $comfortProgramTemperature = 3;
+            } catch (Throwable $t) {
+                $comfortProgramTemperature = 3;
+            }
         } else {
             $comfortProgramTemperature = 3;
         }
         $this->getCmd(null, 'comfortProgramTemperature')->event($comfortProgramTemperature);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::NORMAL_PROGRAM).',') !== false) {
-            $normalProgramTemperature = $viessmannApi->getNormalProgramTemperature($circuitId);
+            try {
+                $normalProgramTemperature = $viessmannApi->getNormalProgramTemperature($circuitId);
+            } catch (Exception $e) {
+                $normalProgramTemperature = 3;
+            } catch (Throwable $t) {
+                $normalProgramTemperature = 3;
+            }
         } else {
             $normalProgramTemperature = 3;
         }
         $this->getCmd(null, 'normalProgramTemperature')->event($normalProgramTemperature);
           
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::REDUCED_PROGRAM).',') !== false) {
-            $reducedProgramTemperature = $viessmannApi->getReducedProgramTemperature($circuitId);
+            try {
+                $reducedProgramTemperature = $viessmannApi->getReducedProgramTemperature($circuitId);
+            } catch (Exception $e) {
+                $reducedProgramTemperature = 3;
+            } catch (Throwable $t) {
+                $reducedProgramTemperature = 3;
+            }
         } else {
             $reducedProgramTemperature = 3;
         }
@@ -223,7 +309,13 @@ class viessmann extends eqLogic
         }
           
         if (strPos($features, ViessmannFeature::HEATING_DHW_SENSORS_TEMPERATURE_HOTWATERSTORAGE.',') !== false) {
-            $hotWaterStorageTemperature = $viessmannApi->getHotWaterStorageTemperature();
+            try {
+                $hotWaterStorageTemperature = $viessmannApi->getHotWaterStorageTemperature();
+            } catch (Exception $e) {
+                $hotWaterStorageTemperature = 99;
+            } catch (Throwable $t) {
+                $hotWaterStorageTemperature = 99;
+            }
         } else {
             $hotWaterStorageTemperature = 99;
         }
@@ -452,8 +544,16 @@ class viessmann extends eqLogic
         }
 
         if (strPos($features, ViessmannFeature::HEATING_BURNER_STATISTICS.',') !== false) {
-            $heatingBurnerHours = $viessmannApi->getHeatingBurnerStatistics("hours");
-            $heatingBurnerStarts = $viessmannApi->getHeatingBurnerStatistics("starts");
+            try {
+                $heatingBurnerHours = $viessmannApi->getHeatingBurnerStatistics("hours");
+                $heatingBurnerStarts = $viessmannApi->getHeatingBurnerStatistics("starts");
+            } catch (Exception $e) {
+                $heatingBurnerHours = 0;
+                $heatingBurnerStarts = 0;
+            } catch (Throwable $t) {
+                $heatingBurnerHours = 0;
+                $heatingBurnerStarts = 0;
+            }
         } else {
             $heatingBurnerHours = 0;
             $heatingBurnerStarts = 0;
@@ -462,7 +562,13 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'heatingBurnerStarts')->event($heatingBurnerStarts);
           
         if (strPos($features, ViessmannFeature::HEATING_BURNER_MODULATION.',') !== false) {
-            $heatingBurnerModulation = $viessmannApi->getHeatingBurnerModulation();
+            try {
+                $heatingBurnerModulation = $viessmannApi->getHeatingBurnerModulation();
+            } catch (Exception $e) {
+                $heatingBurnerModulation = 0;
+            } catch (Throwable $t) {
+                $heatingBurnerModulation = 0;
+            }
         } else {
             $heatingBurnerModulation = 0;
         }
@@ -644,21 +750,39 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'refreshDate')->event($date);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::HEATING_FROSTPROTECTION).',') !== false) {
-            $frostProtection = $viessmannApi->getFrostprotection($circuitId);
+            try {
+                $frostProtection = $viessmannApi->getFrostprotection($circuitId);
+            } catch (Exception $e) {
+                $frostProtection = 0;
+            } catch (Throwable $t) {
+                $frostProtection = 0;
+            }
         } else {
             $frostProtection = 0;
         }
         $this->getCmd(null, 'frostProtection')->event($frostProtection);
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::SENSORS_TEMPERATURE_ROOM).',') !== false) {
-            $roomTemperature = $viessmannApi->getRoomTemperature($circuitId);
+            try {
+                $roomTemperature = $viessmannApi->getRoomTemperature($circuitId);
+            } catch (Exception $e) {
+                $roomTemperature = 0;
+            } catch (Throwable $t) {
+                $roomTemperature = 0;
+            }
         } else {
             $roomTemperature = 99;
         }
         $this->getCmd(null, 'roomTemperature')->event($roomTemperature);
 
         if (strPos($features, self::PRESSURE_SUPPLY.',') !== false) {
-            $pressureSupply = $viessmannApi->getGenericFeaturePropertyAsJSON(self::PRESSURE_SUPPLY);
+            try {
+                $pressureSupply = $viessmannApi->getGenericFeaturePropertyAsJSON(self::PRESSURE_SUPPLY);
+            } catch (Exception $e) {
+                $pressureSupply = 99;
+            } catch (Throwable $t) {
+                $pressureSupply = 99;
+            }
         } else {
             $pressureSupply = 99;
         }
@@ -669,7 +793,13 @@ class viessmann extends eqLogic
         $erreurCourante = '';
           
         if (strPos($features, ViessmannFeature::HEATING_ERRORS_ACTIVE.',') !== false) {
-            $errors = $viessmannApi->getProperties(ViessmannFeature::HEATING_ERRORS_ACTIVE);
+            try {
+                $errors = $viessmannApi->getProperties(ViessmannFeature::HEATING_ERRORS_ACTIVE);
+            } catch (Exception $e) {
+                $errors = '';
+            } catch (Throwable $t) {
+                $errors = '';
+            }
             $json = json_decode($errors, true);
             $n = count($json['entries']['value']['new']);
             for ($i=0; $i<$n; $i++) {
@@ -681,7 +811,7 @@ class viessmann extends eqLogic
                         $erreurs .= ';';
                     }
                     $erreurs .= 'AN;' . $timeStamp . ';' . $errorCode;
-                    if ( $erreurCourante == '' ) {
+                    if ($erreurCourante == '') {
                         $erreurCourante = $errorCode;
                     }
                     $nbr++;
@@ -716,7 +846,13 @@ class viessmann extends eqLogic
         }
       
         if (strPos($features, ViessmannFeature::HEATING_ERRORS.',') !== false) {
-            $errors = $viessmannApi->getProperties(ViessmannFeature::HEATING_ERRORS);
+            try {
+                $errors = $viessmannApi->getProperties(ViessmannFeature::HEATING_ERRORS);
+            } catch (Exception $e) {
+                $errors = '';
+            } catch (Throwable $t) {
+                $errors = '';
+            }
             $json = json_decode($errors, true);
             $n = count($json['entries']['value']['new']);
             for ($i=0; $i<$n; $i++) {
@@ -760,7 +896,13 @@ class viessmann extends eqLogic
         }
           
         if (strPos($features, ViessmannFeature::HEATING_ERRORS_HISTORY.',') !== false) {
-            $errors = $viessmannApi->getProperties(ViessmannFeature::HEATING_ERRORS_HISTORY);
+            try {
+                $errors = $viessmannApi->getProperties(ViessmannFeature::HEATING_ERRORS_HISTORY);
+            } catch (Exception $e) {
+                $errors = '';
+            } catch (Throwable $t) {
+                $errors = '';
+            }
             $json = json_decode($errors, true);
             $n = count($json['entries']['value']['new']);
             for ($i=0; $i<$n; $i++) {
@@ -806,10 +948,20 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'currentError')->event($erreurCourante);
       
         if (strPos($features, ViessmannFeature::HEATING_SERVICE_TIMEBASED.',') !== false) {
-            $lastServiceDate = substr($viessmannApi->getLastServiceDate(), 0, 19);
-            $lastServiceDate = str_replace('T', ' ', $lastServiceDate);
-            $serviceInterval = $viessmannApi->getServiceInterval();
-            $monthSinceService = $viessmannApi->getActiveMonthSinceService();
+            try {
+                $lastServiceDate = substr($viessmannApi->getLastServiceDate(), 0, 19);
+                $lastServiceDate = str_replace('T', ' ', $lastServiceDate);
+                $serviceInterval = $viessmannApi->getServiceInterval();
+                $monthSinceService = $viessmannApi->getActiveMonthSinceService();
+            } catch (Exception $e) {
+                $lastServiceDate = '';
+                $serviceInterval = 99;
+                $monthSinceService = 99;
+            } catch (Throwable $t) {
+                $lastServiceDate = '';
+                $serviceInterval = 99;
+                $monthSinceService = 99;
+            }
         } else {
             $lastServiceDate = '';
             $serviceInterval = 99;
@@ -820,14 +972,26 @@ class viessmann extends eqLogic
         $this->getCmd(null, 'monthSinceService')->event($monthSinceService);
 
         if (strPos($features, ViessmannFeature::HEATING_DHW_ONETIMECHARGE.',') !== false) {
-            $isOneTimeDhwCharge = $viessmannApi->isOneTimeDhwCharge();
+            try {
+                $isOneTimeDhwCharge = $viessmannApi->isOneTimeDhwCharge();
+            } catch (Exception $e) {
+                $isOneTimeDhwCharge = 0;
+            } catch (Throwable $t) {
+                $isOneTimeDhwCharge = 0;
+            }
         } else {
             $isOneTimeDhwCharge = 0;
         }
         $this->getCmd(null, 'isOneTimeDhwCharge')->event($isOneTimeDhwCharge);
 
         if (strPos($features, ViessmannFeature::HEATING_DHW_CHARGING.',') !== false) {
-            $isDhwCharging = $viessmannApi->isDhwCharging();
+            try {
+                $isDhwCharging = $viessmannApi->isDhwCharging();
+            } catch (Exception $e) {
+                $isDhwCharging = 0;
+            } catch (Throwable $t) {
+                $isDhwCharging = 0;
+            }
         } else {
             $isDhwCharging = 0;
         }
@@ -841,7 +1005,7 @@ class viessmann extends eqLogic
             $start = str_replace('"', '', $start);
             $end = str_replace('"', '', $end);
 
-            if ($this->validateDate($start, 'Y-m-d') == true) {            
+            if ($this->validateDate($start, 'Y-m-d') == true) {
                 $this->getCmd(null, 'isScheduleHolidayProgram')->event(1);
                 $this->getCmd(null, 'startHoliday')->event($start);
                 $this->getCmd(null, 'endHoliday')->event($end);
@@ -851,9 +1015,15 @@ class viessmann extends eqLogic
         }
 
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM).',') !== false) {
-            $active = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM), 'active');
+            try {
+                $active = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::COMFORT_PROGRAM), 'active');
+            } catch (Exception $e) {
+                $active = 'false';
+            } catch (Throwable $t) {
+                $active = 'false';
+            }
 
-            if ( $active == 'true' ) {
+            if ($active == 'true') {
                 $this->getCmd(null, 'isActivateComfortProgram')->event(1);
             } else {
                 $this->getCmd(null, 'isActivateComfortProgram')->event(0);
@@ -861,18 +1031,22 @@ class viessmann extends eqLogic
         }
                     
         if (strPos($features, $this->buildFeature($circuitId, ViessmannAPI::ECO_PROGRAM).',') !== false) {
-            $active = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::ECO_PROGRAM), 'active');
+            try {
+                $active = $viessmannApi->getGenericFeaturePropertyAsJSON($this->buildFeature($circuitId, ViessmannAPI::ECO_PROGRAM), 'active');
+            } catch (Exception $e) {
+                $active = 'false';
+            } catch (Throwable $t) {
+                $active = 'false';
+            }
 
-            if ( $active == 'true' ) {
+            if ($active == 'true') {
                 $this->getCmd(null, 'isActivateEcoProgram')->event(1);
             } else {
                 $this->getCmd(null, 'isActivateEcoProgram')->event(0);
             }
-
         }
                     
         return;
-
     }
 
     // Set Normal Program Temperature
@@ -1081,8 +1255,6 @@ class viessmann extends eqLogic
         unset($viessmannApi);
 
         $this->getCmd(null, 'isScheduleHolidayProgram')->event(1);
-
-
     }
 
     // Unschedule Holiday Program
@@ -1098,10 +1270,9 @@ class viessmann extends eqLogic
         unset($viessmannApi);
 
         $this->getCmd(null, 'isScheduleHolidayProgram')->event(0);
-
     }
 
-    // Mode 
+    // Mode
     //
     public function setMode($mode)
     {
@@ -2313,7 +2484,6 @@ class viessmann extends eqLogic
         $obj->setType('action');
         $obj->setSubType('other');
         $obj->save();
-
     }
 
     // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -2840,7 +3010,6 @@ class viessmann extends eqLogic
         $replace["#idModeForcedNormal#"] = $obj->getId();
  
         return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'viessmann_view', 'viessmann')));
-        
     }
 
     private function buildFeature($circuitId, $feature)
@@ -2920,6 +3089,12 @@ class viessmannCmd extends cmd
             }
             $eqlogic->getCmd(null, 'shift')->event($_options['slider']);
             $eqlogic->setShift($_options['slider']);
+        } elseif ($this->getLogicalId() == 'slopeSlider') {
+            if (!isset($_options['slider']) || $_options['slider'] == '' || !is_numeric(intval($_options['slider']))) {
+                return;
+            }
+            $eqlogic->getCmd(null, 'slope')->event($_options['slider']);
+            $eqlogic->setSlope($_options['slider']);
         } elseif ($this->getLogicalId() == 'startHolidayText') {
             if (!isset($_options['text']) || $_options['text'] == '') {
                 return;
