@@ -2504,6 +2504,7 @@ class viessmann extends eqLogic
     public function toHtml($_version = 'dashboard')
     {
         $isWidgetPlugin = $this->getConfiguration('isWidgetPlugin');
+        $displayWater = $this->getConfiguration('displayWater', '1');
         $displayGas = $this->getConfiguration('displayGas', '1');
         $displayPower = $this->getConfiguration('displayPower', '1');
         $circuitName = $this->getConfiguration('circuitName', 'Radiateurs');
@@ -2909,6 +2910,7 @@ class viessmann extends eqLogic
         $replace["#idSlopeSlider#"] = $obj->getId();
 
         $replace["#circuitName#"] = $circuitName;
+        $replace["#displayWater#"] = $displayWater;
         $replace["#displayGas#"] = $displayGas;
         $replace["#displayPower#"] = $displayPower;
         $replace["#uniteGaz#"] = $uniteGaz;

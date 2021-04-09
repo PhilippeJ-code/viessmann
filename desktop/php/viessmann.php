@@ -218,6 +218,14 @@
             </div>
 
             <div class="form-group">
+              <label class="col-sm-3 control-label">{{Afficher la tuile eau chaude}}</label>
+              <div class="col-sm-3 form-check-input">
+                <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="displayWater"
+                  checked /></label>
+              </div>
+            </div>
+
+            <div class="form-group">
               <label class="col-sm-3 control-label">{{Afficher la tuile gaz}}</label>
               <div class="col-sm-3 form-check-input">
                 <input type="checkbox" required class="eqLogicAttr" data-l1key="configuration" data-l2key="displayGas"

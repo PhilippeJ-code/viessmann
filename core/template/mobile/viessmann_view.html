@@ -50,7 +50,7 @@
         <span class="classLibelleTuile#uid#">#circuitName#</span>
       </div>
 
-      <div class="classDemiTuile#uid#">
+      <div id="idTuileEau#uid#" class="classDemiTuile#uid#">
         <img class="classOptions#uid# cursor" id="idOptionsEauChaude#uid#"
           src="plugins/viessmann/resources/options.svg">
         <img class="classOptionsCal#uid#" id="idOptionsCalEauChaude#uid#"
@@ -114,7 +114,7 @@
     <span class="classSousTitre#uid#">Parallèle</span><span class="classValeur#uid# history cursor"
       data-cmd_id="#idShift#" id="idShift#uid#"></span></span><img class="classCrayon#uid# cursor"
       id="idModifierParallele#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
-    <div class="gap-10"></div>    
+    <div class="gap-10"></div>
     <span class="classTitre#uid#">Installation</span></br>
     <div class="gap-10"></div>
     <span class="classSousTitre#uid#">Pression</span><span class="classValeur#uid# history cursor"
@@ -137,7 +137,7 @@
     <span class="classSousTitre#uid#">Mois depuis l'entretien</span><span class="classValeur#uid#"
       id="idMonthSinceService#uid#"></span></br>
     <div class="gap-10"></div>
-    
+
     <span class="classTitre#uid#">Dysfonctionnements</span></br></br>
     <span class="classSousTitre#uid#" id="idErrorDat_0#uid#"></span><span class="classValeur#uid#"
       id="idErrorCod_0#uid#"></span></br>
@@ -212,9 +212,9 @@
     </br></br>
     <span class="classTitre#uid#">Statut</span></br>
     <div class="gap-10"></div>
-    <span id="idStatutChauffage#uid#" class="classSousTitre#uid#"></span></span><img
-    class="classCrayon#uid# cursor" id="idModifierStatut#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
-    <div class="gap-10"></div>    
+    <span id="idStatutChauffage#uid#" class="classSousTitre#uid#"></span></span><img class="classCrayon#uid# cursor"
+      id="idModifierStatut#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
+    <div class="gap-10"></div>
     <span class="classTitre#uid#">Températures</span></br>
     <div class="gap-10"></div>
     <span class="classSousTitre#uid#">Confort</span><span id="idComfortProgramTemperature#uid#"
@@ -226,7 +226,7 @@
     <span class="classSousTitre#uid#">Réduite</span><span id="idReducedProgramTemperature#uid#"
       class="classValeur#uid# history cursor" data-cmd_id="#idReducedProgramTemperature#"></span><img
       class="classCrayon#uid# cursor" id="idModifierReduite#uid#" src="plugins/viessmann/resources/crayon.svg"></br>
-    <div class="gap-10"></div>    
+    <div class="gap-10"></div>
     <span class="classTitre#uid#">#circuitName#</span></br>
     <div class="gap-10"></div>
     <span class="classSousTitre#uid#">Température intérieure</span><span class="classValeur#uid# history cursor"
@@ -466,11 +466,12 @@
       </div>
       <div class="classModalCorps#uid#">
         <input type="radio" name="modes" value="standby" id="idModeStandby#uid#">Arrêt<br>
-        <input type="radio" name="modes" value="heating" id="idModeHeating#uid#">Chauffage seul<br>  
-        <input type="radio" name="modes" value="dhw" id="idModeDhw#uid#">Eau chaude seule<br>  
-        <input type="radio" name="modes" value="dhwAndHeating" id="idModeDhwAndHeating#uid#">Chauffage et eau chaude<br>  
-        <input type="radio" name="modes" value="forcedReduced" id="idModeForcedReduced#uid#">Marche réduite permanente<br>  
-        <input type="radio" name="modes" value="forcedNormal" id="idModeForcedNormal#uid#">Marche normale permanente<br>  
+        <input type="radio" name="modes" value="heating" id="idModeHeating#uid#">Chauffage seul<br>
+        <input type="radio" name="modes" value="dhw" id="idModeDhw#uid#">Eau chaude seule<br>
+        <input type="radio" name="modes" value="dhwAndHeating" id="idModeDhwAndHeating#uid#">Chauffage et eau chaude<br>
+        <input type="radio" name="modes" value="forcedReduced" id="idModeForcedReduced#uid#">Marche réduite
+        permanente<br>
+        <input type="radio" name="modes" value="forcedNormal" id="idModeForcedNormal#uid#">Marche normale permanente<br>
       </div>
     </div>
 
@@ -820,7 +821,7 @@
       color: blue;
     }
 
-   .classCrayon#uid# {
+    .classCrayon#uid# {
       position: absolute;
       width: 20px;
       height: 20px;
@@ -1011,6 +1012,11 @@
     $('#idElec#uid#').hide();
     $('#idActions#uid#').hide();
 
+    if ('#displayWater#' == '1')
+      $('#idTuileEau#uid#').show();
+    else
+      $('#idTuileEau#uid#').hide();
+
     if ('#displayGas#' == '1')
       $('#idTuileGaz#uid#').show();
     else
@@ -1090,7 +1096,11 @@
     jeedom.cmd.update['#idActiveProgram#']({ display_value: '#activeProgram#' });
 
     jeedom.cmd.update['#idOutsideTemperature#'] = function (_options) {
-      $('#idOutsideTemperature#uid#').html(Math.round(_options.display_value * 10) / 10 + '°');
+      if (_options.display_value == 99) {
+        $('#idOutsideTemperature#uid#').html('');
+      } else {
+        $('#idOutsideTemperature#uid#').html(Math.round(_options.display_value * 10) / 10 + '°');
+      }
     }
     jeedom.cmd.update['#idOutsideTemperature#']({ display_value: '#outsideTemperature#' });
 
@@ -1400,9 +1410,9 @@
     jeedom.cmd.update['#idActiveMode#'] = function (_options) {
 
       $('#idModeStandby#uid#').attr('checked', 'checked');
-      
+
       if (_options.display_value == 'standby') {
-        $('#idStatutChauffage#uid#').html('Arrêt');        
+        $('#idStatutChauffage#uid#').html('Arrêt');
       } else if (_options.display_value == 'heating') {
         $('#idStatutChauffage#uid#').html('Chauffage seul activé');
         $('#idModeHeating#uid#').attr('checked', 'checked');
