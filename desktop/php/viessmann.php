@@ -61,6 +61,8 @@
             class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
       <li role="presentation"><a href="#widgettab" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i>
           {{Widget}}</a></li>
+      <li role="presentation"><a href="#donneestab" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i>
+          {{Données supplémentaires}}</a></li>
       <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i
             class="fa fa-list-alt"></i> {{Commandes}}</a></li>
     </ul>
@@ -241,6 +243,38 @@
               </div>
             </div>
 
+          </fieldset>
+        </form>
+      </div>
+
+      <div role="tabpanel" class="tab-pane" id="donneestab">
+        <form class="form-horizontal">
+          <fieldset>
+            <br /><br />
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{Température intérieure}}</label>
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <input type="text" class="eqLogicAttr form-control tooltips roundedLeft" data-l1key="configuration"
+                    data-l2key="temperature_interieure" data-concat="1" />
+                  <span class="input-group-btn">
+                    <a class="btn btn-default listCmdInfo roundedRight"><i class="fas fa-list-alt"></i></a>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">{{Température extérieure}}</label>
+              <div class="col-sm-4">
+                <div class="input-group">
+                  <input type="text" class="eqLogicAttr form-control tooltips roundedLeft" data-l1key="configuration"
+                    data-l2key="temperature_exterieure" data-concat="1" />
+                  <span class="input-group-btn">
+                    <a class="btn btn-default listCmdInfo roundedRight"><i class="fas fa-list-alt"></i></a>
+                  </span>
+                </div>
+              </div>
+            </div>
           </fieldset>
         </form>
       </div>

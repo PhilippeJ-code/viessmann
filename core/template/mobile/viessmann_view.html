@@ -87,6 +87,7 @@
       <div class="classTuile#uid#">
         <img class="classOptions#uid# cursor" id="idOptionsActions#uid#" src="plugins/viessmann/resources/main.svg">
         <span id="idRefreshDate#uid#"></span>
+        <img class="classRefresh#uid# cursor" id="idOptionsCourbe#uid#" src="plugins/viessmannIot/resources/courbe.svg">
       </div>
     </div>
 
@@ -101,6 +102,8 @@
       id="idEtatBruleur#uid#"></span></br>
     <span class="classSousTitre#uid#">Heures de fonctionnement</span><span class="classValeur#uid# history cursor"
       data-cmd_id="#idHeatingBurnerHours#" id="idHeatingBurnerHours#uid#"></span></br>
+    <span class="classSousTitre#uid#">&nbsp;&nbsp;de la veille</span><span class="classValeur#uid# history cursor"
+      data-cmd_id="#idHeatingBurnerHoursPerDay#" id="idHeatingBurnerHoursPerDay#uid#"></span></br>
     <span class="classSousTitre#uid#">Nombre de démarrages</span><span class="classValeur#uid# history cursor"
       data-cmd_id="#idHeatingBurnerStarts#" id="idHeatingBurnerStarts#uid#"></span></br>
     <span class="classSousTitre#uid#">Modulation</span><span class="classValeur#uid# history cursor"
@@ -162,6 +165,23 @@
 
     <img class="classPrecedent#uid# cursor" src="plugins/viessmann/resources/previous.svg">
     <span class="classTitreTuile#uid#">Statut</span></br>
+
+  </div>
+
+  <div class="classContenant#uid#" id="idCourbe#uid#" style="display:none;">
+
+    </br></br>
+
+    <div id="statsTemperature#uid#" style="width:100%; height:150px">
+    </div>
+
+    <div id="graphePente#uid#" style="width:100%; height:200px">
+    </div>
+
+    <img class="classPrecedent#uid# cursor" src="plugins/viessmannIot/resources/previous.svg">
+    <img class="classRefresh#uid# cursor" id="idResetCurve#uid#" src="plugins/viessmannIot/resources/reset.svg">
+    <span class="classTitreTuile#uid#">Courbe</span></br>
+
 
   </div>
 
@@ -535,8 +555,6 @@
     <span class="classTitreTuile#uid#">Actions</span></br>
 
   </div>
-
-
 
   <style>
     .classContenant#uid# {
@@ -1011,6 +1029,7 @@
     $('#idGaz#uid#').hide();
     $('#idElec#uid#').hide();
     $('#idActions#uid#').hide();
+    $('#idCourbe#uid#').hide();
 
     if ('#displayWater#' == '1')
       $('#idTuileEau#uid#').show();
@@ -1040,6 +1059,7 @@
       $('#idGaz#uid#').hide();
       $('#idElec#uid#').hide();
       $('#idActions#uid#').hide();
+      $('#idCourbe#uid#').hide();
     });
 
     // Fermer popup
@@ -1129,6 +1149,11 @@
       $('#idHeatingBurnerHours#uid#').html(_options.display_value + " h");
     }
     jeedom.cmd.update['#idHeatingBurnerHours#']({ display_value: '#heatingBurnerHours#' });
+
+    jeedom.cmd.update['#idHeatingBurnerHoursPerDay#'] = function (_options) {
+      $('#idHeatingBurnerHoursPerDay#uid#').html(_options.display_value + " h");
+    }
+    jeedom.cmd.update['#idHeatingBurnerHoursPerDay#']({ display_value: '#heatingBurnerHoursPerDay#' });
 
     jeedom.cmd.update['#idHeatingBurnerStarts#'] = function (_options) {
       $('#idHeatingBurnerStarts#uid#').html(_options.display_value);
@@ -2586,6 +2611,179 @@
     $('#idModeForcedNormal#uid#').on('click', function () {
       jeedom.cmd.execute({
         id: '#idModeForcedNormal#'
+      });
+    });
+
+    // Click accès tuile courbe
+    //
+    $('#idOptionsCourbe#uid#').on('click', function () {
+      $('#idResume#uid#').hide();
+      $('#idCourbe#uid#').show();
+    });
+
+    const chartStats#uid# = Highcharts.chart('statsTemperature#uid#', {
+
+      title: {
+        text: ''
+      },
+
+      subtitle: {
+        text: 'Températures int/ext'
+      },
+
+      navigation: {
+        buttonOptions: {
+          enabled: false
+        }
+      },
+
+      yAxis: {
+        title: {
+          text: ''
+        },
+        tickPositions: [#mini_temperature#, #maxi_temperature#]
+      },
+
+      xAxis: {
+        categories: [#range_temperature#]
+      },
+
+      credits: {
+        enabled: false
+      },
+
+      legend: {
+        enabled: false
+      },
+
+      plotOptions: {
+        series: {
+          label: {
+            connectorAllowed: true
+          }
+        }
+      },
+
+      tooltip: {
+        headerFormat: '<span style="font-size:12px">T.Ext : {point.key}°</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+          '<td style="padding:0"><b>{point.y:.1f}°</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+      },
+
+      series:
+        [
+          {
+            name: 'T°Int',
+            data: [0]
+          },
+          {
+            name: 'T°Csg',
+            data: [0]
+          }
+        ]
+
+    });
+
+    jeedom.cmd.update['#idStatsTemperature#'] = function (_options) {
+      var items = _options.display_value.split(',');
+      var datas = [];
+      items.forEach(function (item, itemNo) {
+        datas.push(parseFloat(item));
+      });
+      chartStats#uid#.series[0].setData(datas);
+    }
+    jeedom.cmd.update['#idStatsTemperature#']({ display_value: '#statsTemperature#' });
+
+    jeedom.cmd.update['#idStatsConsigne#'] = function (_options) {
+      var items = _options.display_value.split(',');
+      var datas = [];
+      items.forEach(function (item, itemNo) {
+        datas.push(parseFloat(item));
+      });
+      chartStats#uid#.series[1].setData(datas);
+    }
+    jeedom.cmd.update['#idStatsConsigne#']({ display_value: '#statsConsigne#' });
+
+    const chartCourbe#uid# = Highcharts.chart('graphePente#uid#', {
+
+      title: {
+        text: ''
+      },
+
+      subtitle: {
+        text: 'Température de départ'
+      },
+
+      navigation: {
+        buttonOptions: {
+          enabled: false
+        }
+      },
+
+      yAxis: {
+        title: {
+          text: ''
+        }
+      },
+
+      xAxis: {
+        categories: [#range_temp#],
+        title: {
+          text: 'Température extérieure'
+        }
+      },
+
+      credits: {
+        enabled: false
+      },
+
+      legend: {
+        enabled: false
+      },
+
+      plotOptions: {
+        series: {
+          dataLabels: {
+            enabled: true
+          },
+          label: {
+            connectorAllowed: true
+          }
+        }
+      },
+
+      tooltip: {
+        enabled: false
+      },
+
+      series:
+        [
+          {
+            name: 'T°Dep',
+            data: [0]
+          }
+        ]
+
+    });
+
+    jeedom.cmd.update['#idCurve#'] = function (_options) {
+      var items = _options.display_value.split(',');
+      var datas = [];
+      items.forEach(function (item, itemNo) {
+        datas.push(parseFloat(item));
+      });
+      chartCourbe#uid#.series[0].setData(datas);
+    }
+    jeedom.cmd.update['#idCurve#']({ display_value: '#curve#' });
+
+    // Click pour reset courbe
+    //
+    $('#idResetCurve#uid#').on('click', function () {
+      jeedom.cmd.execute({
+        id: '#idResetCurve#'
       });
     });
 
