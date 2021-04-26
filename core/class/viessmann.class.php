@@ -2631,7 +2631,7 @@ class viessmann extends eqLogic
 
         $obj = $this->getCmd(null, 'resetCurve');
         if (!is_object($obj)) {
-            $obj = new viessmannIotCmd();
+            $obj = new viessmannCmd();
             $obj->setName(__('Reset courbe', __FILE__));
         }
         $obj->setEqLogic_id($this->getId());
