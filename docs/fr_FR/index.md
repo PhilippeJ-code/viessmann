@@ -154,7 +154,8 @@
 
 # 4. Historisation
 
-    Les consommations journalières gaz chauffage, gaz eau sanitaire et électricité sont archivées dans Jeedom. 
+    Les consommations journalières gaz chauffage, gaz eau sanitaire, électricité et heures de fonctionnement journalier
+    du brûleur sont archivées dans Jeedom. 
     Le programme archive après minuit en fonction de la remontée des informations les données de consommation de 
     la veille.
 
