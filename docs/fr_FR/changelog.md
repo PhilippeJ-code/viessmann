@@ -53,4 +53,10 @@
 # 02-03-2021
 
     Ajout programme confort, éco et vacances
+
+# 25-04-2021
+
+    Ajout de la possibilité de récupérer les températures int/ext de capteurs extérieurs
+    Ajout des heures de fonctionnement journalier
+    Ajout d'une tuile courbes avec la mesure T°Int et T°Csg en fonction de la T°Ext et la courbe de chauffe
     

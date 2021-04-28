@@ -39,6 +39,10 @@
     
 ![Conf-Widget](../images/conf-widget.png "Conf-Widget")
 
+    Si les données température intérieure et/ou extérieure ne sont pas disponibles sur votre chaudière, il est possible 
+    d'introduire une commande info d'un équipement extérieur.
+
+![Conf-Datas](../images/datas.png "Conf-Datas")
         
 ## 3. Widget
 
@@ -136,6 +140,17 @@
             On retrouve le forçage eau chaude, programme confort, programme éco et programme vacances
 
             Notez bien qu'en fonction de la chaudière, certaines options pourraient ne pas être disponibles.
+
+## 3.1.5 Pavé courbe
+
+        Il affiche deux courbes
+
+            Le suivi des températures intérieure et de consigne en fonction de la température extérieure
+            La courbe de chauffe
+
+        Une icone permet de réinitialiser les mesures température intérieure et de consigne
+
+![Infos-courbe](../images/infos_courbe.png "Infos-courbe")
 
 # 4. Historisation
 
