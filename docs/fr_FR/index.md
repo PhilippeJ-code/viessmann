@@ -141,7 +141,7 @@
 
             Notez bien qu'en fonction de la chaudière, certaines options pourraient ne pas être disponibles.
 
-## 3.1.5 Pavé courbe
+## 3.1.8 Pavé courbe
 
         Il affiche deux courbes
 
