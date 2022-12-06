@@ -1,7 +1,7 @@
 {
 	"id" : "viessmann",
 	"name" : "Viessmann",
-	"description" : "Ce plugin permet de récupérer les infos d'une chaudière Viessmann equipée de VitoConnect",
+	"description" : "Ce plugin est obsolète, merci d'utiliser le plugin viessmannIot",
 	"licence" : "AGPL",
 	"author" : "PhilippeJ",
 	"require" : "3.2",
